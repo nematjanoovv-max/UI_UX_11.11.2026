@@ -121,10 +121,6 @@
           <i class="fa-solid fa-database"></i>
           <span>Dataset va Qidiruv (302 Bemor)</span>
         </button>
-        <button data-tab-target="tab-code" class="py-3 px-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 flex items-center space-x-2 whitespace-nowrap transition">
-          <i class="fa-solid fa-code"></i>
-          <span>Python va ML Pipeline Kodi</span>
-        </button>
       </div>
     </div>
   </header>
@@ -602,104 +598,6 @@
           <button onclick="nextTablePage()" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 font-semibold transition">
             Keyingi <i class="fa-solid fa-chevron-right ml-1"></i>
           </button>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- ========================================== -->
-    <!-- TAB 4: PYTHON VA ML PIPELINE KODI          -->
-    <!-- ========================================== -->
-    <div id="tab-code" class="tab-pane hidden space-y-6">
-      
-      <!-- Top Code Download Bar -->
-      <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div>
-          <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center space-x-2">
-            <i class="fa-brands fa-python text-amber-500"></i>
-            <span>Machine Learning Pipeline Kodu</span>
-          </h2>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            5-Fold Cross Validation, ROC Curve, StandardScaler, KNN va SVM to'liq skripti
-          </p>
-        </div>
-        <div class="flex items-center space-x-3">
-          <a href="heart_disease_prediction.ipynb" download="heart_disease_prediction.ipynb" class="px-3 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition flex items-center space-x-1.5">
-            <i class="fa-solid fa-book-bookmark"></i>
-            <span>Jupyter Notebook (.ipynb)</span>
-          </a>
-          <a href="main.py" download="main.py" class="px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition flex items-center space-x-1.5">
-            <i class="fa-solid fa-download"></i>
-            <span>main.py Yuklab Olish</span>
-          </a>
-          <button id="copy-code-btn" class="px-3 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition flex items-center space-x-1.5">
-            <i class="fa-regular fa-copy"></i>
-            <span>Nusxa olish</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Code Block Container -->
-      <div class="bg-slate-950 rounded-2xl border border-slate-800 shadow-xl overflow-hidden">
-        <div class="flex items-center justify-between px-4 py-2.5 bg-slate-900 border-b border-slate-800 text-xs text-slate-400 font-mono">
-          <div class="flex items-center space-x-2">
-            <span class="w-3 h-3 rounded-full bg-rose-500/80 inline-block"></span>
-            <span class="w-3 h-3 rounded-full bg-amber-500/80 inline-block"></span>
-            <span class="w-3 h-3 rounded-full bg-emerald-500/80 inline-block"></span>
-            <span class="ml-2 font-semibold text-slate-300">main.py</span>
-          </div>
-          <span>Python 3 • Scikit-Learn 5-Fold Pipeline</span>
-        </div>
-        <div class="p-4 sm:p-6 overflow-x-auto text-xs font-mono text-slate-200 leading-relaxed max-h-[600px] overflow-y-auto">
-          <pre id="python-code-block"><code>import pandas as pd
-import numpy as np
-
-from sklearn.model_selection import train_test_split, StratifiedKFold, cross_val_score
-from sklearn.preprocessing import StandardScaler
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.svm import SVC
-from sklearn.metrics import (
-    accuracy_score, precision_score, recall_score, f1_score,
-    confusion_matrix, roc_auc_score, roc_curve, matthews_corrcoef
-)
-
-# 1. Datasetni yuklash va tozalash
-df = pd.read_csv("dataset.csv")
-df.columns = df.columns.str.strip().str.replace('\ufeff', '')
-df.drop_duplicates(inplace=True)
-
-X = df.drop(columns=['target'])
-y = df['target']
-
-# 2. Train / Test (80 / 20) Stratified Split & Masshtablash
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42, stratify=y
-)
-scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
-
-# 3. 5-Fold Stratified Kross-Validatsiya
-cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
-knn_cv = cross_val_score(KNeighborsClassifier(n_neighbors=7, weights='distance'), scaler.transform(X), y, cv=cv)
-svm_cv = cross_val_score(SVC(kernel='rbf', C=1.0, gamma='scale', probability=True, random_state=42), scaler.transform(X), y, cv=cv)
-
-print(f"KNN 5-Fold O'rtacha Aniqlik: {knn_cv.mean()*100:.2f}% (±{knn_cv.std()*100:.2f}%)")
-print(f"SVM 5-Fold O'rtacha Aniqlik: {svm_cv.mean()*100:.2f}% (±{svm_cv.std()*100:.2f}%)")
-
-# 4. K-Nearest Neighbors (k=7) Modelini o'qitish
-knn = KNeighborsClassifier(n_neighbors=7, weights='distance')
-knn.fit(X_train_scaled, y_train)
-y_pred_knn = knn.predict(X_test_scaled)
-print(f"KNN Aniqlik: {accuracy_score(y_test, y_pred_knn)*100:.2f}%, Recall: {recall_score(y_test, y_pred_knn)*100:.2f}%")
-
-# 5. Support Vector Machine (SVM RBF) Modelini o'qitish
-svm = SVC(kernel='rbf', C=1.0, gamma='scale', probability=True, random_state=42)
-svm.fit(X_train_scaled, y_train)
-y_pred_svm = svm.predict(X_test_scaled)
-print(f"SVM Aniqlik: {accuracy_score(y_test, y_pred_svm)*100:.2f}%, Recall: {recall_score(y_test, y_pred_svm)*100:.2f}%")
-
-# 6. Barcha parametrlar, ROC chiziqlari va kross-validatsiya model_data.json ga eksport qilinadi</code></pre>
         </div>
       </div>
 
