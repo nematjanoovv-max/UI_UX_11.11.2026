@@ -1,6 +1,6 @@
 # 07. Yurak kasalliklari xavfini bashorat qilish (Heart Disease Risk Prediction)
 
-[![Live on Vercel](https://img.shields.io/badge/Vercel-Live_Demo-black?logo=vercel&style=for-the-badge)](https://heart-disease-risk-prediction-phi.vercel.app)
+[![Live on Vercel](https://img.shields.io/badge/Vercel-Live_Demo-black?logo=vercel&style=for-the-badge)](https://heart-disease-risk-prediction-eosin.vercel.app)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&style=for-the-badge)](https://www.python.org/)
 [![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-KNN_%26_SVM-orange?logo=scikit-learn&style=for-the-badge)](https://scikit-learn.org/)
 [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-3.x-38bdf8?logo=tailwind-css&style=for-the-badge)](https://tailwindcss.com/)
@@ -92,6 +92,6 @@ UI_UX_11.11.2026/
 ## 🔗 Havolalar va Manbalar
 
 - **GitHub Repozitoriy:** [github.com/nematjanoovv-max/heart-disease-risk-prediction](https://github.com/nematjanoovv-max/heart-disease-risk-prediction)
-- **Vercel Jonli Veb-sayt:** [heart-disease-risk-prediction-phi.vercel.app](https://heart-disease-risk-prediction-phi.vercel.app)
+- **Vercel Jonli Veb-sayt:** [heart-disease-risk-prediction-eosin.vercel.app](https://heart-disease-risk-prediction-eosin.vercel.app)
 - **Kaggle Manba Notebook:** [i0nlyaziz/heart-disease-risk-prediction](https://www.kaggle.com/code/i0nlyaziz/heart-disease-risk-prediction)
 - **Dataset:** UCI Machine Learning Repository - Heart Disease Dataset
