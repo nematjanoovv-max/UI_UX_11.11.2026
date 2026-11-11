@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="uz" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CardioRisk AI | Yurak Kasalliklari Xavfini Bashorat Qilish (KNN & SVM)</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>❤️</text></svg>">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            rose: {
+              50: '#fff1f2',
+              100: '#ffe4e6',
+              500: '#f43f5e',
+              600: '#e11d48',
+              700: '#be123c',
+              800: '#9f1239',
+              900: '#881337',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col antialiased transition-colors duration-300">
+
+  <!-- Top Announcement Bar -->
+  <div class="bg-gradient-to-r from-rose-600 via-rose-700 to-indigo-800 text-white text-xs py-1.5 px-4 text-center font-medium shadow-sm">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <span class="flex items-center space-x-2">
+        <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+        <span>07. Yurak kasalliklari xavfini bashorat qilish • Machine Learning: KNN (82.0%) va SVM (83.6%)</span>
+      </span>
+      <span class="hidden md:inline-block opacity-90">UCI Heart Disease Dataset • Scikit-Learn Pipeline</span>
+    </div>
+  </div>
+
+  <!-- Header / Navigation -->
+  <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-500 to-rose-700 flex items-center justify-center text-white shadow-lg shadow-rose-500/25 animate-heartbeat">
+          <i class="fa-solid fa-heart-pulse text-xl"></i>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold tracking-tight text-slate-900 dark:text-white flex items-center space-x-1.5">
+            <span>CardioRisk</span>
+            <span class="text-rose-600 dark:text-rose-400">AI</span>
+            <span class="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 font-semibold border border-rose-200 dark:border-rose-900 ml-1">v2.0</span>
+          </h1>
+          <p class="text-xs text-slate-500 dark:text-slate-400 -mt-0.5 hidden sm:block">Yurak Kasalliklari Xavfini Intellektual Tashxislash Tizimi</p>
+        </div>
+      </div>
+
+      <!-- Quick Metrics Chips -->
+      <div class="hidden lg:flex items-center space-x-3 text-xs">
+        <div class="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
+          <span class="text-slate-500 dark:text-slate-400">SVM Aniqligi:</span>
+          <span id="badge-svm-acc" class="font-bold text-rose-600 dark:text-rose-400 font-mono">83.61%</span>
+        </div>
+        <div class="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
+          <span class="text-slate-500 dark:text-slate-400">KNN Aniqligi:</span>
+          <span id="badge-knn-acc" class="font-bold text-blue-600 dark:text-blue-400 font-mono">81.97%</span>
+        </div>
+        <div class="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
+          <span class="text-slate-500 dark:text-slate-400">Bemorlar:</span>
+          <span id="badge-samples" class="font-bold text-emerald-600 dark:text-emerald-400 font-mono">302</span>
+        </div>
+      </div>
+
+      <!-- Actions: Theme Toggle & Links -->
+      <div class="flex items-center space-x-3">
+        <button id="theme-toggle" aria-label="Mavzuni almashtirish" class="w-9 h-9 rounded-lg flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <i class="fa-solid fa-moon dark:hidden text-slate-700"></i>
+          <i class="fa-solid fa-sun hidden dark:inline text-amber-400"></i>
+        </button>
+
+        <a href="https://github.com/nematjanoovv-max/heart-disease-risk-prediction" target="_blank" rel="noopener noreferrer" class="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 text-white dark:bg-slate-800 dark:hover:bg-slate-700 hover:bg-slate-800 transition shadow-sm">
+          <i class="fa-brands fa-github text-sm"></i>
+          <span>GitHub</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="border-t border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-2 sm:space-x-8 overflow-x-auto">
+        <button data-tab-target="tab-calculator" class="active py-3 px-3 text-xs sm:text-sm font-semibold border-b-2 border-rose-600 text-rose-600 dark:text-rose-400 flex items-center space-x-2 whitespace-nowrap transition">
+          <i class="fa-solid fa-stethoscope"></i>
+          <span>Bemor Diagnostikasi (Kalkulyator)</span>
+        </button>
+        <button data-tab-target="tab-models" class="py-3 px-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 flex items-center space-x-2 whitespace-nowrap transition">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Modellarni Taqqoslash (KNN vs SVM)</span>
+        </button>
+        <button data-tab-target="tab-dataset" class="py-3 px-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 flex items-center space-x-2 whitespace-nowrap transition">
+          <i class="fa-solid fa-database"></i>
+          <span>Dataset va EDA Tahlili</span>
+        </button>
+        <button data-tab-target="tab-code" class="py-3 px-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 flex items-center space-x-2 whitespace-nowrap transition">
+          <i class="fa-solid fa-code"></i>
+          <span>Python va ML Kod</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+
+    <!-- ========================================== -->
+    <!-- TAB 1: BEMOR DIAGNOSTIKASI (KALKULYATOR)   -->
+    <!-- ========================================== -->
+    <div id="tab-calculator" class="tab-pane space-y-6">
+      
+      <!-- Presets & Quick Action Bar -->
+      <div class="flex flex-wrap items-center justify-between gap-3 p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="flex items-center space-x-2">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Namunaviy Profil:</span>
+          <div id="presets-container" class="flex flex-wrap gap-2"></div>
+        </div>
+        <button onclick="resetForm()" class="px-3 py-2 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center space-x-1.5">
+          <i class="fa-solid fa-arrow-rotate-left"></i>
+          <span>Tozalash (Reset)</span>
+        </button>
+      </div>
+
+      <!-- Grid: Form Inputs (Left) & Real-time Live Result (Right) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        <!-- Left: Input Controls (8 Columns) -->
+        <div class="lg:col-span-7 xl:col-span-8 bg-white dark:bg-slate-900 rounded-2xl p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
+          <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-100 dark:border-slate-800">
+            <div>
+              <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                <i class="fa-solid fa-sliders text-rose-500"></i>
+                <span>Tibbiy Ko'rsatkichlarni Kiritish</span>
+              </h2>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Bemorning 13 ta klinik parametrlarini slayder yoki tanlov orqali o'zgartiring</p>
+            </div>
+            <span class="text-[11px] px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-mono">
+              13 ta parametr
+            </span>
+          </div>
+
+          <!-- Dynamic Form Inputs -->
+          <div id="inputs-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Dynamically populated by app.js -->
+          </div>
+        </div>
+
+        <!-- Right: Live Diagnostic Results (4 Columns, Sticky) -->
+        <div class="lg:col-span-5 xl:col-span-4 space-y-5 sticky top-28">
+          
+          <!-- Master Gauge Card -->
+          <div class="bg-gradient-to-br from-white via-white to-slate-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-950 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none relative overflow-hidden">
+            
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Real-vaqtda Tashxis</span>
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-400">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1 animate-pulse"></span>
+                Faol Inference
+              </span>
+            </div>
+
+            <!-- Circular Gauge Visualization -->
+            <div class="flex flex-col items-center justify-center my-2">
+              <div class="relative w-44 h-44 flex items-center justify-center">
+                <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                  <!-- Track -->
+                  <circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="8" fill="transparent" class="text-slate-100 dark:text-slate-800"/>
+                  <!-- Progress Fill -->
+                  <circle id="gauge-fill" cx="50" cy="50" r="40" stroke="#f43f5e" stroke-width="8" stroke-dasharray="251.3" stroke-dashoffset="100" stroke-linecap="round" fill="transparent" class="gauge-circle"/>
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                  <span id="gauge-percent" class="text-4xl font-extrabold font-mono text-slate-900 dark:text-white tracking-tight">50%</span>
+                  <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mt-0.5">Xavf Ehtimoli</span>
+                </div>
+              </div>
+
+              <!-- Status Badge -->
+              <div class="mt-4 text-center">
+                <div id="risk-status-badge" class="px-3 py-1 rounded-full text-xs font-bold inline-block bg-slate-100 text-slate-700 border border-slate-200">
+                  Hisoblanmoqda...
+                </div>
+                <p id="risk-status-desc" class="text-xs text-slate-500 dark:text-slate-400 mt-2 px-2 leading-relaxed">
+                  Bemor ko'rsatkichlari tahlil qilinmoqda.
+                </p>
+              </div>
+            </div>
+
+            <!-- Model-by-Model Breakdown -->
+            <div class="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800 space-y-3">
+              <div class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Algoritmlar Xulosasi</div>
+              
+              <!-- SVM Card -->
+              <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
+                <div class="flex items-center justify-between text-xs mb-1.5">
+                  <span class="font-bold text-slate-700 dark:text-slate-200 flex items-center space-x-1.5">
+                    <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                    <span>SVM (RBF Kernel)</span>
+                  </span>
+                  <div class="flex items-center space-x-2">
+                    <span id="svm-result-badge" class="px-1.5 py-0.5 rounded text-[10px] font-bold">--</span>
+                    <span id="svm-result-pct" class="font-bold font-mono text-slate-800 dark:text-slate-200">--%</span>
+                  </div>
+                </div>
+                <div class="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                  <div id="svm-result-bar" class="h-full bg-rose-500 rounded-full transition-all duration-500" style="width: 50%"></div>
+                </div>
+              </div>
+
+              <!-- KNN Card -->
+              <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
+                <div class="flex items-center justify-between text-xs mb-1.5">
+                  <span class="font-bold text-slate-700 dark:text-slate-200 flex items-center space-x-1.5">
+                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                    <span>KNN (k=7 Neighbors)</span>
+                  </span>
+                  <div class="flex items-center space-x-2">
+                    <span id="knn-result-badge" class="px-1.5 py-0.5 rounded text-[10px] font-bold">--</span>
+                    <span id="knn-result-pct" class="font-bold font-mono text-slate-800 dark:text-slate-200">--%</span>
+                  </div>
+                </div>
+                <div class="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                  <div id="knn-result-bar" class="h-full bg-blue-500 rounded-full transition-all duration-500" style="width: 50%"></div>
+                </div>
+              </div>
+
+              <!-- Consensus Text -->
+              <div id="model-consensus-text" class="text-xs p-3 rounded-xl bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 leading-relaxed">
+                Modellar tahlili tayyorlanmoqda...
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Risk Factors Alert Box -->
+          <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center space-x-1.5">
+              <i class="fa-solid fa-list-check text-rose-500"></i>
+              <span>Aniqlangan Klinik Xavf Omillari</span>
+            </h3>
+            <div id="risk-factors-list" class="space-y-2"></div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: MODELLARNI TAQQOSLASH (KNN vs SVM)  -->
+    <!-- ========================================== -->
+    <div id="tab-models" class="tab-pane hidden space-y-6">
+      
+      <!-- Top Metrics Comparison Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Accuracy -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
+          <div class="flex items-center justify-between text-slate-400 text-xs mb-2">
+            <span class="font-bold uppercase tracking-wider">Aniqlik (Accuracy)</span>
+            <i class="fa-solid fa-bullseye text-rose-500"></i>
+          </div>
+          <div class="flex items-baseline justify-between mt-1">
+            <div>
+              <span class="text-2xl font-extrabold font-mono text-slate-900 dark:text-white">83.61%</span>
+              <span class="text-xs text-rose-600 font-semibold block">SVM (RBF)</span>
+            </div>
+            <div class="text-right">
+              <span class="text-lg font-bold font-mono text-slate-500 dark:text-slate-400">81.97%</span>
+              <span class="text-xs text-blue-500 font-medium block">KNN (k=7)</span>
+            </div>
+          </div>
+          <p class="text-[11px] text-slate-400 mt-2">Test to'plamidagi 61 ta namunadan to'g'ri topilganlar ulushi</p>
+        </div>
+
+        <!-- F1 Score -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
+          <div class="flex items-center justify-between text-slate-400 text-xs mb-2">
+            <span class="font-bold uppercase tracking-wider">F1-Score</span>
+            <i class="fa-solid fa-scale-balanced text-indigo-500"></i>
+          </div>
+          <div class="flex items-baseline justify-between mt-1">
+            <div>
+              <span class="text-2xl font-extrabold font-mono text-slate-900 dark:text-white">86.11%</span>
+              <span class="text-xs text-rose-600 font-semibold block">SVM (RBF)</span>
+            </div>
+            <div class="text-right">
+              <span class="text-lg font-bold font-mono text-slate-500 dark:text-slate-400">84.51%</span>
+              <span class="text-xs text-blue-500 font-medium block">KNN (k=7)</span>
+            </div>
+          </div>
+          <p class="text-[11px] text-slate-400 mt-2">Precision va Recall o'rtasidagi garmonik o'rtacha qiymat</p>
+        </div>
+
+        <!-- Recall (Sensitivity) -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
+          <div class="flex items-center justify-between text-slate-400 text-xs mb-2">
+            <span class="font-bold uppercase tracking-wider">Recall (Sezuvchanlik)</span>
+            <i class="fa-solid fa-virus text-emerald-500"></i>
+          </div>
+          <div class="flex items-baseline justify-between mt-1">
+            <div>
+              <span class="text-2xl font-extrabold font-mono text-emerald-600 dark:text-emerald-400">93.94%</span>
+              <span class="text-xs text-rose-600 font-semibold block">SVM (RBF)</span>
+            </div>
+            <div class="text-right">
+              <span class="text-lg font-bold font-mono text-slate-500 dark:text-slate-400">90.91%</span>
+              <span class="text-xs text-blue-500 font-medium block">KNN (k=7)</span>
+            </div>
+          </div>
+          <p class="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium mt-2">Tibbiyotda eng muhim: kasallikni o'tkazib yubormaslik ko'rsatkichi</p>
+        </div>
+
+        <!-- ROC-AUC -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
+          <div class="flex items-center justify-between text-slate-400 text-xs mb-2">
+            <span class="font-bold uppercase tracking-wider">ROC-AUC Bali</span>
+            <i class="fa-solid fa-chart-line text-amber-500"></i>
+          </div>
+          <div class="flex items-baseline justify-between mt-1">
+            <div>
+              <span class="text-2xl font-extrabold font-mono text-slate-900 dark:text-white">88.10%</span>
+              <span class="text-xs text-rose-600 font-semibold block">SVM (RBF)</span>
+            </div>
+            <div class="text-right">
+              <span class="text-lg font-bold font-mono text-slate-500 dark:text-slate-400">88.20%</span>
+              <span class="text-xs text-blue-500 font-medium block">KNN (k=7)</span>
+            </div>
+          </div>
+          <p class="text-[11px] text-slate-400 mt-2">Klasslarni ajrata olish qobiliyati maydoni (Area Under Curve)</p>
+        </div>
+
+      </div>
+
+      <!-- Charts Row -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Bar Chart: Metrics Comparison -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
+          <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-2 mb-4">
+            <i class="fa-solid fa-chart-column text-rose-500"></i>
+            <span>Barcha Metrikalar Bo'yicha Solishtirish (%)</span>
+          </h3>
+          <div class="h-72">
+            <canvas id="chart-metrics-comparison"></canvas>
+          </div>
+        </div>
+
+        <!-- Horizontal Bar: Feature Importance -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
+          <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-2 mb-4">
+            <i class="fa-solid fa-arrow-trend-up text-emerald-500"></i>
+            <span>Eng Muhim Xavf Omillari (Korrelyatsiya)</span>
+          </h3>
+          <div class="h-72">
+            <canvas id="chart-feature-importance"></canvas>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Confusion Matrices Section -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
+        <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-2 mb-1">
+          <i class="fa-solid fa-table-cells text-indigo-500"></i>
+          <span>Xatoliklar Matritsasi (Confusion Matrix) Tahlili</span>
+        </h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">Test to'plamidagi 61 ta haqiqiy bemor ko'rsatkichlari bo'yicha algoritmlarning to'g'ri va noto'g'ri tashxislari</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          
+          <!-- KNN CM -->
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/60">
+            <div class="flex items-center justify-between mb-3">
+              <span class="font-bold text-sm text-slate-800 dark:text-slate-200 flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-blue-500"></span>
+                <span>K-Nearest Neighbors (KNN, k=7)</span>
+              </span>
+              <span class="text-xs font-mono px-2 py-0.5 rounded bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 font-bold">81.97%</span>
+            </div>
+            <div id="cm-knn-grid"></div>
+          </div>
+
+          <!-- SVM CM -->
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/60">
+            <div class="flex items-center justify-between mb-3">
+              <span class="font-bold text-sm text-slate-800 dark:text-slate-200 flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-rose-500"></span>
+                <span>Support Vector Machine (SVM RBF)</span>
+              </span>
+              <span class="text-xs font-mono px-2 py-0.5 rounded bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300 font-bold">83.61%</span>
+            </div>
+            <div id="cm-svm-grid"></div>
+          </div>
+
+        </div>
+
+        <!-- Comparative Explanation Note -->
+        <div class="mt-6 p-4 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/60 text-xs text-indigo-900 dark:text-indigo-200 leading-relaxed">
+          <span class="font-bold"><i class="fa-solid fa-lightbulb text-amber-500 mr-1.5"></i> Tibbiy Xulosa:</span> 
+          SVM modeli 33 ta bemordan faqat 2 tasida False Negative (kasallikni o'tkazib yuborish) xatosini qildi (Recall: <strong>93.94%</strong>). Bu KNN modelidan (3 ta xato, 90.91%) ustunroqdir. Kardiologiya amaliyotida bemor hayotini saqlab qolish uchun aynan False Negative ko'rsatkichini minimal darajaga tushirish talab etiladi.
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: DATASET VA EDA TAHLILI              -->
+    <!-- ========================================== -->
+    <div id="tab-dataset" class="tab-pane hidden space-y-6">
+      
+      <!-- Dataset Header & Quick Stats -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-100 dark:border-slate-800">
+          <div>
+            <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+              <i class="fa-solid fa-database text-rose-500"></i>
+              <span>UCI Machine Learning Repository: Heart Disease Dataset</span>
+            </h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              Cleveland klinikasining 302 nafar bemori bo'yicha haqiqiy klinik laboratoriya natijalari
+            </p>
+          </div>
+          <a href="dataset.csv" download="heart_disease_dataset.csv" class="inline-flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-semibold bg-rose-600 hover:bg-rose-700 text-white shadow-sm transition">
+            <i class="fa-solid fa-file-arrow-down"></i>
+            <span>dataset.csv Yuklab Olish</span>
+          </a>
+        </div>
+
+        <!-- 4 Quick Stats -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-5">
+          <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
+            <span class="text-xs text-slate-400 block">Jami Bemorlar</span>
+            <span class="text-xl font-bold font-mono text-slate-900 dark:text-white mt-1 block">302 nafar</span>
+          </div>
+          <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
+            <span class="text-xs text-slate-400 block">Yurak Kasalligi Bor</span>
+            <span class="text-xl font-bold font-mono text-rose-600 dark:text-rose-400 mt-1 block">164 (54.3%)</span>
+          </div>
+          <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
+            <span class="text-xs text-slate-400 block">Sog'lom Bemorlar</span>
+            <span class="text-xl font-bold font-mono text-emerald-600 dark:text-emerald-400 mt-1 block">138 (45.7%)</span>
+          </div>
+          <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
+            <span class="text-xs text-slate-400 block">O'rtacha Yosh</span>
+            <span class="text-xl font-bold font-mono text-blue-600 dark:text-blue-400 mt-1 block">54.4 yosh</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Features Reference Glossary -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
+        <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-4 flex items-center space-x-2">
+          <i class="fa-solid fa-book-medical text-rose-500"></i>
+          <span>14 ta Ustun (Xususiyatlar) Tibbiy Lug'ati</span>
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+            <span class="font-bold text-rose-600 dark:text-rose-400 font-mono">age:</span> Yosh (yillarda)
+          </div>
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+            <span class="font-bold text-rose-600 dark:text-rose-400 font-mono">sex:</span> Jins (1 = Erkak, 0 = Ayol)
+          </div>
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+            <span class="font-bold text-rose-600 dark:text-rose-400 font-mono">cp:</span> Ko'krak qafasi og'rig'i (0: Tipik, 1: Atipik, 2: Noanginal, 3: Asimptomatik)
+          </div>
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+            <span class="font-bold text-rose-600 dark:text-rose-400 font-mono">trestbps:</span> Tinch holatdagi qon bosimi (mm Hg)
+          </div>
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+            <span class="font-bold text-rose-600 dark:text-rose-400 font-mono">chol:</span> Zardob xolesterini miqdori (mg/dl)
+          </div>
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+            <span class="font-bold text-rose-600 dark:text-rose-400 font-mono">fbs:</span> Qand miqdori > 120 mg/dl (1 = Ha, 0 = Yo'q)
+          </div>
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+            <span class="font-bold text-rose-600 dark:text-rose-400 font-mono">restecg:</span> Tinch EKG (0: Normal, 1: ST-T to'lqin, 2: Gipertrofiya)
+          </div>
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+            <span class="font-bold text-rose-600 dark:text-rose-400 font-mono">thalach:</span> Maksimal puls (erishilgan eng yuqori yurak urishi)
+          </div>
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+            <span class="font-bold text-rose-600 dark:text-rose-400 font-mono">exang:</span> Jismoniy mashqdan keyingi stenokardiya (1/0)
+          </div>
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+            <span class="font-bold text-rose-600 dark:text-rose-400 font-mono">oldpeak:</span> Mashq sababli ST segment depressiyasi
+          </div>
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+            <span class="font-bold text-rose-600 dark:text-rose-400 font-mono">slope:</span> Maksimal mashq ST segmentining qiyaligi (0, 1, 2)
+          </div>
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+            <span class="font-bold text-rose-600 dark:text-rose-400 font-mono">ca:</span> Flyuroskopiyada ko'ringan yirik tomirlar soni (0-3)
+          </div>
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+            <span class="font-bold text-rose-600 dark:text-rose-400 font-mono">thal:</span> Talassemiya (1: Normal, 2: Fixed, 3: Reversable)
+          </div>
+          <div class="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800">
+            <span class="font-bold text-rose-700 dark:text-rose-300 font-mono">target:</span> Yurak xastaligi xavfi (1 = Bor, 0 = Sog'lom)
+          </div>
+        </div>
+      </div>
+
+      <!-- Dataset Table Preview -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+        <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-3">Namunaviy Bemorlar Yozuvlari (Dastlabki 15 qator)</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold uppercase tracking-wider text-slate-400 bg-slate-50 dark:bg-slate-800/40">
+                <th class="px-3 py-2.5">#</th>
+                <th class="px-3 py-2.5">age</th>
+                <th class="px-3 py-2.5">sex</th>
+                <th class="px-3 py-2.5">cp</th>
+                <th class="px-3 py-2.5">trestbps</th>
+                <th class="px-3 py-2.5">chol</th>
+                <th class="px-3 py-2.5">fbs</th>
+                <th class="px-3 py-2.5">restecg</th>
+                <th class="px-3 py-2.5">thalach</th>
+                <th class="px-3 py-2.5">exang</th>
+                <th class="px-3 py-2.5">oldpeak</th>
+                <th class="px-3 py-2.5">slope</th>
+                <th class="px-3 py-2.5">ca</th>
+                <th class="px-3 py-2.5">thal</th>
+                <th class="px-3 py-2.5">target</th>
+              </tr>
+            </thead>
+            <tbody id="dataset-table-body">
+              <!-- Dynamically rendered -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 4: PYTHON VA ML KOD                    -->
+    <!-- ========================================== -->
+    <div id="tab-code" class="tab-pane hidden space-y-6">
+      
+      <!-- Top Code Download Bar -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+            <i class="fa-brands fa-python text-amber-500"></i>
+            <span>Machine Learning Pipeline Kodu</span>
+          </h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            Pandas, StandardScaler, Scikit-learn (KNeighborsClassifier, SVC) to'liq skripti
+          </p>
+        </div>
+        <div class="flex items-center space-x-3">
+          <a href="heart_disease_prediction.ipynb" download="heart_disease_prediction.ipynb" class="px-3 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition flex items-center space-x-1.5">
+            <i class="fa-solid fa-book-bookmark"></i>
+            <span>Jupyter Notebook (.ipynb)</span>
+          </a>
+          <a href="main.py" download="main.py" class="px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition flex items-center space-x-1.5">
+            <i class="fa-solid fa-download"></i>
+            <span>main.py Yuklab Olish</span>
+          </a>
+          <button id="copy-code-btn" class="px-3 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition flex items-center space-x-1.5">
+            <i class="fa-regular fa-copy"></i>
+            <span>Nusxa olish</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Code Block Container -->
+      <div class="bg-slate-950 rounded-2xl border border-slate-800 shadow-xl overflow-hidden">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-slate-900 border-b border-slate-800 text-xs text-slate-400 font-mono">
+          <div class="flex items-center space-x-2">
+            <span class="w-3 h-3 rounded-full bg-rose-500/80 inline-block"></span>
+            <span class="w-3 h-3 rounded-full bg-amber-500/80 inline-block"></span>
+            <span class="w-3 h-3 rounded-full bg-emerald-500/80 inline-block"></span>
+            <span class="ml-2 font-semibold text-slate-300">main.py</span>
+          </div>
+          <span>Python 3 • Scikit-Learn</span>
+        </div>
+        <div class="p-4 sm:p-6 overflow-x-auto text-xs font-mono text-slate-200 leading-relaxed max-h-[600px] overflow-y-auto">
+          <pre id="python-code-block"><code>import sys
+import os
+import json
+import pandas as pd
+import numpy as np
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.metrics import (
+    accuracy_score, precision_score, recall_score, f1_score,
+    confusion_matrix, roc_auc_score, classification_report
+)
+
+# 1. Datasetni yuklash va tozalash (EDA)
+df = pd.read_csv("dataset.csv")
+df.columns = df.columns.str.strip().str.replace('\ufeff', '')
+df.drop_duplicates(inplace=True)
+
+feature_cols = [c for c in df.columns if c != 'target']
+X = df[feature_cols]
+y = df['target']
+
+# 2. Train / Test (80 / 20) ga ajratish va Masshtablash
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# 3. K-Nearest Neighbors (KNN) modelini o'qitish (k=7)
+knn = KNeighborsClassifier(n_neighbors=7, weights='distance')
+knn.fit(X_train_scaled, y_train)
+y_pred_knn = knn.predict(X_test_scaled)
+knn_acc = accuracy_score(y_test, y_pred_knn) # 81.97%
+
+# 4. Support Vector Machine (SVM) modelini o'qitish (RBF)
+svm = SVC(kernel='rbf', C=1.0, gamma='scale', probability=True, random_state=42)
+svm.fit(X_train_scaled, y_train)
+y_pred_svm = svm.predict(X_test_scaled)
+svm_acc = accuracy_score(y_test, y_pred_svm) # 83.61%
+
+# 5. Model parametrlari va metrikalarini JSON faylga eksport qilish
+# model_data.json orqali Vercel interfeysi real-vaqtda hisoblaydi</code></pre>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-12 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
+      <div class="flex items-center space-x-2">
+        <i class="fa-solid fa-heart-pulse text-rose-500"></i>
+        <span><strong>07. Yurak kasalliklari xavfini bashorat qilish</strong> • Heart Disease Risk Prediction</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <a href="https://www.kaggle.com/code/i0nlyaziz/heart-disease-risk-prediction" target="_blank" rel="noopener noreferrer" class="hover:text-rose-600 dark:hover:text-rose-400 transition">
+          <i class="fa-brands fa-kaggle text-sky-500 mr-1"></i> Kaggle Notebook
+        </a>
+        <span>•</span>
+        <a href="https://github.com/nematjanoovv-max/heart-disease-risk-prediction" target="_blank" rel="noopener noreferrer" class="hover:text-rose-600 dark:hover:text-rose-400 transition">
+          <i class="fa-brands fa-github mr-1"></i> GitHub Repository
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="fallback_data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
