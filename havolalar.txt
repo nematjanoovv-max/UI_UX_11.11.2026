@@ -4,7 +4,7 @@ LOYIHA NOMI:
 ================================================================================
 
 1. GITHUB REPOZITORIY HAVOLASI:
-https://github.com/nematjanoovv-max/heart-disease-risk-prediction
+https://github.com/nematjanoovv-max/UI_UX_11.11.2026
 
 2. VERCEL LIVE (ISHLAYOTGAN SAYT) HAVOLASI:
 https://heart-disease-risk-prediction-eosin.vercel.app

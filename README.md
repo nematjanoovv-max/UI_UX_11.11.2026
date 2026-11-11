@@ -70,8 +70,8 @@ UI_UX_11.11.2026/
 
 1. **Repozitoriyni klonlash:**
    ```bash
-   git clone https://github.com/nematjanoovv-max/heart-disease-risk-prediction.git
-   cd heart-disease-risk-prediction
+   git clone https://github.com/nematjanoovv-max/UI_UX_11.11.2026.git
+   cd UI_UX_11.11.2026
    ```
 
 2. **Kutubxonalarni o'rnatish va modelni o'qitish:**
@@ -91,7 +91,7 @@ UI_UX_11.11.2026/
 
 ## 🔗 Havolalar va Manbalar
 
-- **GitHub Repozitoriy:** [github.com/nematjanoovv-max/heart-disease-risk-prediction](https://github.com/nematjanoovv-max/heart-disease-risk-prediction)
+- **GitHub Repozitoriy:** [github.com/nematjanoovv-max/UI_UX_11.11.2026](https://github.com/nematjanoovv-max/UI_UX_11.11.2026)
 - **Vercel Jonli Veb-sayt:** [heart-disease-risk-prediction-eosin.vercel.app](https://heart-disease-risk-prediction-eosin.vercel.app)
 - **Kaggle Manba Notebook:** [i0nlyaziz/heart-disease-risk-prediction](https://www.kaggle.com/code/i0nlyaziz/heart-disease-risk-prediction)
 - **Dataset:** UCI Machine Learning Repository - Heart Disease Dataset
