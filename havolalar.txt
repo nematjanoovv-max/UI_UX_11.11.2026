@@ -1,6 +1,6 @@
 ================================================================================
 LOYIHA NOMI:
-07. Yurak kasalliklari xavfini bashorat qilish (Heart Disease Risk Prediction)
+07. Yurak kasalliklari xavfini bashorat qilish (Heart Disease Risk Prediction Pro Max)
 ================================================================================
 
 1. GITHUB REPOZITORIY HAVOLASI:
@@ -13,9 +13,28 @@ https://heart-disease-risk-prediction-eosin.vercel.app
 https://www.kaggle.com/code/i0nlyaziz/heart-disease-risk-prediction
 
 ================================================================================
-MACHINE LEARNING METRIKALARI:
-- Algoritmlar: K-Nearest Neighbors (KNN) va Support Vector Machine (SVM RBF)
-- Ma'lumotlar to'plami: UCI Machine Learning Repository - Heart Disease Dataset (302 ta bemor)
-- SVM Aniqligi (Accuracy): 83.61% | Recall: 93.94% | F1-Score: 86.11%
-- KNN Aniqligi (Accuracy): 81.97% | Recall: 90.91% | F1-Score: 84.51%
+CHUQUR VA KENG OPTIMALLASHTIRILGAN MACHINE LEARNING METRIKALARI:
+- Ma'lumotlar to'plami: UCI Machine Learning Repository (Cleveland Clinic, 302 bemor)
+- Support Vector Machine (SVM RBF):
+  * Aniqlik (Accuracy): 83.61%
+  * Recall (Sezuvchanlik): 93.94% (33 tadan 31 ta to'g'ri tashxis)
+  * Specificity (O'ziga xoslik): 71.43%
+  * F1-Score: 86.11%
+  * ROC-AUC: 88.10%
+  * 5-Fold Stratified Kross-Validatsiya: 81.09% (±6.09%)
+
+- K-Nearest Neighbors (KNN, k=7):
+  * Aniqlik (Accuracy): 81.97%
+  * Recall (Sezuvchanlik): 90.91%
+  * Specificity (O'ziga xoslik): 71.43%
+  * F1-Score: 84.51%
+  * ROC-AUC: 88.20%
+  * 5-Fold Stratified Kross-Validatsiya: 81.07% (±7.86%)
+
+YANGI INTERFAOL IMKONIYATLAR:
+1. 4-Darajali Xavf Stratifikatsiyasi (Past, O'rtacha, Yuqori, Kritik).
+2. "What-If" Profilaktika Simulyatori (Xavfni kamaytirish ssenariysi).
+3. 360° Radar Diagrammasi (Bemor vs Sog'lom standart).
+4. Bemor Tashxis Hisobotini Chop Etish / PDF eksport qilish.
+5. Qidiruv va filtrlash imkoniyatiga ega 302 bemorlik to'liq jadval.
 ================================================================================

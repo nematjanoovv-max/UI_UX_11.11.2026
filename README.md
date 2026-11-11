@@ -1,32 +1,27 @@
-# 07. Yurak kasalliklari xavfini bashorat qilish (Heart Disease Risk Prediction)
+# 07. Yurak kasalliklari xavfini bashorat qilish (Heart Disease Risk Prediction Pro Max)
 
 [![Live on Vercel](https://img.shields.io/badge/Vercel-Live_Demo-black?logo=vercel&style=for-the-badge)](https://heart-disease-risk-prediction-eosin.vercel.app)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&style=for-the-badge)](https://www.python.org/)
-[![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-KNN_%26_SVM-orange?logo=scikit-learn&style=for-the-badge)](https://scikit-learn.org/)
+[![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-KNN_%26_SVM_5--Fold_CV-orange?logo=scikit-learn&style=for-the-badge)](https://scikit-learn.org/)
 [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-3.x-38bdf8?logo=tailwind-css&style=for-the-badge)](https://tailwindcss.com/)
 
-Ushbu loyiha bemorlarning klinik ko'rsatkichlari (yosh, qon bosimi, xolesterin, yurak urishi, EKG va b.) asosida yurak kasalligi xavfini aniqlash va bashorat qilish uchun mo'ljallangan to'liq avtonom Machine Learning va zamonaviy Web ilovasidir.
+Ushbu loyiha bemorlarning 13 ta klinik ko'rsatkichlari (yosh, qon bosimi, xolesterin, yurak urishi, EKG anomaliyalari, ST depressiyasi va b.) asosida yurak kasalligi xavfini aniqlash va bashorat qilish uchun mo'ljallangan chuqur optimallashtirilgan Machine Learning tizimi va zamonaviy tibbiy Web ilovasidir.
 
 ---
 
-## 📌 Loyiha Tarkibi va Asosiy Xususiyatlari
+## 📌 Chuqur va Keng Qamrovli Optimallashtirish
 
-1. **Ma'lumotlar tahlili (EDA) va Preprocessing**:
-   - UCI Machine Learning Repository: Cleveland Heart Disease Dataset (`dataset.csv`).
-   - Takroriy va yetishmayotgan qiymatlarni tozalash, xususiyatlar o'rtasidagi Pearson korrelyatsiyasi.
-   - `StandardScaler` yordamida ma'lumotlarni masshtablash va Train/Test (80% / 20%) to'plamiga ajratish.
+1. **Machine Learning & Validatsiya**:
+   - **5-Fold Stratified Kross-Validatsiya**: Modellar umumiy barqarorligi sinovdan o'tkazildi (SVM: **81.09%**, KNN: **81.07%**).
+   - **Giperparametrlarni sozlash (GridSearch)**: KNN uchun $k=1$ dan $k=25$ gacha egri chiziq, distance-weighting; SVM uchun RBF yadrosi, $\gamma=\text{scale}$, $C=1.0$.
+   - **Kengaytirilgan Metrikalar**: Accuracy, Recall (Sezuvchanlik), Specificity (O'ziga xoslik), Balanced Accuracy, F1-Score, ROC-AUC, MCC (Matthews Correlation Coefficient).
 
-2. **Machine Learning Modellar (KNN & SVM)**:
-   - **K-Nearest Neighbors (KNN)**: $k=7$, distance-weighted Evklid masofasi.
-   - **Support Vector Machine (SVM)**: RBF (Radial Basis Function) yadrosi, Platt scaling ehtimollik taqsimoti.
-   - Model metrikalari: Accuracy, Precision, Recall, F1-Score, ROC-AUC va Confusion Matrix.
-
-3. **Vercel Web UI/UX Dashboard**:
-   - **Interaktiv Kalkulyator**: 13 ta klinik parametrlarni o'zgartirish orqali real-vaqtda yurak xastaligi xavfini (% da) hisoblash.
-   - **Namunaviy profillar (Presets)**: Sog'lom bemor, O'rtacha xavf va Yuqori xavfli bemor profillari.
-   - **Modellarni Taqqoslash**: Chart.js interaktiv grafiklari (Metrikalar, Feature Importance, Confusion Matrix).
-   - **Dataset & Kod ko'rish**: Namunaviy yozuvlar jadvali, `main.py` va `heart_disease_prediction.ipynb` fayllarini yuklab olish.
-   - **Dark / Light Mode**: Tizim parametrlariga moslashuvchi to'liq moslashuvchan dizayn.
+2. **Web UI/UX & XAI (Explainable AI)**:
+   - **4-Darajali Xavf Stratifikatsiyasi**: Past (<25%), O'rtacha (25-50%), Yuqori (50-75%), Kritik (>75%).
+   - **"What-If" Profilaktika Simulyatori**: Bemor ko'rsatkichlarini (masalan, qon bosimini 120 ga, xolesterinni 190 ga) me'yorlashtirish orqali xavfni necha foizga kamaytirish mumkinligini real-vaqtda ko'rsatuvchi interaktiv vosita.
+   - **360° Radar Tahlil**: Bemorning 6 ta asosiy parametrini sog'lom odamlar populyatsiyasi standarti bilan taqqoslovchi Radar chart.
+   - **Rasmiy Kardiologik Hisobot (PDF / Print)**: Bemor natijalari, xavf foizi, model xulosalari va vrach tavsiyalarini o'z ichiga olgan rasmiy klinik xulosani chop etish.
+   - **Interaktiv Qidiruv va Filtr**: 302 ta bemorlik ma'lumotlar to'plami bo'yicha parametrlar qidiruvi va "Xavf bor / Sog'lom" filtrlari.
 
 ---
 
@@ -34,15 +29,17 @@ Ushbu loyiha bemorlarning klinik ko'rsatkichlari (yosh, qon bosimi, xolesterin, 
 
 Test to'plamidagi 61 ta haqiqiy bemor ko'rsatkichlari bo'yicha erishilgan natijalar:
 
-| Metrika | K-Nearest Neighbors (KNN) | Support Vector Machine (SVM) | Eng Yaxshi |
+| Metrika | K-Nearest Neighbors (KNN, k=7) | Support Vector Machine (SVM RBF) | Eng Yaxshi Model |
 | :--- | :---: | :---: | :---: |
 | **Aniqlik (Accuracy)** | **81.97%** | **83.61%** | 🏆 **SVM** |
+| **Recall (Sezuvchanlik)** | **90.91%** | **93.94%** | 🏆 **SVM (31/33 to'g'ri)** |
+| **Specificity (O'ziga xoslik)** | **71.43%** | **71.43%** | 🤝 **Teng** |
 | **F1-Score** | **84.51%** | **86.11%** | 🏆 **SVM** |
-| **Recall (Sezuvchanlik)** | **90.91%** | **93.94%** | 🏆 **SVM** |
 | **Precision** | **78.95%** | **79.49%** | 🏆 **SVM** |
 | **ROC-AUC** | **88.20%** | **88.10%** | 🏆 **KNN** |
+| **5-Fold Kross-Validatsiya** | **81.07% (±7.86%)** | **81.09% (±6.09%)** | 🏆 **SVM** |
 
-> 💡 **Tibbiy xulosa:** Kardiologiya amaliyotida bemor kasalligini o'tkazib yubormaslik (False Negative ko'rsatkichini kamaytirish) eng asosiy mezon hisoblanadi. SVM modeli **93.94% Recall** natijasi bilan 33 ta bemordan faqat 2 tasida xato qildi va eng yuqori ishonchlilikni ko'rsatdi.
+> 💡 **Tibbiy xulosa:** Kardiologiya amaliyotida bemor kasalligini o'tkazib yubormaslik (False Negative ko'rsatkichini minimal darajaga tushirish) eng muhim omildir. SVM modeli **93.94% Recall** bilan kasallangan 33 ta bemordan 31 tasini aniq aniqladi.
 
 ---
 
@@ -50,18 +47,18 @@ Test to'plamidagi 61 ta haqiqiy bemor ko'rsatkichlari bo'yicha erishilgan natija
 
 ```text
 UI_UX_11.11.2026/
-├── dataset.csv                          # UCI Heart Disease to'liq ma'lumotlar to'plami
-├── main.py                              # Python ML pipeline (Train, Evaluate, Export)
-├── heart_disease_prediction.ipynb       # Jupyter Notebook (To'liq tahlil va vizualizatsiya)
+├── dataset.csv                          # UCI Cleveland Heart Disease to'liq ma'lumotlar to'plami (302 bemor)
+├── main.py                              # Python ML pipeline (Train, 5-Fold CV, Export)
+├── heart_disease_prediction.ipynb       # Jupyter Notebook (To'liq tahlil, ROC va vizualizatsiyalar)
 ├── heart-disease-risk-prediction.ipynb  # Kaggle manba daftari
-├── model_data.json                      # O'qitilgan modellar parametrlari va metrikalari
+├── model_data.json                      # O'qitilgan modellar parametrlari, ROC va 5-Fold ma'lumotlari
 ├── fallback_data.js                     # Offline brauzer ishlashi uchun ma'lumotlar
-├── index.html                           # Zamonaviy Tibbiy Dashboard (HTML5)
-├── app.js                               # Brauzer ichidagi ML inferensiyasi va UI logikasi
+├── index.html                           # Pro Max Tibbiy Dashboard (HTML5 + Tailwind CSS)
+├── app.js                               # Brauzer ichidagi ML inferensiyasi, What-If va Radar logikasi
 ├── style.css                            # Maxsus animatsiyalar va dizayn elementlari
-├── vercel.json                          # Vercel statik deployment sozlamalari
+├── vercel.json                          # Vercel deployment sozlamalari
 ├── havolalar.txt                        # GitHub, Vercel va Kaggle havolalari
-└── README.md                            # Loyiha hujjatlari
+└── README.md                            # To'liq hujjatlar
 ```
 
 ---
@@ -81,7 +78,6 @@ UI_UX_11.11.2026/
    ```
 
 3. **Veb-interfeysni ochish:**
-   - Brauzeringizda `index.html` faylini oching yoki mahalliy server orqali ishga tushiring:
    ```bash
    python3 -m http.server 3000
    ```
