@@ -12,10 +12,17 @@ CardioRisk AI Pro Max — bemorlarning 13 ta klinik ko'rsatkichlari asosida yura
 
 ## ⚡ Barcha Yangi Imkoniyatlar (Enterprise v3.5)
 
-1. **3D Interaktiv Yurak Anatomiyasi (Three.js WebGL)**:
-   - 360° orbital boshqaruvli 3D yurak modeli.
-   - Bemor pulsi (`thalach`) chastotasida real vaqtda sistola/diastola urishi.
-   - Bemorning `ca` (zararlangan tomirlar soni) ko'rsatkichiga qarab **LAD**, **RCA** va **LCx** koronar tomirlaridagi stenoz blokadalarining qizil/sariq nur bilan vizual miltillab turishi.
+1. **100% Realistik 3D Yurak Anatomiyasi (Three.js WebGL & PBR Physical Shading)**:
+   - **Protsedurali to'qima generatori**: Miokard mushak tolalari (striated muscle fibers) va subepikardial yog' qatlamlari teksturasi.
+   - **PBR MeshPhysicalMaterial**: Jonli yurak to'qimasi yaltirashi (clearcoat 0.92, sheen, micro-bump map).
+   - **Anatomik aniqlik**: Chap qorincha (tilted apex), O'ng qorincha, Chap va O'ng bo'lmachalar hamda quloqchalar (auricles).
+   - **Yirik qon tomirlar**: Aorta ravog'i (va uning 3 ta braxiotsefal shoxchalari: Brachiocephalic trunk, Left common carotid, Left subclavian), O'pka arteriyasi bifurkatsiyasi, Yuqori va Pastki kovak venalar.
+   - **Koronar qon tomir daraxti**: LAD (Oldingi tushuvchi arteriya + D1 shoxcha), LCx (O'rab oluvchi arteriya), RCA (O'ng koronar arteriya) va Katta yurak venasi.
+   - **Aterosklerotik blyashka stenoz vizualizatsiyasi**: Bemorning `ca` (0-3) qiymatiga ko'ra zararlangan tomirlarda 3D ogohlantiruvchi qizil pulsatsiyalanuvchi stenoz nurlari.
+   - **Fiziologik sistolik spiral qisqarish (Torsional Wringing)**: Haqiqiy yurak kabi bo'ylama va buralma harakat.
+   - **Shaffof rentgen rejimi (X-Ray Mode)**: Yurak ichki tuzilishi va tomir to'rini ko'rish uchun yarim shaffof ko'rinish.
+   - **Stenozga fokuslash**: Blokada tomiriga kamerani avtomatik yaqinlashtirib ko'rsatish.
+   - **Interaktiv 3D Raycasting teglari**: Sichqoncha yoki barmoq tekkan anatomik tuzilmaning nomini jonli ko'rsatish.
 
 2. **Yurakning Biologik Yoshi (Cardiovascular Bio-Age)**:
    - Amerika Yurak Assotsiatsiyasi (AHA) va Framingham Vascular Age protokoli asosida pasport yoshi va haqiqiy biologik yurak yoshining qiyosiy hisob-kitobi.

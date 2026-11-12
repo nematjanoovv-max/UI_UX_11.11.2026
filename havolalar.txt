@@ -14,11 +14,16 @@ https://www.kaggle.com/code/i0nlyaziz/heart-disease-risk-prediction
 
 ================================================================================
 TUBDAN KENGAYTIRILGAN VA AMALGA OSHIRILGAN YANGI IMKONIYATLAR:
-1. 3D Interaktiv Yurak Anatomiyasi (Three.js WebGL):
-   - 360° aylanuvchi 3D yurak modeli.
-   - Bemor pulsi chastotasida urib turuvchi sistola/diastola animatsiyasi.
-   - ca parametriga bog'liq holda LAD, RCA va LCx koronar tomirlaridagi stenoz
-     torayishlarining qizil/sariq nur bilan vizual miltillab turishi.
+1. 100% Realistik 3D Interaktiv Yurak Anatomiyasi (Three.js WebGL & PBR):
+   - Protsedurali miokard mushak tolalari va epikardial yog' to'qimalari teksturasi.
+   - PBR MeshPhysicalMaterial: nam to'qima yaltirashi (clearcoat 0.92, micro-bump map).
+   - Anatomik bo'limlar: Chap va O'ng qorinchalar, Chap va O'ng bo'lmachalar, Quloqchalar.
+   - Yirik tomirlar: Aorta ravog'i va 3 ta braxiotsefal shoxcha, O'pka arteriyasi bifurkatsiyasi, Yuqori va Pastki kovak vena.
+   - Koronar daraxt: LAD (D1 shoxchasi bilan), LCx, RCA va Katta yurak venasi.
+   - Bemorning ca (zararlangan tomir) ko'rsatkichiga bog'liq aterosklerotik blyashka stenoz nurlari.
+   - Fiziologik spiral qisqarish (torsional wringing systolic contraction).
+   - Shaffof rentgen rejimi (X-Ray Mode) va stenozga fokuslash kamerasi.
+   - Anatomik qismlarga sichqoncha olib borilganda nomini ko'rsatuvchi 3D Raycasting teglari.
 
 2. Yurakning Biologik Yoshi (Cardiovascular Bio-Age):
    - Pasport yoshi va qon tomirlar, qon bosimi hamda xolesterin eskirishi
