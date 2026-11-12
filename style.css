@@ -71,6 +71,13 @@ code, pre, .font-mono {
   pointer-events: none;
 }
 
+/* 3D Heart Container */
+#three-heart-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
 /* Range input custom styling */
 input[type=range] {
   -webkit-appearance: none;
@@ -113,6 +120,22 @@ input[type=range]::-webkit-slider-thumb:hover {
 /* Waterfall bar animation */
 .waterfall-bar {
   transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Treadmill runner animation */
+@keyframes treadmillRun {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+  100% { transform: translateY(0); }
+}
+
+.animate-runner {
+  animation: treadmillRun 0.4s infinite ease-in-out;
+}
+
+/* Pulsing audio icon */
+.recording-pulse {
+  animation: pulse 1s infinite;
 }
 
 /* Print styles for Medical Report */

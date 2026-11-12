@@ -1,8 +1,8 @@
 {
   "project": {
-    "title_uz": "Yurak kasalliklari xavfini bashorat qilish Pro Max",
-    "title_en": "Heart Disease Risk Prediction Pro Max",
-    "title_ru": "Прогнозирование риска сердечно-сосудистых заболеваний Pro Max",
+    "title_uz": "Yurak kasalliklari xavfini bashorat qilish Pro Max Enterprise",
+    "title_en": "Heart Disease Risk Prediction Pro Max Enterprise",
+    "title_ru": "Прогнозирование риска сердечно-сосудистых заболеваний Pro Max Enterprise",
     "dataset_name": "UCI Machine Learning Repository - Cleveland Heart Disease",
     "total_samples": 302,
     "train_samples": 241,
@@ -16,7 +16,7 @@
       "K-Nearest Neighbors (KNN)"
     ],
     "date": "2026-11-12",
-    "version": "3.0.0-enterprise"
+    "version": "3.5.0-enterprise"
   },
   "features": [
     {
@@ -477,6 +477,3081 @@
       "impact_direction": "negative"
     }
   ],
+  "pca": {
+    "points": [
+      {
+        "x": -0.394,
+        "y": 2.062,
+        "target": 1,
+        "age": 63,
+        "sex": 1,
+        "cp": 3,
+        "trestbps": 145,
+        "chol": 233
+      },
+      {
+        "x": 0.675,
+        "y": -0.913,
+        "target": 1,
+        "age": 37,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 130,
+        "chol": 250
+      },
+      {
+        "x": 1.889,
+        "y": -0.035,
+        "target": 1,
+        "age": 41,
+        "sex": 0,
+        "cp": 1,
+        "trestbps": 130,
+        "chol": 204
+      },
+      {
+        "x": 1.744,
+        "y": -0.503,
+        "target": 1,
+        "age": 56,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 120,
+        "chol": 236
+      },
+      {
+        "x": 0.296,
+        "y": 0.732,
+        "target": 1,
+        "age": 57,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 120,
+        "chol": 354
+      },
+      {
+        "x": 0.683,
+        "y": -0.647,
+        "target": 1,
+        "age": 57,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 140,
+        "chol": 192
+      },
+      {
+        "x": 0.117,
+        "y": 1.538,
+        "target": 1,
+        "age": 56,
+        "sex": 0,
+        "cp": 1,
+        "trestbps": 140,
+        "chol": 294
+      },
+      {
+        "x": 1.842,
+        "y": -1.007,
+        "target": 1,
+        "age": 44,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 120,
+        "chol": 263
+      },
+      {
+        "x": 0.962,
+        "y": 0.875,
+        "target": 1,
+        "age": 52,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 172,
+        "chol": 199
+      },
+      {
+        "x": 1.567,
+        "y": -0.275,
+        "target": 1,
+        "age": 57,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 150,
+        "chol": 168
+      },
+      {
+        "x": 0.828,
+        "y": -0.488,
+        "target": 1,
+        "age": 54,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 140,
+        "chol": 239
+      },
+      {
+        "x": 1.718,
+        "y": 0.745,
+        "target": 1,
+        "age": 48,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 130,
+        "chol": 275
+      },
+      {
+        "x": 1.724,
+        "y": -0.291,
+        "target": 1,
+        "age": 49,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 130,
+        "chol": 266
+      },
+      {
+        "x": -0.348,
+        "y": -0.444,
+        "target": 1,
+        "age": 64,
+        "sex": 1,
+        "cp": 3,
+        "trestbps": 110,
+        "chol": 211
+      },
+      {
+        "x": 1.227,
+        "y": 3.284,
+        "target": 1,
+        "age": 58,
+        "sex": 0,
+        "cp": 3,
+        "trestbps": 150,
+        "chol": 283
+      },
+      {
+        "x": 1.244,
+        "y": -0.029,
+        "target": 1,
+        "age": 50,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 120,
+        "chol": 219
+      },
+      {
+        "x": 2.026,
+        "y": 1.738,
+        "target": 1,
+        "age": 58,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 120,
+        "chol": 340
+      },
+      {
+        "x": -1.085,
+        "y": 1.305,
+        "target": 1,
+        "age": 66,
+        "sex": 0,
+        "cp": 3,
+        "trestbps": 150,
+        "chol": 226
+      },
+      {
+        "x": 1.199,
+        "y": -0.61,
+        "target": 1,
+        "age": 43,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 150,
+        "chol": 247
+      },
+      {
+        "x": 0.48,
+        "y": 1.91,
+        "target": 1,
+        "age": 69,
+        "sex": 0,
+        "cp": 3,
+        "trestbps": 140,
+        "chol": 239
+      },
+      {
+        "x": 0.002,
+        "y": -0.798,
+        "target": 1,
+        "age": 59,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 135,
+        "chol": 234
+      },
+      {
+        "x": 1.739,
+        "y": -1.004,
+        "target": 1,
+        "age": 44,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 130,
+        "chol": 233
+      },
+      {
+        "x": 2.012,
+        "y": -0.985,
+        "target": 1,
+        "age": 42,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 140,
+        "chol": 226
+      },
+      {
+        "x": -0.867,
+        "y": 0.803,
+        "target": 1,
+        "age": 61,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 150,
+        "chol": 243
+      },
+      {
+        "x": 1.434,
+        "y": -1.366,
+        "target": 1,
+        "age": 40,
+        "sex": 1,
+        "cp": 3,
+        "trestbps": 140,
+        "chol": 199
+      },
+      {
+        "x": 0.134,
+        "y": 2.615,
+        "target": 1,
+        "age": 71,
+        "sex": 0,
+        "cp": 1,
+        "trestbps": 160,
+        "chol": 302
+      },
+      {
+        "x": 0.833,
+        "y": 1.048,
+        "target": 1,
+        "age": 59,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 150,
+        "chol": 212
+      },
+      {
+        "x": 1.436,
+        "y": -1.481,
+        "target": 1,
+        "age": 51,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 110,
+        "chol": 175
+      },
+      {
+        "x": 0.112,
+        "y": 4.517,
+        "target": 1,
+        "age": 65,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 140,
+        "chol": 417
+      },
+      {
+        "x": -0.103,
+        "y": 0.447,
+        "target": 1,
+        "age": 53,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 130,
+        "chol": 197
+      },
+      {
+        "x": 2.473,
+        "y": -0.909,
+        "target": 1,
+        "age": 41,
+        "sex": 0,
+        "cp": 1,
+        "trestbps": 105,
+        "chol": 198
+      },
+      {
+        "x": 0.298,
+        "y": -1.442,
+        "target": 1,
+        "age": 65,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 120,
+        "chol": 177
+      },
+      {
+        "x": 2.322,
+        "y": -0.459,
+        "target": 1,
+        "age": 44,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 130,
+        "chol": 219
+      },
+      {
+        "x": -0.143,
+        "y": 0.409,
+        "target": 1,
+        "age": 54,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 125,
+        "chol": 273
+      },
+      {
+        "x": -0.011,
+        "y": -0.502,
+        "target": 1,
+        "age": 51,
+        "sex": 1,
+        "cp": 3,
+        "trestbps": 125,
+        "chol": 213
+      },
+      {
+        "x": -0.188,
+        "y": -0.292,
+        "target": 1,
+        "age": 46,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 142,
+        "chol": 177
+      },
+      {
+        "x": 1.868,
+        "y": 2.393,
+        "target": 1,
+        "age": 54,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 135,
+        "chol": 304
+      },
+      {
+        "x": 0.691,
+        "y": 0.327,
+        "target": 1,
+        "age": 54,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 150,
+        "chol": 232
+      },
+      {
+        "x": 0.916,
+        "y": 1.932,
+        "target": 1,
+        "age": 65,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 155,
+        "chol": 269
+      },
+      {
+        "x": 0.444,
+        "y": 3.385,
+        "target": 1,
+        "age": 65,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 160,
+        "chol": 360
+      },
+      {
+        "x": 0.558,
+        "y": 1.886,
+        "target": 1,
+        "age": 51,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 140,
+        "chol": 308
+      },
+      {
+        "x": 1.31,
+        "y": -0.166,
+        "target": 1,
+        "age": 48,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 130,
+        "chol": 245
+      },
+      {
+        "x": -0.843,
+        "y": -2.244,
+        "target": 1,
+        "age": 45,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 104,
+        "chol": 208
+      },
+      {
+        "x": 0.194,
+        "y": 0.619,
+        "target": 1,
+        "age": 53,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 130,
+        "chol": 264
+      },
+      {
+        "x": 2.285,
+        "y": 0.832,
+        "target": 1,
+        "age": 39,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 140,
+        "chol": 321
+      },
+      {
+        "x": 1.707,
+        "y": 0.232,
+        "target": 1,
+        "age": 52,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 120,
+        "chol": 325
+      },
+      {
+        "x": 2.316,
+        "y": 0.161,
+        "target": 1,
+        "age": 44,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 140,
+        "chol": 235
+      },
+      {
+        "x": 1.696,
+        "y": 0.365,
+        "target": 1,
+        "age": 47,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 138,
+        "chol": 257
+      },
+      {
+        "x": 1.86,
+        "y": 1.235,
+        "target": 1,
+        "age": 53,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 128,
+        "chol": 216
+      },
+      {
+        "x": 1.252,
+        "y": 0.668,
+        "target": 1,
+        "age": 53,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 138,
+        "chol": 234
+      },
+      {
+        "x": 1.541,
+        "y": 1.119,
+        "target": 1,
+        "age": 51,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 130,
+        "chol": 256
+      },
+      {
+        "x": -0.289,
+        "y": 0.528,
+        "target": 1,
+        "age": 66,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 120,
+        "chol": 302
+      },
+      {
+        "x": -1.013,
+        "y": -0.086,
+        "target": 1,
+        "age": 62,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 130,
+        "chol": 231
+      },
+      {
+        "x": 2.438,
+        "y": -1.208,
+        "target": 1,
+        "age": 44,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 108,
+        "chol": 141
+      },
+      {
+        "x": 1.726,
+        "y": 1.795,
+        "target": 1,
+        "age": 63,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 135,
+        "chol": 252
+      },
+      {
+        "x": 1.162,
+        "y": -0.7,
+        "target": 1,
+        "age": 52,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 134,
+        "chol": 201
+      },
+      {
+        "x": 1.923,
+        "y": -0.721,
+        "target": 1,
+        "age": 48,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 122,
+        "chol": 222
+      },
+      {
+        "x": 1.964,
+        "y": -0.616,
+        "target": 1,
+        "age": 45,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 115,
+        "chol": 260
+      },
+      {
+        "x": 3.18,
+        "y": -1.008,
+        "target": 1,
+        "age": 34,
+        "sex": 1,
+        "cp": 3,
+        "trestbps": 118,
+        "chol": 182
+      },
+      {
+        "x": 0.725,
+        "y": 1.406,
+        "target": 1,
+        "age": 57,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 128,
+        "chol": 303
+      },
+      {
+        "x": 0.339,
+        "y": 2.506,
+        "target": 1,
+        "age": 71,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 110,
+        "chol": 265
+      },
+      {
+        "x": 1.158,
+        "y": -0.462,
+        "target": 1,
+        "age": 54,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 108,
+        "chol": 309
+      },
+      {
+        "x": 2.694,
+        "y": 0.043,
+        "target": 1,
+        "age": 52,
+        "sex": 1,
+        "cp": 3,
+        "trestbps": 118,
+        "chol": 186
+      },
+      {
+        "x": 1.337,
+        "y": -1.072,
+        "target": 1,
+        "age": 41,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 135,
+        "chol": 203
+      },
+      {
+        "x": 1.411,
+        "y": 1.298,
+        "target": 1,
+        "age": 58,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 140,
+        "chol": 211
+      },
+      {
+        "x": 2.209,
+        "y": -0.97,
+        "target": 1,
+        "age": 35,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 138,
+        "chol": 183
+      },
+      {
+        "x": 0.263,
+        "y": -1.75,
+        "target": 1,
+        "age": 51,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 100,
+        "chol": 222
+      },
+      {
+        "x": 1.411,
+        "y": 0.386,
+        "target": 1,
+        "age": 45,
+        "sex": 0,
+        "cp": 1,
+        "trestbps": 130,
+        "chol": 234
+      },
+      {
+        "x": 2.288,
+        "y": -1.154,
+        "target": 1,
+        "age": 44,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 120,
+        "chol": 220
+      },
+      {
+        "x": 1.448,
+        "y": 0.079,
+        "target": 1,
+        "age": 62,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 124,
+        "chol": 209
+      },
+      {
+        "x": 0.354,
+        "y": -0.173,
+        "target": 1,
+        "age": 54,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 120,
+        "chol": 258
+      },
+      {
+        "x": 0.832,
+        "y": -1.841,
+        "target": 1,
+        "age": 51,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 94,
+        "chol": 227
+      },
+      {
+        "x": 3.141,
+        "y": -1.167,
+        "target": 1,
+        "age": 29,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 130,
+        "chol": 204
+      },
+      {
+        "x": 0.782,
+        "y": -0.307,
+        "target": 1,
+        "age": 51,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 140,
+        "chol": 261
+      },
+      {
+        "x": 2.069,
+        "y": -0.244,
+        "target": 1,
+        "age": 43,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 122,
+        "chol": 213
+      },
+      {
+        "x": 0.447,
+        "y": 0.974,
+        "target": 1,
+        "age": 55,
+        "sex": 0,
+        "cp": 1,
+        "trestbps": 135,
+        "chol": 250
+      },
+      {
+        "x": 0.352,
+        "y": 0.838,
+        "target": 1,
+        "age": 51,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 125,
+        "chol": 245
+      },
+      {
+        "x": 0.714,
+        "y": -0.613,
+        "target": 1,
+        "age": 59,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 140,
+        "chol": 221
+      },
+      {
+        "x": 2.06,
+        "y": 0.12,
+        "target": 1,
+        "age": 52,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 128,
+        "chol": 205
+      },
+      {
+        "x": -0.273,
+        "y": -0.987,
+        "target": 1,
+        "age": 58,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 105,
+        "chol": 240
+      },
+      {
+        "x": 2.855,
+        "y": -0.835,
+        "target": 1,
+        "age": 41,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 112,
+        "chol": 250
+      },
+      {
+        "x": 1.702,
+        "y": 0.363,
+        "target": 1,
+        "age": 45,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 128,
+        "chol": 308
+      },
+      {
+        "x": 1.673,
+        "y": 1.258,
+        "target": 1,
+        "age": 60,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 102,
+        "chol": 318
+      },
+      {
+        "x": 0.684,
+        "y": 1.659,
+        "target": 1,
+        "age": 52,
+        "sex": 1,
+        "cp": 3,
+        "trestbps": 152,
+        "chol": 298
+      },
+      {
+        "x": 0.34,
+        "y": -0.522,
+        "target": 1,
+        "age": 42,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 102,
+        "chol": 265
+      },
+      {
+        "x": -0.805,
+        "y": 4.163,
+        "target": 1,
+        "age": 67,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 115,
+        "chol": 564
+      },
+      {
+        "x": 0.276,
+        "y": 0.315,
+        "target": 1,
+        "age": 68,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 118,
+        "chol": 277
+      },
+      {
+        "x": 1.593,
+        "y": -1.205,
+        "target": 1,
+        "age": 46,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 101,
+        "chol": 197
+      },
+      {
+        "x": 1.221,
+        "y": -0.132,
+        "target": 1,
+        "age": 54,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 110,
+        "chol": 214
+      },
+      {
+        "x": -0.256,
+        "y": -0.098,
+        "target": 1,
+        "age": 58,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 100,
+        "chol": 248
+      },
+      {
+        "x": 1.649,
+        "y": 0.809,
+        "target": 1,
+        "age": 48,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 124,
+        "chol": 255
+      },
+      {
+        "x": 0.295,
+        "y": -1.567,
+        "target": 1,
+        "age": 57,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 132,
+        "chol": 207
+      },
+      {
+        "x": 0.999,
+        "y": 0.259,
+        "target": 1,
+        "age": 52,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 138,
+        "chol": 223
+      },
+      {
+        "x": 0.154,
+        "y": 1.869,
+        "target": 1,
+        "age": 54,
+        "sex": 0,
+        "cp": 1,
+        "trestbps": 132,
+        "chol": 288
+      },
+      {
+        "x": 1.476,
+        "y": -1.29,
+        "target": 1,
+        "age": 45,
+        "sex": 0,
+        "cp": 1,
+        "trestbps": 112,
+        "chol": 160
+      },
+      {
+        "x": -1.091,
+        "y": -1.142,
+        "target": 1,
+        "age": 53,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 142,
+        "chol": 226
+      },
+      {
+        "x": -0.54,
+        "y": 2.538,
+        "target": 1,
+        "age": 62,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 140,
+        "chol": 394
+      },
+      {
+        "x": -0.116,
+        "y": -0.466,
+        "target": 1,
+        "age": 52,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 108,
+        "chol": 233
+      },
+      {
+        "x": 1.202,
+        "y": 0.238,
+        "target": 1,
+        "age": 43,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 130,
+        "chol": 315
+      },
+      {
+        "x": 0.898,
+        "y": 1.558,
+        "target": 1,
+        "age": 53,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 130,
+        "chol": 246
+      },
+      {
+        "x": 1.718,
+        "y": 0.772,
+        "target": 1,
+        "age": 42,
+        "sex": 1,
+        "cp": 3,
+        "trestbps": 148,
+        "chol": 244
+      },
+      {
+        "x": -1.962,
+        "y": 1.417,
+        "target": 1,
+        "age": 59,
+        "sex": 1,
+        "cp": 3,
+        "trestbps": 178,
+        "chol": 270
+      },
+      {
+        "x": 1.356,
+        "y": 0.863,
+        "target": 1,
+        "age": 63,
+        "sex": 0,
+        "cp": 1,
+        "trestbps": 140,
+        "chol": 195
+      },
+      {
+        "x": 1.055,
+        "y": -0.311,
+        "target": 1,
+        "age": 42,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 120,
+        "chol": 240
+      },
+      {
+        "x": 2.223,
+        "y": -0.709,
+        "target": 1,
+        "age": 50,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 129,
+        "chol": 196
+      },
+      {
+        "x": -0.391,
+        "y": 0.871,
+        "target": 1,
+        "age": 68,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 120,
+        "chol": 211
+      },
+      {
+        "x": -0.488,
+        "y": 2.552,
+        "target": 1,
+        "age": 69,
+        "sex": 1,
+        "cp": 3,
+        "trestbps": 160,
+        "chol": 234
+      },
+      {
+        "x": -0.056,
+        "y": -0.264,
+        "target": 1,
+        "age": 45,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 138,
+        "chol": 236
+      },
+      {
+        "x": 1.706,
+        "y": 0.077,
+        "target": 1,
+        "age": 50,
+        "sex": 0,
+        "cp": 1,
+        "trestbps": 120,
+        "chol": 244
+      },
+      {
+        "x": 1.544,
+        "y": 0.138,
+        "target": 1,
+        "age": 50,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 110,
+        "chol": 254
+      },
+      {
+        "x": -0.414,
+        "y": 2.013,
+        "target": 1,
+        "age": 64,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 180,
+        "chol": 325
+      },
+      {
+        "x": 1.245,
+        "y": 0.024,
+        "target": 1,
+        "age": 57,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 150,
+        "chol": 126
+      },
+      {
+        "x": 0.479,
+        "y": 1.676,
+        "target": 1,
+        "age": 64,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 140,
+        "chol": 313
+      },
+      {
+        "x": 1.581,
+        "y": -2.113,
+        "target": 1,
+        "age": 43,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 110,
+        "chol": 211
+      },
+      {
+        "x": 1.411,
+        "y": -0.125,
+        "target": 1,
+        "age": 55,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 130,
+        "chol": 262
+      },
+      {
+        "x": 3.029,
+        "y": -0.392,
+        "target": 1,
+        "age": 37,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 120,
+        "chol": 215
+      },
+      {
+        "x": 1.098,
+        "y": -0.618,
+        "target": 1,
+        "age": 41,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 130,
+        "chol": 214
+      },
+      {
+        "x": 0.573,
+        "y": -0.475,
+        "target": 1,
+        "age": 56,
+        "sex": 1,
+        "cp": 3,
+        "trestbps": 120,
+        "chol": 193
+      },
+      {
+        "x": 2.649,
+        "y": -0.725,
+        "target": 1,
+        "age": 46,
+        "sex": 0,
+        "cp": 1,
+        "trestbps": 105,
+        "chol": 204
+      },
+      {
+        "x": -0.043,
+        "y": -0.144,
+        "target": 1,
+        "age": 46,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 138,
+        "chol": 243
+      },
+      {
+        "x": -1.544,
+        "y": 1.089,
+        "target": 1,
+        "age": 64,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 130,
+        "chol": 303
+      },
+      {
+        "x": 1.189,
+        "y": 0.554,
+        "target": 1,
+        "age": 59,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 138,
+        "chol": 271
+      },
+      {
+        "x": 1.873,
+        "y": 0.065,
+        "target": 1,
+        "age": 41,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 112,
+        "chol": 268
+      },
+      {
+        "x": 2.142,
+        "y": 0.973,
+        "target": 1,
+        "age": 54,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 108,
+        "chol": 267
+      },
+      {
+        "x": 3.435,
+        "y": -0.997,
+        "target": 1,
+        "age": 39,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 94,
+        "chol": 199
+      },
+      {
+        "x": 3.08,
+        "y": -0.824,
+        "target": 1,
+        "age": 34,
+        "sex": 0,
+        "cp": 1,
+        "trestbps": 118,
+        "chol": 210
+      },
+      {
+        "x": 1.443,
+        "y": -1.756,
+        "target": 1,
+        "age": 47,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 112,
+        "chol": 204
+      },
+      {
+        "x": 1.316,
+        "y": 2.262,
+        "target": 1,
+        "age": 67,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 152,
+        "chol": 277
+      },
+      {
+        "x": 1.562,
+        "y": 0.692,
+        "target": 1,
+        "age": 52,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 136,
+        "chol": 196
+      },
+      {
+        "x": -0.961,
+        "y": 1.206,
+        "target": 1,
+        "age": 74,
+        "sex": 0,
+        "cp": 1,
+        "trestbps": 120,
+        "chol": 269
+      },
+      {
+        "x": 1.702,
+        "y": 1.098,
+        "target": 1,
+        "age": 54,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 160,
+        "chol": 201
+      },
+      {
+        "x": 1.306,
+        "y": 0.568,
+        "target": 1,
+        "age": 49,
+        "sex": 0,
+        "cp": 1,
+        "trestbps": 134,
+        "chol": 271
+      },
+      {
+        "x": 1.988,
+        "y": -0.512,
+        "target": 1,
+        "age": 42,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 120,
+        "chol": 295
+      },
+      {
+        "x": 2.102,
+        "y": -1.411,
+        "target": 1,
+        "age": 41,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 110,
+        "chol": 235
+      },
+      {
+        "x": 2.154,
+        "y": 0.516,
+        "target": 1,
+        "age": 41,
+        "sex": 0,
+        "cp": 1,
+        "trestbps": 126,
+        "chol": 306
+      },
+      {
+        "x": 1.657,
+        "y": 0.281,
+        "target": 1,
+        "age": 49,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 130,
+        "chol": 269
+      },
+      {
+        "x": 0.682,
+        "y": 0.741,
+        "target": 1,
+        "age": 60,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 120,
+        "chol": 178
+      },
+      {
+        "x": 0.607,
+        "y": 0.795,
+        "target": 1,
+        "age": 62,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 128,
+        "chol": 208
+      },
+      {
+        "x": -0.613,
+        "y": -1.834,
+        "target": 1,
+        "age": 57,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 110,
+        "chol": 201
+      },
+      {
+        "x": -2.239,
+        "y": -1.062,
+        "target": 1,
+        "age": 64,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 128,
+        "chol": 263
+      },
+      {
+        "x": 1.656,
+        "y": 1.325,
+        "target": 1,
+        "age": 51,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 120,
+        "chol": 295
+      },
+      {
+        "x": 1.093,
+        "y": -0.84,
+        "target": 1,
+        "age": 43,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 115,
+        "chol": 303
+      },
+      {
+        "x": 2.357,
+        "y": -0.327,
+        "target": 1,
+        "age": 42,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 120,
+        "chol": 209
+      },
+      {
+        "x": 0.34,
+        "y": 0.134,
+        "target": 1,
+        "age": 67,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 106,
+        "chol": 223
+      },
+      {
+        "x": -0.194,
+        "y": 0.681,
+        "target": 1,
+        "age": 76,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 140,
+        "chol": 197
+      },
+      {
+        "x": 0.238,
+        "y": 1.247,
+        "target": 1,
+        "age": 70,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 156,
+        "chol": 245
+      },
+      {
+        "x": 1.363,
+        "y": 0.032,
+        "target": 1,
+        "age": 44,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 118,
+        "chol": 242
+      },
+      {
+        "x": 1.931,
+        "y": 1.692,
+        "target": 1,
+        "age": 60,
+        "sex": 0,
+        "cp": 3,
+        "trestbps": 150,
+        "chol": 240
+      },
+      {
+        "x": 2.545,
+        "y": -0.822,
+        "target": 1,
+        "age": 44,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 120,
+        "chol": 226
+      },
+      {
+        "x": 2.264,
+        "y": -1.23,
+        "target": 1,
+        "age": 42,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 130,
+        "chol": 180
+      },
+      {
+        "x": -0.374,
+        "y": 0.901,
+        "target": 1,
+        "age": 66,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 160,
+        "chol": 228
+      },
+      {
+        "x": -0.432,
+        "y": -0.734,
+        "target": 1,
+        "age": 71,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 112,
+        "chol": 149
+      },
+      {
+        "x": 0.018,
+        "y": 1.305,
+        "target": 1,
+        "age": 64,
+        "sex": 1,
+        "cp": 3,
+        "trestbps": 170,
+        "chol": 227
+      },
+      {
+        "x": 0.189,
+        "y": 2.342,
+        "target": 1,
+        "age": 66,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 146,
+        "chol": 278
+      },
+      {
+        "x": 1.835,
+        "y": -0.036,
+        "target": 1,
+        "age": 39,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 138,
+        "chol": 220
+      },
+      {
+        "x": 0.141,
+        "y": -0.325,
+        "target": 1,
+        "age": 58,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 130,
+        "chol": 197
+      },
+      {
+        "x": 2.475,
+        "y": -0.17,
+        "target": 1,
+        "age": 47,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 130,
+        "chol": 253
+      },
+      {
+        "x": 2.725,
+        "y": -1.745,
+        "target": 1,
+        "age": 35,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 122,
+        "chol": 192
+      },
+      {
+        "x": -0.96,
+        "y": -0.593,
+        "target": 1,
+        "age": 58,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 125,
+        "chol": 220
+      },
+      {
+        "x": 1.031,
+        "y": -0.348,
+        "target": 1,
+        "age": 56,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 130,
+        "chol": 221
+      },
+      {
+        "x": 0.649,
+        "y": -0.648,
+        "target": 1,
+        "age": 56,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 120,
+        "chol": 240
+      },
+      {
+        "x": 1.202,
+        "y": 1.542,
+        "target": 1,
+        "age": 55,
+        "sex": 0,
+        "cp": 1,
+        "trestbps": 132,
+        "chol": 342
+      },
+      {
+        "x": 2.801,
+        "y": -1.863,
+        "target": 1,
+        "age": 41,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 120,
+        "chol": 157
+      },
+      {
+        "x": 1.677,
+        "y": -0.783,
+        "target": 1,
+        "age": 38,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 138,
+        "chol": 175
+      },
+      {
+        "x": -3.474,
+        "y": 0.852,
+        "target": 0,
+        "age": 67,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 160,
+        "chol": 286
+      },
+      {
+        "x": -2.98,
+        "y": -0.948,
+        "target": 0,
+        "age": 67,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 120,
+        "chol": 229
+      },
+      {
+        "x": -2.052,
+        "y": 1.28,
+        "target": 0,
+        "age": 62,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 140,
+        "chol": 268
+      },
+      {
+        "x": -1.223,
+        "y": -0.124,
+        "target": 0,
+        "age": 63,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 130,
+        "chol": 254
+      },
+      {
+        "x": -2.508,
+        "y": -0.688,
+        "target": 0,
+        "age": 53,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 140,
+        "chol": 203
+      },
+      {
+        "x": -0.441,
+        "y": 1.147,
+        "target": 0,
+        "age": 56,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 130,
+        "chol": 256
+      },
+      {
+        "x": 0.309,
+        "y": -1.65,
+        "target": 0,
+        "age": 48,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 110,
+        "chol": 229
+      },
+      {
+        "x": 0.046,
+        "y": 0.27,
+        "target": 0,
+        "age": 58,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 120,
+        "chol": 284
+      },
+      {
+        "x": -0.166,
+        "y": 0.181,
+        "target": 0,
+        "age": 58,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 132,
+        "chol": 224
+      },
+      {
+        "x": -2.655,
+        "y": -1.229,
+        "target": 0,
+        "age": 60,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 130,
+        "chol": 206
+      },
+      {
+        "x": -1.362,
+        "y": -3.128,
+        "target": 0,
+        "age": 40,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 110,
+        "chol": 167
+      },
+      {
+        "x": -1.104,
+        "y": -0.567,
+        "target": 0,
+        "age": 60,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 117,
+        "chol": 230
+      },
+      {
+        "x": 1.169,
+        "y": 1.484,
+        "target": 0,
+        "age": 64,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 140,
+        "chol": 335
+      },
+      {
+        "x": -1.628,
+        "y": -2.685,
+        "target": 0,
+        "age": 43,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 120,
+        "chol": 177
+      },
+      {
+        "x": -1.702,
+        "y": 0.282,
+        "target": 0,
+        "age": 57,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 150,
+        "chol": 276
+      },
+      {
+        "x": -2.012,
+        "y": -0.37,
+        "target": 0,
+        "age": 55,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 132,
+        "chol": 353
+      },
+      {
+        "x": -2.287,
+        "y": 1.001,
+        "target": 0,
+        "age": 65,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 150,
+        "chol": 225
+      },
+      {
+        "x": 0.977,
+        "y": 1.828,
+        "target": 0,
+        "age": 61,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 130,
+        "chol": 330
+      },
+      {
+        "x": -0.228,
+        "y": -0.383,
+        "target": 0,
+        "age": 58,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 112,
+        "chol": 230
+      },
+      {
+        "x": -1.441,
+        "y": -0.564,
+        "target": 0,
+        "age": 50,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 150,
+        "chol": 243
+      },
+      {
+        "x": 1.025,
+        "y": -0.452,
+        "target": 0,
+        "age": 44,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 112,
+        "chol": 290
+      },
+      {
+        "x": -1.126,
+        "y": -1.084,
+        "target": 0,
+        "age": 60,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 130,
+        "chol": 253
+      },
+      {
+        "x": -2.679,
+        "y": -1.184,
+        "target": 0,
+        "age": 54,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 124,
+        "chol": 266
+      },
+      {
+        "x": 0.573,
+        "y": -0.416,
+        "target": 0,
+        "age": 50,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 140,
+        "chol": 233
+      },
+      {
+        "x": 1.462,
+        "y": -2.185,
+        "target": 0,
+        "age": 41,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 110,
+        "chol": 172
+      },
+      {
+        "x": -1.047,
+        "y": -0.294,
+        "target": 0,
+        "age": 51,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 130,
+        "chol": 305
+      },
+      {
+        "x": -2.831,
+        "y": -1.15,
+        "target": 0,
+        "age": 58,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 128,
+        "chol": 216
+      },
+      {
+        "x": -1.092,
+        "y": -1.929,
+        "target": 0,
+        "age": 54,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 120,
+        "chol": 188
+      },
+      {
+        "x": -2.938,
+        "y": -0.115,
+        "target": 0,
+        "age": 60,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 145,
+        "chol": 282
+      },
+      {
+        "x": -0.133,
+        "y": -0.012,
+        "target": 0,
+        "age": 60,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 140,
+        "chol": 185
+      },
+      {
+        "x": -3.524,
+        "y": 0.506,
+        "target": 0,
+        "age": 59,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 170,
+        "chol": 326
+      },
+      {
+        "x": -0.012,
+        "y": -0.38,
+        "target": 0,
+        "age": 46,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 150,
+        "chol": 231
+      },
+      {
+        "x": -0.852,
+        "y": 0.6,
+        "target": 0,
+        "age": 67,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 125,
+        "chol": 254
+      },
+      {
+        "x": -3.025,
+        "y": -1.273,
+        "target": 0,
+        "age": 62,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 120,
+        "chol": 267
+      },
+      {
+        "x": 0.474,
+        "y": 0.334,
+        "target": 0,
+        "age": 65,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 110,
+        "chol": 248
+      },
+      {
+        "x": 1.78,
+        "y": -1.335,
+        "target": 0,
+        "age": 44,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 110,
+        "chol": 197
+      },
+      {
+        "x": -2.422,
+        "y": -0.892,
+        "target": 0,
+        "age": 60,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 125,
+        "chol": 258
+      },
+      {
+        "x": -1.715,
+        "y": -0.355,
+        "target": 0,
+        "age": 58,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 150,
+        "chol": 270
+      },
+      {
+        "x": -2.027,
+        "y": 2.194,
+        "target": 0,
+        "age": 68,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 180,
+        "chol": 274
+      },
+      {
+        "x": -3.766,
+        "y": 0.288,
+        "target": 0,
+        "age": 62,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 160,
+        "chol": 164
+      },
+      {
+        "x": -0.052,
+        "y": -1.305,
+        "target": 0,
+        "age": 52,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 128,
+        "chol": 255
+      },
+      {
+        "x": -1.653,
+        "y": -1.375,
+        "target": 0,
+        "age": 59,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 110,
+        "chol": 239
+      },
+      {
+        "x": -1.593,
+        "y": 1.137,
+        "target": 0,
+        "age": 60,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 150,
+        "chol": 258
+      },
+      {
+        "x": -0.571,
+        "y": -1.306,
+        "target": 0,
+        "age": 49,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 120,
+        "chol": 188
+      },
+      {
+        "x": -0.164,
+        "y": -1.541,
+        "target": 0,
+        "age": 59,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 140,
+        "chol": 177
+      },
+      {
+        "x": 0.038,
+        "y": -0.059,
+        "target": 0,
+        "age": 57,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 128,
+        "chol": 229
+      },
+      {
+        "x": -2.459,
+        "y": -1.393,
+        "target": 0,
+        "age": 61,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 120,
+        "chol": 260
+      },
+      {
+        "x": 0.224,
+        "y": -2.253,
+        "target": 0,
+        "age": 39,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 118,
+        "chol": 219
+      },
+      {
+        "x": -1.617,
+        "y": 0.9,
+        "target": 0,
+        "age": 61,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 145,
+        "chol": 307
+      },
+      {
+        "x": -1.504,
+        "y": 0.101,
+        "target": 0,
+        "age": 56,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 125,
+        "chol": 249
+      },
+      {
+        "x": -2.043,
+        "y": 0.963,
+        "target": 0,
+        "age": 43,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 132,
+        "chol": 341
+      },
+      {
+        "x": -1.126,
+        "y": 0.689,
+        "target": 0,
+        "age": 62,
+        "sex": 0,
+        "cp": 2,
+        "trestbps": 130,
+        "chol": 263
+      },
+      {
+        "x": -2.805,
+        "y": 1.227,
+        "target": 0,
+        "age": 63,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 130,
+        "chol": 330
+      },
+      {
+        "x": -2.191,
+        "y": -0.077,
+        "target": 0,
+        "age": 65,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 135,
+        "chol": 254
+      },
+      {
+        "x": -0.879,
+        "y": -0.08,
+        "target": 0,
+        "age": 48,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 130,
+        "chol": 256
+      },
+      {
+        "x": -2.898,
+        "y": 2.788,
+        "target": 0,
+        "age": 63,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 150,
+        "chol": 407
+      },
+      {
+        "x": -3.864,
+        "y": -2.036,
+        "target": 0,
+        "age": 55,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 140,
+        "chol": 217
+      },
+      {
+        "x": 0.159,
+        "y": 2.516,
+        "target": 0,
+        "age": 65,
+        "sex": 1,
+        "cp": 3,
+        "trestbps": 138,
+        "chol": 282
+      },
+      {
+        "x": -4.504,
+        "y": 2.481,
+        "target": 0,
+        "age": 56,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 200,
+        "chol": 288
+      },
+      {
+        "x": -2.093,
+        "y": -2.13,
+        "target": 0,
+        "age": 54,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 110,
+        "chol": 239
+      },
+      {
+        "x": -3.038,
+        "y": -1.559,
+        "target": 0,
+        "age": 70,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 145,
+        "chol": 174
+      },
+      {
+        "x": -1.753,
+        "y": -0.014,
+        "target": 0,
+        "age": 62,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 120,
+        "chol": 281
+      },
+      {
+        "x": -0.695,
+        "y": -3.136,
+        "target": 0,
+        "age": 35,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 120,
+        "chol": 198
+      },
+      {
+        "x": 0.226,
+        "y": 1.749,
+        "target": 0,
+        "age": 59,
+        "sex": 1,
+        "cp": 3,
+        "trestbps": 170,
+        "chol": 288
+      },
+      {
+        "x": -1.47,
+        "y": -0.174,
+        "target": 0,
+        "age": 64,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 125,
+        "chol": 309
+      },
+      {
+        "x": 2.174,
+        "y": -0.857,
+        "target": 0,
+        "age": 47,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 108,
+        "chol": 243
+      },
+      {
+        "x": -2.548,
+        "y": 1.727,
+        "target": 0,
+        "age": 57,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 165,
+        "chol": 289
+      },
+      {
+        "x": -1.946,
+        "y": 0.076,
+        "target": 0,
+        "age": 55,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 160,
+        "chol": 289
+      },
+      {
+        "x": -3.373,
+        "y": -0.908,
+        "target": 0,
+        "age": 64,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 120,
+        "chol": 246
+      },
+      {
+        "x": -2.898,
+        "y": 1.146,
+        "target": 0,
+        "age": 70,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 130,
+        "chol": 322
+      },
+      {
+        "x": -0.256,
+        "y": -0.761,
+        "target": 0,
+        "age": 51,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 140,
+        "chol": 299
+      },
+      {
+        "x": 0.101,
+        "y": 0.377,
+        "target": 0,
+        "age": 58,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 125,
+        "chol": 300
+      },
+      {
+        "x": -1.081,
+        "y": 0.564,
+        "target": 0,
+        "age": 60,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 140,
+        "chol": 293
+      },
+      {
+        "x": -1.375,
+        "y": 1.065,
+        "target": 0,
+        "age": 77,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 125,
+        "chol": 304
+      },
+      {
+        "x": 0.404,
+        "y": -1.476,
+        "target": 0,
+        "age": 35,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 126,
+        "chol": 282
+      },
+      {
+        "x": -2.909,
+        "y": 0.398,
+        "target": 0,
+        "age": 70,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 160,
+        "chol": 269
+      },
+      {
+        "x": -0.783,
+        "y": 0.775,
+        "target": 0,
+        "age": 59,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 174,
+        "chol": 249
+      },
+      {
+        "x": -1.283,
+        "y": 0.427,
+        "target": 0,
+        "age": 64,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 145,
+        "chol": 212
+      },
+      {
+        "x": -2.93,
+        "y": -0.832,
+        "target": 0,
+        "age": 57,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 152,
+        "chol": 274
+      },
+      {
+        "x": -1.869,
+        "y": -1.17,
+        "target": 0,
+        "age": 56,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 132,
+        "chol": 184
+      },
+      {
+        "x": 0.229,
+        "y": -0.648,
+        "target": 0,
+        "age": 48,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 124,
+        "chol": 274
+      },
+      {
+        "x": -2.398,
+        "y": 1.66,
+        "target": 0,
+        "age": 56,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 134,
+        "chol": 409
+      },
+      {
+        "x": -1.69,
+        "y": 0.681,
+        "target": 0,
+        "age": 66,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 160,
+        "chol": 246
+      },
+      {
+        "x": 0.694,
+        "y": 1.765,
+        "target": 0,
+        "age": 54,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 192,
+        "chol": 283
+      },
+      {
+        "x": -1.702,
+        "y": 1.056,
+        "target": 0,
+        "age": 69,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 140,
+        "chol": 254
+      },
+      {
+        "x": -3.535,
+        "y": -0.89,
+        "target": 0,
+        "age": 51,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 140,
+        "chol": 298
+      },
+      {
+        "x": -2.02,
+        "y": -0.26,
+        "target": 0,
+        "age": 43,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 132,
+        "chol": 247
+      },
+      {
+        "x": -2.302,
+        "y": 1.993,
+        "target": 0,
+        "age": 62,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 138,
+        "chol": 294
+      },
+      {
+        "x": -2.124,
+        "y": -0.317,
+        "target": 0,
+        "age": 67,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 100,
+        "chol": 299
+      },
+      {
+        "x": 0.718,
+        "y": 1.642,
+        "target": 0,
+        "age": 59,
+        "sex": 1,
+        "cp": 3,
+        "trestbps": 160,
+        "chol": 273
+      },
+      {
+        "x": -1.755,
+        "y": -0.281,
+        "target": 0,
+        "age": 45,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 142,
+        "chol": 309
+      },
+      {
+        "x": -2.95,
+        "y": -0.854,
+        "target": 0,
+        "age": 58,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 128,
+        "chol": 259
+      },
+      {
+        "x": -1.514,
+        "y": -1.553,
+        "target": 0,
+        "age": 50,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 144,
+        "chol": 200
+      },
+      {
+        "x": -0.875,
+        "y": 0.313,
+        "target": 0,
+        "age": 62,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 150,
+        "chol": 244
+      },
+      {
+        "x": 0.321,
+        "y": -1.737,
+        "target": 0,
+        "age": 38,
+        "sex": 1,
+        "cp": 3,
+        "trestbps": 120,
+        "chol": 231
+      },
+      {
+        "x": -2.033,
+        "y": 1.748,
+        "target": 0,
+        "age": 66,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 178,
+        "chol": 228
+      },
+      {
+        "x": 1.297,
+        "y": -1.116,
+        "target": 0,
+        "age": 52,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 112,
+        "chol": 230
+      },
+      {
+        "x": -2.941,
+        "y": -1.45,
+        "target": 0,
+        "age": 53,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 123,
+        "chol": 282
+      },
+      {
+        "x": -0.964,
+        "y": -0.061,
+        "target": 0,
+        "age": 63,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 108,
+        "chol": 269
+      },
+      {
+        "x": -1.298,
+        "y": -1.701,
+        "target": 0,
+        "age": 54,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 110,
+        "chol": 206
+      },
+      {
+        "x": -0.704,
+        "y": -0.919,
+        "target": 0,
+        "age": 66,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 112,
+        "chol": 212
+      },
+      {
+        "x": -2.313,
+        "y": 0.858,
+        "target": 0,
+        "age": 55,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 180,
+        "chol": 327
+      },
+      {
+        "x": 0.422,
+        "y": -0.937,
+        "target": 0,
+        "age": 49,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 118,
+        "chol": 149
+      },
+      {
+        "x": -2.792,
+        "y": -0.642,
+        "target": 0,
+        "age": 54,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 122,
+        "chol": 286
+      },
+      {
+        "x": -3.284,
+        "y": -0.123,
+        "target": 0,
+        "age": 56,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 130,
+        "chol": 283
+      },
+      {
+        "x": 0.449,
+        "y": -1.08,
+        "target": 0,
+        "age": 46,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 120,
+        "chol": 249
+      },
+      {
+        "x": -0.346,
+        "y": 0.427,
+        "target": 0,
+        "age": 61,
+        "sex": 1,
+        "cp": 3,
+        "trestbps": 134,
+        "chol": 234
+      },
+      {
+        "x": -1.702,
+        "y": -0.856,
+        "target": 0,
+        "age": 67,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 120,
+        "chol": 237
+      },
+      {
+        "x": 0.702,
+        "y": -1.409,
+        "target": 0,
+        "age": 58,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 100,
+        "chol": 234
+      },
+      {
+        "x": -1.381,
+        "y": -1.294,
+        "target": 0,
+        "age": 47,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 110,
+        "chol": 275
+      },
+      {
+        "x": 0.392,
+        "y": -1.228,
+        "target": 0,
+        "age": 52,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 125,
+        "chol": 212
+      },
+      {
+        "x": -1.91,
+        "y": -0.959,
+        "target": 0,
+        "age": 58,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 146,
+        "chol": 218
+      },
+      {
+        "x": 0.641,
+        "y": -0.552,
+        "target": 0,
+        "age": 57,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 124,
+        "chol": 261
+      },
+      {
+        "x": 0.24,
+        "y": 2.993,
+        "target": 0,
+        "age": 58,
+        "sex": 0,
+        "cp": 1,
+        "trestbps": 136,
+        "chol": 319
+      },
+      {
+        "x": -2.518,
+        "y": -1.299,
+        "target": 0,
+        "age": 61,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 138,
+        "chol": 166
+      },
+      {
+        "x": -0.795,
+        "y": -0.754,
+        "target": 0,
+        "age": 42,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 136,
+        "chol": 315
+      },
+      {
+        "x": 0.314,
+        "y": -0.31,
+        "target": 0,
+        "age": 52,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 128,
+        "chol": 204
+      },
+      {
+        "x": -0.083,
+        "y": 0.775,
+        "target": 0,
+        "age": 59,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 126,
+        "chol": 218
+      },
+      {
+        "x": 1.646,
+        "y": -1.125,
+        "target": 0,
+        "age": 40,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 152,
+        "chol": 223
+      },
+      {
+        "x": -1.643,
+        "y": -0.922,
+        "target": 0,
+        "age": 61,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 140,
+        "chol": 207
+      },
+      {
+        "x": -2.386,
+        "y": -0.966,
+        "target": 0,
+        "age": 46,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 140,
+        "chol": 311
+      },
+      {
+        "x": 1.31,
+        "y": 0.282,
+        "target": 0,
+        "age": 59,
+        "sex": 1,
+        "cp": 3,
+        "trestbps": 134,
+        "chol": 204
+      },
+      {
+        "x": 0.866,
+        "y": 0.724,
+        "target": 0,
+        "age": 57,
+        "sex": 1,
+        "cp": 1,
+        "trestbps": 154,
+        "chol": 232
+      },
+      {
+        "x": -2.183,
+        "y": -0.978,
+        "target": 0,
+        "age": 57,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 110,
+        "chol": 335
+      },
+      {
+        "x": -1.431,
+        "y": -1.583,
+        "target": 0,
+        "age": 55,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 128,
+        "chol": 205
+      },
+      {
+        "x": 0.362,
+        "y": -0.536,
+        "target": 0,
+        "age": 61,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 148,
+        "chol": 203
+      },
+      {
+        "x": -2.096,
+        "y": -0.316,
+        "target": 0,
+        "age": 58,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 114,
+        "chol": 318
+      },
+      {
+        "x": -2.106,
+        "y": 2.074,
+        "target": 0,
+        "age": 58,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 170,
+        "chol": 225
+      },
+      {
+        "x": -0.328,
+        "y": 0.583,
+        "target": 0,
+        "age": 67,
+        "sex": 1,
+        "cp": 2,
+        "trestbps": 152,
+        "chol": 212
+      },
+      {
+        "x": -0.833,
+        "y": -2.548,
+        "target": 0,
+        "age": 44,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 120,
+        "chol": 169
+      },
+      {
+        "x": -2.495,
+        "y": -1.01,
+        "target": 0,
+        "age": 63,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 140,
+        "chol": 187
+      },
+      {
+        "x": -0.435,
+        "y": -0.695,
+        "target": 0,
+        "age": 63,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 124,
+        "chol": 197
+      },
+      {
+        "x": -1.92,
+        "y": 1.008,
+        "target": 0,
+        "age": 59,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 164,
+        "chol": 176
+      },
+      {
+        "x": -1.221,
+        "y": -0.512,
+        "target": 0,
+        "age": 57,
+        "sex": 0,
+        "cp": 0,
+        "trestbps": 140,
+        "chol": 241
+      },
+      {
+        "x": 0.7,
+        "y": -0.934,
+        "target": 0,
+        "age": 45,
+        "sex": 1,
+        "cp": 3,
+        "trestbps": 110,
+        "chol": 264
+      },
+      {
+        "x": -2.376,
+        "y": 0.207,
+        "target": 0,
+        "age": 68,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 144,
+        "chol": 193
+      },
+      {
+        "x": -1.786,
+        "y": -2.64,
+        "target": 0,
+        "age": 57,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 130,
+        "chol": 131
+      },
+      {
+        "x": 0.902,
+        "y": 1.019,
+        "target": 0,
+        "age": 57,
+        "sex": 0,
+        "cp": 1,
+        "trestbps": 130,
+        "chol": 236
+      }
+    ],
+    "components": [
+      [
+        -0.30604,
+        -0.09327,
+        0.29487,
+        -0.17147,
+        -0.13249,
+        -0.0719,
+        0.12332,
+        0.44008,
+        -0.36057,
+        -0.39086,
+        0.36324,
+        -0.28519,
+        -0.23157
+      ],
+      [
+        0.37708,
+        -0.38288,
+        0.27591,
+        0.38816,
+        0.48415,
+        0.30161,
+        -0.21993,
+        0.09036,
+        -0.23302,
+        -0.0524,
+        0.05723,
+        0.10059,
+        -0.17909
+      ]
+    ],
+    "mean": [
+      0.00872,
+      -0.00544,
+      0.02576,
+      0.00861,
+      0.04585,
+      0.02277,
+      -0.04792,
+      -0.02273,
+      -0.02624,
+      -0.02318,
+      -0.00159,
+      -0.0115,
+      -0.04981
+    ],
+    "variance_ratio": [
+      21.01,
+      11.99
+    ]
+  },
   "radar_baselines": {
     "features": [
       "age",

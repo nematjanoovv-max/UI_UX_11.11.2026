@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-07. Yurak kasalliklari xavfini bashorat qilish (Heart Disease Risk Prediction Pro Max)
+07. Yurak kasalliklari xavfini bashorat qilish (Heart Disease Risk Prediction Pro Max Enterprise)
 Kengaytirilgan va chuqur optimallashtirilgan Machine Learning Pipeline:
 Pandas, Scikit-learn (KNN, SVM, Random Forest, Gradient Boosting, Soft-Voting Ensemble,
-5-Fold CV, ROC egri chiziqlari, XAI tahlili va Framingham bazasi)
+PCA 2D Cluster Space, 5-Fold CV, ROC egri chiziqlari, XAI tahlili va Framingham bazasi)
 """
 
 import sys
@@ -26,6 +26,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, VotingClassifier
+from sklearn.decomposition import PCA
 from sklearn.metrics import (
     accuracy_score,
     precision_score,
@@ -70,7 +71,7 @@ def evaluate_model(model, X_train, X_test, y_train, y_test, X_all, y_all, cv):
 
 def main():
     print("=" * 75)
-    print(" Yurak kasalliklari xavfini bashorat qilish (Kengaytirilgan SOTA ML Pipeline)")
+    print(" Yurak kasalliklari xavfini bashorat qilish (Enterprise ML Pipeline + PCA)")
     print("=" * 75)
 
     base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -150,7 +151,33 @@ def main():
     print(f"  Gradient Boosting      : Aniqlik={gb_metrics['accuracy']}%, F1={gb_metrics['f1_score']}%, Recall={gb_metrics['recall']}%, AUC={gb_metrics['roc_auc']}%")
     print(f"  Ensemble (Soft-Voting) : Aniqlik={ens_metrics['accuracy']}%, F1={ens_metrics['f1_score']}%, Recall={ens_metrics['recall']}%, AUC={ens_metrics['roc_auc']}%")
 
-    # 5. Radar Chart uchun sog'lom vs kasallangan populyatsiya o'rtachalari
+    # 5. PCA (Principal Component Analysis - 2D Bemorlar Klasteri)
+    print("\n[5] PCA 2D tahlili hisoblanmoqda...")
+    pca = PCA(n_components=2, random_state=42)
+    pca_coords = pca.fit_transform(X_all_scaled)
+
+    pca_points = []
+    for i in range(len(df)):
+        pca_points.append({
+            "x": round(float(pca_coords[i, 0]), 3),
+            "y": round(float(pca_coords[i, 1]), 3),
+            "target": int(df['target'].iloc[i]),
+            "age": int(df['age'].iloc[i]),
+            "sex": int(df['sex'].iloc[i]),
+            "cp": int(df['cp'].iloc[i]),
+            "trestbps": int(df['trestbps'].iloc[i]),
+            "chol": int(df['chol'].iloc[i])
+        })
+
+    pca_meta = {
+        "points": pca_points,
+        "components": [[round(float(c), 5) for c in comp] for comp in pca.components_],
+        "mean": [round(float(m), 5) for m in pca.mean_],
+        "variance_ratio": [round(float(v) * 100, 2) for v in pca.explained_variance_ratio_]
+    }
+    print(f"  PCA Dastlabki 2 ta asosiy komponent tushuntirish kuchi: {pca_meta['variance_ratio'][0]}% va {pca_meta['variance_ratio'][1]}%")
+
+    # 6. Radar Chart uchun sog'lom vs kasallangan populyatsiya o'rtachalari
     healthy_df = df[df['target'] == 0]
     diseased_df = df[df['target'] == 1]
     radar_features = ['age', 'trestbps', 'chol', 'thalach', 'oldpeak', 'ca']
@@ -158,7 +185,7 @@ def main():
     healthy_baseline = healthy_df[radar_features].mean().round(2).to_dict()
     diseased_baseline = diseased_df[radar_features].mean().round(2).to_dict()
 
-    # 6. XAI va Xususiyatlar Ta'siri (Feature Importances & Clinical Weights)
+    # 7. XAI va Xususiyatlar Ta'siri (Feature Importances & Clinical Weights)
     correlations = df.corr()['target'].drop('target').to_dict()
     rf_importances = dict(zip(feature_cols, rf.feature_importances_))
     gb_importances = dict(zip(feature_cols, gb.feature_importances_))
@@ -217,12 +244,12 @@ def main():
         })
     feature_importance.sort(key=lambda x: x["ensemble_weight"], reverse=True)
 
-    # 7. Eksport uchun JSON obyektini tuzish
+    # 8. Eksport uchun JSON obyektini tuzish
     export_data = {
         "project": {
-            "title_uz": "Yurak kasalliklari xavfini bashorat qilish Pro Max",
-            "title_en": "Heart Disease Risk Prediction Pro Max",
-            "title_ru": "Прогнозирование риска сердечно-сосудистых заболеваний Pro Max",
+            "title_uz": "Yurak kasalliklari xavfini bashorat qilish Pro Max Enterprise",
+            "title_en": "Heart Disease Risk Prediction Pro Max Enterprise",
+            "title_ru": "Прогнозирование риска сердечно-сосудистых заболеваний Pro Max Enterprise",
             "dataset_name": "UCI Machine Learning Repository - Cleveland Heart Disease",
             "total_samples": int(len(df)),
             "train_samples": int(len(X_train)),
@@ -236,10 +263,11 @@ def main():
                 "K-Nearest Neighbors (KNN)"
             ],
             "date": "2026-11-12",
-            "version": "3.0.0-enterprise"
+            "version": "3.5.0-enterprise"
         },
         "features": feature_meta,
         "feature_importance": feature_importance,
+        "pca": pca_meta,
         "radar_baselines": {
             "features": radar_features,
             "labels_uz": ["Yosh", "Qon bosimi", "Xolesterin", "Maksimal Puls", "ST Depressiya", "Tomirlar (ca)"],
@@ -318,7 +346,7 @@ def main():
     with open(out_json, "w", encoding="utf-8") as f:
         json.dump(export_data, f, indent=2, ensure_ascii=False)
 
-    # fallback_data.js (brauzer yoki offline rejimda to'g'ridan-to'g'ri ishlashi uchun)
+    # fallback_data.js
     out_js = os.path.join(base_dir, "fallback_data.js")
     with open(out_js, "w", encoding="utf-8") as f:
         f.write("/* Avtomatik yaratilgan fallback model ma'lumotlari */\n")
@@ -326,7 +354,7 @@ def main():
         json.dump(export_data, f, ensure_ascii=False)
         f.write(";\n")
 
-    print(f"\n[5] Model parametrlari saqlandi: {out_json}")
+    print(f"\n[6] Model parametrlari va PCA saqlandi: {out_json}")
     print(f"    Fayl hajmi (JSON): {os.path.getsize(out_json) / 1024:.2f} KB")
     print(f"    Fayl hajmi (JS):   {os.path.getsize(out_js) / 1024:.2f} KB")
     print("=" * 75)

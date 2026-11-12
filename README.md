@@ -1,42 +1,49 @@
-# 07. Yurak kasalliklari xavfini bashorat qilish (CardioRisk AI Pro Max Enterprise)
+# 07. Yurak kasalliklari xavfini bashorat qilish (CardioRisk AI Pro Max Enterprise v3.5)
 
 [![Live on Vercel](https://img.shields.io/badge/Vercel-Live_Demo-black?logo=vercel&style=for-the-badge)](https://heart-disease-risk-prediction-eosin.vercel.app)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&style=for-the-badge)](https://www.python.org/)
-[![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-SOTA_Ensemble_%26_5_Models-orange?logo=scikit-learn&style=for-the-badge)](https://scikit-learn.org/)
+[![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-SOTA_Ensemble_%26_PCA_2D-orange?logo=scikit-learn&style=for-the-badge)](https://scikit-learn.org/)
+[![Three.js](https://img.shields.io/badge/Three.js-3D_Heart_WebGL-black?logo=three.js&style=for-the-badge)](https://threejs.org/)
 [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-3.x-38bdf8?logo=tailwind-css&style=for-the-badge)](https://tailwindcss.com/)
 
-Ushbu platforma bemorlarning 13 ta klinik ko'rsatkichlari asosida yurak kasalligi xavfini aniqlash, real vaqtda **jonli EKG monitoringi**, **Explainable AI (SHAP) tahlili**, an'anaviy **Framingham ATP III** bilan qiyoslash hamda **EMR (Elektron Tibbiy Karta) orqali davolanish dinamikasi**ni kuzatish imkonini beruvchi xalqaro darajadagi zamonaviy MedTech platformasidir.
+CardioRisk AI Pro Max — bemorlarning 13 ta klinik ko'rsatkichlari asosida yurak kasalligi xavfini aniqlash, **3D interaktiv yurak anatomiyasi**, real vaqtda **jonli EKG telemetriyasi**, **Ovozli AI Kardiolog**, **Yurak Biologik Yoshi (Bio-Age)**, **Virtual Farmakoterapiya**, **Bruce Protocol Tredmil Stress-Testi**, **PCA 2D Bemorlar Klasteri** hamda **EMR Dinamika Tahlili**ni o'z ichiga olgan xalqaro darajadagi zamonaviy MedTech platformasi.
 
 ---
 
-## ⚡ Tubdan Kiritilgan Yangi Imkoniyatlar (Enterprise v3.0)
+## ⚡ Barcha Yangi Imkoniyatlar (Enterprise v3.5)
 
-1. **Jonli EKG Kardiomonitori (Real-Time Bedside ECG Strip)**:
-   - HTML5 Canvas asosidagi yuqori aniqlikdagi tibbiy grid kardiomonitori.
-   - P-Q-R-S-T to'lqinlari bemorning `thalach` (puls), `oldpeak` (ST segment depressiyasi), `restecg` (chap qorincha gipertrofiyasi) parametrlariga to'g'ridan-to'g'ri bog'liq holda real vaqtda o'zgaradi.
-   - Web Audio API orqali har bir R-pikda real kardiomonitor audio signali (puls ovozi) yoqish/o'chirish imkoniyati.
+1. **3D Interaktiv Yurak Anatomiyasi (Three.js WebGL)**:
+   - 360° orbital boshqaruvli 3D yurak modeli.
+   - Bemor pulsi (`thalach`) chastotasida real vaqtda sistola/diastola urishi.
+   - Bemorning `ca` (zararlangan tomirlar soni) ko'rsatkichiga qarab **LAD**, **RCA** va **LCx** koronar tomirlaridagi stenoz blokadalarining qizil/sariq nur bilan vizual miltillab turishi.
 
-2. **Explainable AI (SHAP-Style Feature Attribution Waterfall)**:
-   - "Qora quti" (black box) muammosini hal qiluvchi individual omillar taqsimoti.
-   - Har bir bemor uchun qaysi ko'rsatkich kasallik xavfini necha foizga oshirgani (+%) yoki himoya qilganini (-%) ko'rsatuvchi vizual tahlil.
+2. **Yurakning Biologik Yoshi (Cardiovascular Bio-Age)**:
+   - Amerika Yurak Assotsiatsiyasi (AHA) va Framingham Vascular Age protokoli asosida pasport yoshi va haqiqiy biologik yurak yoshining qiyosiy hisob-kitobi.
 
-3. **Klassik Kardiologiya vs AI (Framingham ATP III integratsiyasi)**:
-   - Amerika Kardiologiya Assotsiatsiyasining 10-yillik Framingham xavf indeksi bilan Sun'iy Intellektning (Ensemble) bevosita xavfi yonma-yon solishtiriladi.
-   - AI aniqlagan yashirin xavflar (ST depressiyasi, tomirlar kalsinozi) tushuntirib beriladi.
+3. **Ovozli AI Kardiolog (Web Speech API - TTS & STT)**:
+   - **Tashxisni ovozda tinglash (TTS)**: O'zbek, Rus va Ingliz tillarida AI Kardiolog ovozi bilan tashxis va shifokor tavsiyalarini o'qib berish.
+   - **Ovozli diktovka (STT)**: Shifokor mikrofonga aytib turgan parametrlarni ("yosh 55", "bosim 140", "xolesterin 250") avtomatik formaga yozish.
 
-4. **SOTA Machine Learning Ensemble (5 xil arxitektura)**:
-   - **Ensemble Soft-Voting (SOTA)**: **90.69% ROC-AUC**, **96.97% Recall**.
-   - **Gradient Boosting**: **86.89% Aniqlik**, **96.97% Recall**, **88.89% F1-Score**.
-   - **Support Vector Machine (SVM RBF)**: **83.61% Aniqlik**, **93.94% Recall**.
-   - **Random Forest**: **83.74% 5-Fold CV Aniqligi**, **89.83% ROC-AUC**.
-   - **K-Nearest Neighbors (KNN, k=7)**: **81.97% Aniqlik**, **84.51% F1-Score**.
+4. **Virtual Farmakoterapiya Simulyatori (Digital Twin)**:
+   - Standart kardiologik preparatlar (Statinlar, Beta-blokatorlar, ACE ingibitorlari, Aspirin) ta'sirini virtual sinab ko'rish va xavf necha foizga pasayishini real vaqtda kuzatish.
 
-5. **EMR: Bemorlar Tarixi va Dinamika Tahlili (Longitudinal Visit Dynamics)**:
-   - Bemorlarni saqlash, tahrirlash va kalkulyatorga 1 bosish bilan yuklash.
-   - "Dinamika Tahlili" (Visit 1 vs Visit 2): terapiyadan oldingi va keyingi ko'rsatkichlarni (qon bosimi, xolesterin, ST depressiyasi) solishtirib, sog'ayish dinamikasini avtomatik hisoblash.
+5. **Virtual Kardiologik Stress-Test (Bruce Protocol Treadmill)**:
+   - Tredmil mashq yuklamasi testi: 0-bosqichdan 3-bosqichgacha tezlik va nishablikni oshirib borish, ishemiya chegarasini (ST depressiyasi boshlanish vaqtini) avtomatik aniqlash.
 
-6. **Ko'p Tilli Platforma (i18n)**:
-   - 🇺🇿 O'zbekcha, 🇬🇧 English, 🇷🇺 Русский tillarida 1 tugma orqali to'liq interfeys, tushuntirishlar va tibbiy hisobotlar.
+6. **PCA 2D Bemorlar Klasteri Xaritasi (Unsupervised Space)**:
+   - 13 o'lchamli klinik fazoni Principal Component Analysis orqali 2D tekislikka tushirish, 302 nafar bemor orasida joriy bemor o'rnini yulduzcha sifatida ko'rsatish va unga eng yaqin 3 ta bemor analoglarini topish.
+
+7. **Jonli EKG Kardiomonitori & Audio Telemetriya**:
+   - HTML5 Canvas asosidagi 25 mm/s tezlikdagi tibbiy EKG chizig'i, P-Q-R-S-T to'lqinlari va Web Audio API 880 Hz puls ovozi.
+
+8. **Explainable AI (SHAP Waterfall)**:
+   - Har bir bemor uchun natijaga ta'sir qilgan ijobiy va salbiy biomarkerlarning aniq foiz taqsimoti.
+
+9. **EMR: Bemorlar Tarixi va Dinamika Tahlili**:
+   - Tashriflarni saqlash va terapiyadan oldingi/keyingi holatni (Visit 1 vs Visit 2) solishtirib, sog'ayish dinamikasini hisoblash.
+
+10. **Ko'p Tilli Platforma (i18n)**:
+    - 🇺🇿 O'zbekcha, 🇬🇧 English, 🇷🇺 Русский tillarida 1 bosish bilan to'liq interfeys.
 
 ---
 
@@ -49,26 +56,6 @@ Ushbu platforma bemorlarning 13 ta klinik ko'rsatkichlari asosida yurak kasallig
 | 🎯 **Support Vector Machine (SVM RBF)** | **83.61%** | **93.94%** | **86.11%** | **88.10%** | **81.09% (±6.09%)** |
 | 🌲 **Random Forest (100 Trees)** | **80.33%** | **93.94%** | **83.78%** | **89.83%** | **83.74% (±5.96%)** |
 | 🔍 **K-Nearest Neighbors (k=7)** | **81.97%** | **90.91%** | **84.51%** | **88.20%** | **81.07% (±7.86%)** |
-
----
-
-## 🗂 Loyiha Fayllari Tuzilishi
-
-```text
-UI_UX_11.11.2026/
-├── dataset.csv                          # UCI Cleveland Heart Disease to'liq ma'lumotlar to'plami (302 bemor)
-├── main.py                              # Python ML pipeline (Train, 5 Model, 5-Fold CV, Export)
-├── heart_disease_prediction.ipynb       # Jupyter Notebook (SOTA tahlil, Multi-ROC va vizualizatsiyalar)
-├── heart-disease-risk-prediction.ipynb  # Kaggle manba daftari
-├── model_data.json                      # 5 ta model parametrlari, ROC va 5-Fold ma'lumotlari (196 KB)
-├── fallback_data.js                     # Brauzer offline inferensiyasi uchun avtomatik JSON export
-├── index.html                           # Enterprise MedTech Platformasi (HTML5, Tailwind, Canvas EKG)
-├── app.js                               # Inference Engine, EKG Audio, SHAP XAI, Framingham, EMR Dinamika
-├── style.css                            # EKG ekran filtri, tibbiy animatsiyalar va bosma PDF uslublari
-├── vercel.json                          # Vercel deployment va kesh sozlamalari
-├── havolalar.txt                        # Rasmiy havolalar va metrikalar
-└── README.md                            # Loyiha to'liq hujjati
-```
 
 ---
 

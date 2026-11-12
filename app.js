@@ -1,7 +1,9 @@
 /**
- * CardioRisk AI Pro Max (Enterprise v3.0)
- * SOTA Machine Learning, Live ECG Cardiomonitor, Explainable AI (SHAP),
- * Framingham ATP III Comparison, EMR Dinamika Tahlili, i18n (UZ/EN/RU)
+ * CardioRisk AI Pro Max (Enterprise v3.5)
+ * SOTA Machine Learning, 3D WebGL Heart Anatomy, Live ECG Cardiomonitor,
+ * Explainable AI (SHAP), Framingham ATP III, Cardiovascular Bio-Age,
+ * Voice AI (TTS & STT), Virtual Pharmacotherapy, Bruce Treadmill Stress-Test,
+ * PCA 2D Cluster Space, EMR Dynamics, and i18n (UZ/EN/RU).
  */
 
 let MODEL_DATA = null;
@@ -11,26 +13,38 @@ let currentTableSearch = '';
 let currentTablePage = 1;
 const rowsPerPage = 12;
 
-// i18n Dictionary
+// i18n Comprehensive Dictionary
 const I18N = {
   uz: {
-    ticker_title: "07. Yurak kasalliklari xavfini bashorat qilish • SOTA Ensemble (90.7% AUC) & Jonli EKG Monitor",
-    ticker_stats: "GradBoost: 86.9% Acc • SVM: 93.9% Recall • Framingham & XAI Tahlili",
-    brand_subtitle: "Klinik Kardiologik Diagnostika, EKG Monitor va Dinamika Tahlili",
+    ticker_title: "07. Yurak kasalliklari xavfini bashorat qilish • 3D Yurak, Jonli EKG, Ovozli AI va SOTA Ensemble",
+    ticker_stats: "Bio-Age • Bruce Stress-Test • Farmakoterapiya • PCA 2D Klaster",
+    brand_subtitle: "3D Kardiologiya, EKG Telemetriya, Bio-Age va Intellektual Tashxis",
     badge_ens_auc: "Ensemble AUC:",
     badge_gb_acc: "GradBoost Acc:",
     badge_svm_recall: "SVM Recall:",
-    badge_samples: "Bemorlar:",
-    nav_pdf: "Tibbiy Hisobot (PDF)",
-    tab_calc: "Klinik Diagnostika & EKG",
-    tab_models: "Modellarni Taqqoslash (5 Model)",
+    nav_voice_read: "Tinglash",
+    nav_pdf: "PDF",
+    tab_calc: "Klinik Diagnostika, 3D & EKG",
+    tab_models: "Modellar & PCA 2D Klaster",
     tab_emr: "EMR: Bemorlar & Dinamika",
-    tab_dataset: "Dataset va Qidiruv (302 Bemor)",
+    tab_dataset: "Dataset (302 Bemor)",
+    bio_age_heading: "Yurakning Biologik Yoshi (Cardiovascular Bio-Age)",
+    bio_age_desc: "AHA Life's Essential va qon tomirlar kalsinozi asosidagi hisob-kitob",
+    passport_age_label: "Pasport Yoshi:",
+    bio_age_label: "Yurak Biologik Yoshi:",
+    bio_age_target: "Maqsad: Dorilar va parhez bilan yoshni tenglashtirish",
     presets_label: "Klinik Profillar:",
     btn_save_emr: "EMRga Saqlash",
     btn_reset: "Standartga Qaytarish",
+    three_heart_title: "3D Interaktiv Yurak Anatomiyasi (Three.js)",
+    three_heart_sub: "Sichqoncha bilan 360° aylantiring. Tomir stenozlari va puls real vaqtda aks etadi",
+    btn_rotate: "Aylanish",
     params_title: "Klinik Parametrlarni Sozlash",
-    params_desc: "Barcha o'zgarishlar EKG, AI xavf hisoblagichi va tushuntirish panelida bir vaqtda aks etadi",
+    params_desc: "Har bir o'zgarish 3D model, EKG va AI xavf hisoblagichida bir vaqtda aks etadi",
+    pharma_title: "Virtual Farmakoterapiya Simulyatori (Digital Twin)",
+    pharma_sub: "Kardiologik preparatlarni qo'shing va ularning bevosita samaradorligini ko'ring",
+    treadmill_title: "Virtual Kardiologik Stress-Test (Bruce Protocol)",
+    treadmill_sub: "Jismoniy yuklama ostida yurak ishemiyasi chegarasini aniqlash",
     radar_title: "360° Radar Profil (Bemor vs Sog'lom Populyatsiya)",
     radar_footer: "Ko'k chiziq — ushbu bemor holati; Yashil chiziq — butunlay sog'lom guruh o'rtacha qiymati.",
     ecg_rhythm: "RITM:",
@@ -43,6 +57,8 @@ const I18N = {
     xai_waterfall_title: "Explainable AI: Xavf Omillari Attributsiyasi",
     whatif_title: '"What-If" Profilaktika Simulyatori',
     advice_title: "Shifokor Tavsiyasi va Klinik Harakat:",
+    pca_chart_title: "PCA 2D Bemorlar Klasteri Xaritasi (Unsupervised Projection)",
+    pca_chart_sub: "13 o'lchamli klinik fazo 2 ta asosiy komponentga tushirildi. Oltin yulduz — ushbu bemor holati!",
     roc_chart_title: "5 ta Modelning ROC Egri Chiziqlari (Multi-ROC)",
     roc_chart_sub: "AUC qanchalik 1.0 ga yaqin bo'lsa, model shunchalik mukammal ajratadi",
     cv_chart_title: "5-Fold Stratified Kross-Validatsiya Natijalari",
@@ -71,24 +87,36 @@ const I18N = {
     risk_cat_4: "Kritik Xavf"
   },
   en: {
-    ticker_title: "07. Heart Disease Risk Prediction • SOTA Ensemble (90.7% AUC) & Live ECG Monitor",
-    ticker_stats: "GradBoost: 86.9% Acc • SVM: 93.9% Recall • Framingham & XAI Analytics",
-    brand_subtitle: "Clinical Cardiology Diagnostics, ECG Monitor & Longitudinal Analytics",
+    ticker_title: "07. Heart Disease Risk Prediction • 3D Heart, Live ECG, Voice AI & SOTA Ensemble",
+    ticker_stats: "Bio-Age • Bruce Stress-Test • Pharmacotherapy • PCA 2D Cluster",
+    brand_subtitle: "3D Cardiology, ECG Telemetry, Bio-Age & Intelligent Diagnosis",
     badge_ens_auc: "Ensemble AUC:",
     badge_gb_acc: "GradBoost Acc:",
     badge_svm_recall: "SVM Recall:",
-    badge_samples: "Patients:",
-    nav_pdf: "Medical Report (PDF)",
-    tab_calc: "Clinical Diagnostics & ECG",
-    tab_models: "Model Benchmark (5 Models)",
+    nav_voice_read: "Speak",
+    nav_pdf: "PDF",
+    tab_calc: "Clinical Diagnostics, 3D & ECG",
+    tab_models: "Models & PCA 2D Cluster",
     tab_emr: "EMR: Longitudinal Visits",
-    tab_dataset: "Dataset & Search (302 Patients)",
+    tab_dataset: "Dataset (302 Patients)",
+    bio_age_heading: "Cardiovascular Bio-Age",
+    bio_age_desc: "AHA Life's Essential & coronary vascular calcification benchmark",
+    passport_age_label: "Passport Age:",
+    bio_age_label: "Heart Bio-Age:",
+    bio_age_target: "Goal: Equate biological age via therapy and nutrition",
     presets_label: "Clinical Presets:",
     btn_save_emr: "Save to EMR",
     btn_reset: "Reset to Default",
+    three_heart_title: "3D Interactive Heart Anatomy (Three.js)",
+    three_heart_sub: "Orbit 360° with mouse. Arterial stenosis and pulse update in real-time",
+    btn_rotate: "Rotate",
     params_title: "Clinical Parameter Tuning",
-    params_desc: "All adjustments update ECG, AI consensus risk, and explainability panel synchronously",
-    radar_title: "360° Radar Profile (Patient vs Healthy Population)",
+    params_desc: "Every change reflects synchronously across 3D heart, ECG, and AI engine",
+    pharma_title: "Virtual Pharmacotherapy Simulator (Digital Twin)",
+    pharma_sub: "Activate cardiac regimens and monitor instantaneous risk attenuation",
+    treadmill_title: "Virtual Exercise Stress Test (Bruce Protocol)",
+    treadmill_sub: "Detect myocardial ischemia onset threshold under physical exertion",
+    radar_title: "360° Radar Profile (Patient vs Healthy Benchmark)",
     radar_footer: "Blue line represents this patient; Green line denotes the healthy benchmark mean.",
     ecg_rhythm: "RHYTHM:",
     ecg_st: "ST SEGMENT:",
@@ -100,6 +128,8 @@ const I18N = {
     xai_waterfall_title: "Explainable AI: Feature Attribution Waterfall",
     whatif_title: '"What-If" Preventive Lifestyle Simulator',
     advice_title: "Clinical Recommendation & Next Actions:",
+    pca_chart_title: "PCA 2D Patient Cluster Map (Unsupervised Projection)",
+    pca_chart_sub: "13-dimensional clinical space projected onto PC1 and PC2. Pulsating star is current patient!",
     roc_chart_title: "5 Multi-Architecture ROC Curves",
     roc_chart_sub: "The closer AUC is to 1.0, the better the diagnostic discrimination",
     cv_chart_title: "5-Fold Stratified Cross-Validation Folds",
@@ -128,23 +158,35 @@ const I18N = {
     risk_cat_4: "Critical Risk"
   },
   ru: {
-    ticker_title: "07. Прогнозирование риска сердечно-сосудистых заболеваний • Ансамбль SOTA (90.7% AUC) и ЭКГ",
-    ticker_stats: "GradBoost: 86.9% Acc • SVM: 93.9% Recall • Фрамингем и XAI Анализ",
-    brand_subtitle: "Клиническая кардиологическая диагностика, монитор ЭКГ и динамика",
+    ticker_title: "07. Прогнозирование риска ССЗ • 3D Сердце, ЭКГ, Голосовой ИИ и SOTA Ансамбль",
+    ticker_stats: "Bio-Age • Стресс-тест Брюса • Фармакотерапия • PCA 2D Кластер",
+    brand_subtitle: "3D Кардиология, ЭКГ Телеметрия, Био-возраст и Интеллектуальный Диагноз",
     badge_ens_auc: "Ансамбль AUC:",
     badge_gb_acc: "GradBoost Acc:",
     badge_svm_recall: "SVM Recall:",
-    badge_samples: "Пациенты:",
-    nav_pdf: "Мед. Отчёт (PDF)",
-    tab_calc: "Клиническая Диагностика и ЭКГ",
-    tab_models: "Сравнение Моделей (5 Моделей)",
+    nav_voice_read: "Слушать",
+    nav_pdf: "PDF",
+    tab_calc: "Клиническая Диагностика, 3D и ЭКГ",
+    tab_models: "Модели и PCA 2D Кластер",
     tab_emr: "ЭМК: Пациенты и Динамика",
-    tab_dataset: "Датасет и Поиск (302 Пациента)",
+    tab_dataset: "Датасет (302 Пациента)",
+    bio_age_heading: "Биологический Возраст Сердца (Bio-Age)",
+    bio_age_desc: "Расчёт по методике AHA Life's Essential и кальцинозу коронарных артерий",
+    passport_age_label: "Паспортный возраст:",
+    bio_age_label: "Биологический возраст:",
+    bio_age_target: "Цель: Снизить биологический возраст терапией и диетой",
     presets_label: "Клинические Профили:",
     btn_save_emr: "Сохранить в ЭМК",
     btn_reset: "Сбросить по умолчанию",
+    three_heart_title: "3D Интерактивная Анатомия Сердца (Three.js)",
+    three_heart_sub: "Вращайте на 360°. Стеноз сосудов и ЧСС отображаются в реальном времени",
+    btn_rotate: "Вращение",
     params_title: "Настройка Клинических Параметров",
-    params_desc: "Все изменения синхронно влияют на ЭКГ, консенсусный риск ИИ и панель объяснимости",
+    params_desc: "Каждое изменение синхронно отражается в 3D модели, ЭКГ и консенсусном ИИ",
+    pharma_title: "Виртуальный Симулятор Фармакотерапии (Digital Twin)",
+    pharma_sub: "Подключайте кардиопрепараты и оценивайте снижение риска",
+    treadmill_title: "Виртуальный Стресс-Тест на Тредмиле (Протокол Брюса)",
+    treadmill_sub: "Определение порога ишемии миокарда при ступенчатой физической нагрузке",
     radar_title: "360° Радарный Профиль (Пациент vs Здоровая Популяция)",
     radar_footer: "Синяя линия — текущий пациент; Зеленая линия — здоровая популяция.",
     ecg_rhythm: "РИТМ:",
@@ -157,6 +199,8 @@ const I18N = {
     xai_waterfall_title: "Объяснимый ИИ (XAI): Атрибуция Факторов Риска",
     whatif_title: 'Симулятор Профилактики "What-If"',
     advice_title: "Клинические Рекомендации и Тактика:",
+    pca_chart_title: "Карта Кластеризации PCA 2D (Проекция Без Учителя)",
+    pca_chart_sub: "13-мерное клиническое пространство спроецировано на PC1 и PC2. Звезда — текущий пациент!",
     roc_chart_title: "Кривые ROC для 5 Моделей (Multi-ROC)",
     roc_chart_sub: "Чем ближе AUC к 1.0, тем точнее модель различает патологию",
     cv_chart_title: "Результаты 5-Fold Кросс-Валидации",
@@ -197,7 +241,6 @@ function setLanguage(lang) {
   currentLang = lang;
   localStorage.setItem('cardiorisk_lang', lang);
 
-  // Update language button styles
   ['uz', 'en', 'ru'].forEach(l => {
     const btn = document.getElementById(`lang-btn-${l}`);
     if (btn) {
@@ -209,7 +252,6 @@ function setLanguage(lang) {
     }
   });
 
-  // Update text of elements with data-i18n
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
     if (key && I18N[lang][key]) {
@@ -233,6 +275,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initTabs();
   await loadModelData();
   setLanguage(currentLang);
+  initThreeHeart();
   initEcgMonitor();
   initEnhancedCharts();
   initDefaultEMRData();
@@ -293,6 +336,8 @@ function initTabs() {
         setTimeout(initEnhancedCharts, 50);
       } else if (targetId === 'tab-emr') {
         renderEMRRecords();
+      } else if (targetId === 'tab-calculator') {
+        setTimeout(resizeThreeCanvas, 50);
       }
     });
   });
@@ -310,14 +355,683 @@ async function loadModelData() {
   }
 }
 
-// 5. Form Elementlarini Render Qilish
+// 5. 3D Interaktiv Yurak Anatomiyasi (Three.js WebGL Engine)
+let threeScene, threeCamera, threeRenderer, threeHeartGroup;
+let ladStenosisMesh, rcaStenosisMesh, lcxStenosisMesh;
+let threeAutoRotate = true;
+let isThreeDragging = false;
+let previousMousePosition = { x: 0, y: 0 };
+
+function initThreeHeart() {
+  const container = document.getElementById('three-heart-container');
+  if (!container || typeof THREE === 'undefined') return;
+
+  const w = container.clientWidth || 400;
+  const h = container.clientHeight || 288;
+
+  threeScene = new THREE.Scene();
+
+  threeCamera = new THREE.PerspectiveCamera(45, w / h, 0.1, 1000);
+  threeCamera.position.set(0, 0, 7.5);
+
+  threeRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  threeRenderer.setSize(w, h);
+  threeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  const spinner = document.getElementById('three-loading-spinner');
+  if (spinner) spinner.style.display = 'none';
+
+  container.appendChild(threeRenderer.domElement);
+
+  // Lights
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+  threeScene.add(ambientLight);
+
+  const keyLight = new THREE.DirectionalLight(0xffffff, 1.2);
+  keyLight.position.set(5, 5, 5);
+  threeScene.add(keyLight);
+
+  const fillLight = new THREE.DirectionalLight(0xe11d48, 0.8);
+  fillLight.position.set(-5, -2, -2);
+  threeScene.add(fillLight);
+
+  // Heart Group
+  threeHeartGroup = new THREE.Group();
+
+  // Materials
+  const heartMaterial = new THREE.MeshStandardMaterial({
+    color: 0x9f1239,
+    roughness: 0.35,
+    metalness: 0.25,
+    emissive: 0x4c0519,
+    emissiveIntensity: 0.3
+  });
+
+  const aortaMaterial = new THREE.MeshStandardMaterial({
+    color: 0xbe123c,
+    roughness: 0.3,
+    metalness: 0.2
+  });
+
+  const pulmonaryMaterial = new THREE.MeshStandardMaterial({
+    color: 0x0284c7,
+    roughness: 0.35,
+    metalness: 0.15
+  });
+
+  const arteryMaterial = new THREE.MeshStandardMaterial({
+    color: 0xf43f5e,
+    roughness: 0.2,
+    emissive: 0xe11d48,
+    emissiveIntensity: 0.4
+  });
+
+  // Ventricles Geometry (Compound Sculpted Heart)
+  const leftVentGeo = new THREE.SphereGeometry(1.4, 32, 32);
+  leftVentGeo.scale(0.85, 1.4, 0.75);
+  const leftVent = new THREE.Mesh(leftVentGeo, heartMaterial);
+  leftVent.position.set(0.3, -0.2, 0);
+  leftVent.rotation.z = -0.15;
+  threeHeartGroup.add(leftVent);
+
+  const rightVentGeo = new THREE.SphereGeometry(1.2, 32, 32);
+  rightVentGeo.scale(0.85, 1.3, 0.7);
+  const rightVent = new THREE.Mesh(rightVentGeo, heartMaterial);
+  rightVent.position.set(-0.45, -0.15, 0.1);
+  rightVent.rotation.z = 0.15;
+  threeHeartGroup.add(rightVent);
+
+  // Aortic Arch (Curved Tube)
+  const aortaCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0.1, 0.8, 0.1),
+    new THREE.Vector3(0.2, 1.6, 0.2),
+    new THREE.Vector3(-0.3, 2.1, 0.1),
+    new THREE.Vector3(-0.9, 1.7, -0.2),
+    new THREE.Vector3(-0.8, 0.6, -0.4)
+  ]);
+  const aortaGeo = new THREE.TubeGeometry(aortaCurve, 32, 0.32, 16, false);
+  const aortaMesh = new THREE.Mesh(aortaGeo, aortaMaterial);
+  threeHeartGroup.add(aortaMesh);
+
+  // Pulmonary Trunk & Arteries
+  const pulmCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(-0.3, 0.6, 0.3),
+    new THREE.Vector3(-0.2, 1.3, 0.35),
+    new THREE.Vector3(0.4, 1.5, 0.1),
+    new THREE.Vector3(0.9, 1.4, -0.3)
+  ]);
+  const pulmGeo = new THREE.TubeGeometry(pulmCurve, 32, 0.28, 16, false);
+  const pulmMesh = new THREE.Mesh(pulmGeo, pulmonaryMaterial);
+  threeHeartGroup.add(pulmMesh);
+
+  // Coronary Arteries (LAD - Left Anterior Descending Artery)
+  const ladCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0.0, 0.7, 0.6),
+    new THREE.Vector3(-0.05, 0.2, 0.8),
+    new THREE.Vector3(0.05, -0.5, 0.72),
+    new THREE.Vector3(0.15, -1.2, 0.45)
+  ]);
+  const ladGeo = new THREE.TubeGeometry(ladCurve, 32, 0.08, 12, false);
+  const ladMesh = new THREE.Mesh(ladGeo, arteryMaterial);
+  threeHeartGroup.add(ladMesh);
+
+  // Coronary Artery (RCA - Right Coronary Artery)
+  const rcaCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(-0.4, 0.7, 0.4),
+    new THREE.Vector3(-0.9, 0.1, 0.5),
+    new THREE.Vector3(-0.8, -0.6, 0.3),
+    new THREE.Vector3(-0.4, -1.1, -0.1)
+  ]);
+  const rcaGeo = new THREE.TubeGeometry(rcaCurve, 32, 0.07, 12, false);
+  const rcaMesh = new THREE.Mesh(rcaGeo, arteryMaterial);
+  threeHeartGroup.add(rcaMesh);
+
+  // Stenosis Markers (Glowing Spheres at LAD, RCA, and LCx)
+  const stenosisGeo = new THREE.SphereGeometry(0.16, 16, 16);
+  const stenosisMat = new THREE.MeshBasicMaterial({ color: 0xff0044 });
+
+  ladStenosisMesh = new THREE.Mesh(stenosisGeo, stenosisMat);
+  ladStenosisMesh.position.set(-0.05, 0.18, 0.82);
+  threeHeartGroup.add(ladStenosisMesh);
+
+  rcaStenosisMesh = new THREE.Mesh(stenosisGeo, new THREE.MeshBasicMaterial({ color: 0xf59e0b }));
+  rcaStenosisMesh.position.set(-0.88, 0.08, 0.52);
+  threeHeartGroup.add(rcaStenosisMesh);
+
+  lcxStenosisMesh = new THREE.Mesh(stenosisGeo, new THREE.MeshBasicMaterial({ color: 0xd946ef }));
+  lcxStenosisMesh.position.set(0.65, 0.35, 0.4);
+  threeHeartGroup.add(lcxStenosisMesh);
+
+  threeScene.add(threeHeartGroup);
+
+  // Mouse & Touch Controls
+  setupThreeInteractions(container);
+
+  // Animation Loop
+  animateThreeHeart();
+}
+
+function setupThreeInteractions(container) {
+  const dom = threeRenderer.domElement;
+
+  dom.addEventListener('mousedown', e => {
+    isThreeDragging = true;
+    previousMousePosition = { x: e.clientX, y: e.clientY };
+  });
+
+  window.addEventListener('mouseup', () => {
+    isThreeDragging = false;
+  });
+
+  dom.addEventListener('mousemove', e => {
+    if (!isThreeDragging || !threeHeartGroup) return;
+    const deltaX = e.clientX - previousMousePosition.x;
+    const deltaY = e.clientY - previousMousePosition.y;
+
+    threeHeartGroup.rotation.y += deltaX * 0.01;
+    threeHeartGroup.rotation.x += deltaY * 0.01;
+
+    previousMousePosition = { x: e.clientX, y: e.clientY };
+  });
+
+  // Touch controls for mobile
+  dom.addEventListener('touchstart', e => {
+    if (e.touches.length === 1) {
+      isThreeDragging = true;
+      previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }
+  }, { passive: true });
+
+  window.addEventListener('touchend', () => {
+    isThreeDragging = false;
+  });
+
+  dom.addEventListener('touchmove', e => {
+    if (!isThreeDragging || !threeHeartGroup || e.touches.length !== 1) return;
+    const deltaX = e.touches[0].clientX - previousMousePosition.x;
+    const deltaY = e.touches[0].clientY - previousMousePosition.y;
+
+    threeHeartGroup.rotation.y += deltaX * 0.012;
+    threeHeartGroup.rotation.x += deltaY * 0.012;
+
+    previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  }, { passive: true });
+
+  // Zoom
+  dom.addEventListener('wheel', e => {
+    e.preventDefault();
+    threeCamera.position.z = Math.max(4.5, Math.min(11, threeCamera.position.z + e.deltaY * 0.005));
+  }, { passive: false });
+}
+
+function toggle3DAutoRotate() {
+  threeAutoRotate = !threeAutoRotate;
+  const btn = document.getElementById('btn-3d-rotate');
+  if (btn) {
+    btn.className = threeAutoRotate 
+      ? "px-2 py-1 rounded text-[11px] font-semibold bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-300 transition"
+      : "px-2 py-1 rounded text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition";
+  }
+}
+
+function reset3DCamera() {
+  if (threeCamera && threeHeartGroup) {
+    threeCamera.position.set(0, 0, 7.5);
+    threeHeartGroup.rotation.set(0, 0, 0);
+  }
+}
+
+function resizeThreeCanvas() {
+  const container = document.getElementById('three-heart-container');
+  if (!container || !threeRenderer || !threeCamera) return;
+  const w = container.clientWidth;
+  const h = container.clientHeight;
+  threeCamera.aspect = w / h;
+  threeCamera.updateProjectionMatrix();
+  threeRenderer.setSize(w, h);
+}
+
+window.addEventListener('resize', resizeThreeCanvas);
+
+let threeClock = 0;
+function animateThreeHeart() {
+  requestAnimationFrame(animateThreeHeart);
+
+  const raw = getCurrentVector()?.raw || { thalach: 145, ca: 1 };
+  const bpm = raw.thalach || 145;
+  const freq = (bpm / 60) * Math.PI * 2;
+
+  threeClock += 0.016;
+
+  if (threeHeartGroup) {
+    if (threeAutoRotate && !isThreeDragging) {
+      threeHeartGroup.rotation.y += 0.006;
+    }
+
+    // Dynamic Systolic/Diastolic Heartbeat Scale
+    const pulse = Math.sin(threeClock * freq);
+    const beatScale = 1.0 + Math.pow(Math.max(0, pulse), 3) * 0.07;
+    threeHeartGroup.scale.set(beatScale, beatScale, beatScale);
+
+    // Update Stenosis Visuals based on CA and CP
+    const ca = raw.ca || 0;
+    if (ladStenosisMesh) {
+      ladStenosisMesh.visible = ca >= 1;
+      ladStenosisMesh.scale.setScalar(1.0 + Math.sin(threeClock * 6) * 0.3);
+    }
+    if (rcaStenosisMesh) {
+      rcaStenosisMesh.visible = ca >= 2;
+      rcaStenosisMesh.scale.setScalar(1.0 + Math.cos(threeClock * 6) * 0.3);
+    }
+    if (lcxStenosisMesh) {
+      lcxStenosisMesh.visible = ca >= 3;
+      lcxStenosisMesh.scale.setScalar(1.0 + Math.sin(threeClock * 7) * 0.3);
+    }
+  }
+
+  if (threeRenderer && threeScene && threeCamera) {
+    threeRenderer.render(threeScene, threeCamera);
+  }
+}
+
+// 6. Cardiovascular Bio-Age (Yurak Biologik Yoshi)
+function updateBioAge(raw, riskPct) {
+  const passportAgeEl = document.getElementById('display-passport-age');
+  const bioAgeEl = document.getElementById('display-bio-age');
+  const bioDiffEl = document.getElementById('display-bio-diff');
+  const msgEl = document.getElementById('bio-age-status-message');
+
+  const age = raw.age || 55;
+  let delta = 0;
+
+  // BP delta
+  if (raw.trestbps >= 160) delta += 7;
+  else if (raw.trestbps >= 140) delta += 4;
+  else if (raw.trestbps >= 130) delta += 2;
+  else if (raw.trestbps <= 118) delta -= 2;
+
+  // Cholesterol delta
+  if (raw.chol >= 270) delta += 6;
+  else if (raw.chol >= 240) delta += 3;
+  else if (raw.chol <= 180) delta -= 2;
+
+  // Blood sugar
+  if (raw.fbs === 1) delta += 3;
+
+  // Ischemia & ST depression
+  if (raw.oldpeak >= 2.5) delta += 8;
+  else if (raw.oldpeak >= 1.0) delta += 4;
+  else if (raw.oldpeak <= 0.2) delta -= 2;
+
+  // Calcified vessels
+  if (raw.ca > 0) delta += raw.ca * 3;
+
+  // Angina
+  if (raw.exang === 1) delta += 4;
+
+  // Aerobic fitness reserve
+  if (raw.thalach >= 165) delta -= 4;
+  else if (raw.thalach <= 120) delta += 4;
+
+  const bioAge = Math.max(20, Math.min(95, age + delta));
+
+  if (passportAgeEl) passportAgeEl.textContent = age;
+  if (bioAgeEl) {
+    bioAgeEl.textContent = bioAge;
+    bioAgeEl.className = delta > 0 ? "text-3xl font-black font-mono text-rose-400" : "text-3xl font-black font-mono text-emerald-400";
+  }
+
+  if (bioDiffEl) {
+    if (delta > 0) {
+      bioDiffEl.textContent = `+${delta} yosh`;
+      bioDiffEl.className = "text-xs font-bold px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40 font-mono";
+    } else if (delta < 0) {
+      bioDiffEl.textContent = `${delta} yosh`;
+      bioDiffEl.className = "text-xs font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-mono";
+    } else {
+      bioDiffEl.textContent = "Mos";
+      bioDiffEl.className = "text-xs font-bold px-2 py-0.5 rounded bg-slate-500/20 text-slate-300 border border-slate-500/40 font-mono";
+    }
+  }
+
+  if (msgEl) {
+    if (delta > 5) {
+      msgEl.innerHTML = currentLang === 'ru'
+        ? `⚠️ Биологический возраст сосудов опережает паспортный на <b>${delta} лет</b>. Высокий износ кардиоваскулярной системы.`
+        : (currentLang === 'en'
+          ? `⚠️ Vascular bio-age is <b>+${delta} years</b> older than chronological age. Significant arterial stiffness detected.`
+          : `⚠️ Bemorning yurak-qon tomir tizimi pasport yoshiga nisbatan <b>${delta} yilga</b> tezroq eskirgan. Profilaktika zarur.`);
+    } else if (delta < 0) {
+      msgEl.innerHTML = currentLang === 'ru'
+        ? `✓ Сердце биологически моложе паспортного возраста на <b>${Math.abs(delta)} года</b>. Превосходный кардиорезерв!`
+        : (currentLang === 'en'
+          ? `✓ Heart bio-age is <b>${Math.abs(delta)} years younger</b> than chronological age. Superb aerobic cardiovascular condition!`
+          : `✓ Yurak biologik jihatdan pasport yoshidan <b>${Math.abs(delta)} yilga</b> yoshroq! Salomatlik darajasi a'lo.`);
+    } else {
+      msgEl.innerHTML = currentLang === 'ru'
+        ? `✓ Биологический и паспортный возраст сбалансированы.`
+        : (currentLang === 'en'
+          ? `✓ Biological and chronological age are in equilibrium.`
+          : `✓ Biologik va pasport yoshi to'liq mutanosib.`);
+    }
+  }
+
+  // Update 3D Stenosis Badge
+  const stBadge = document.getElementById('three-stenosis-badge');
+  if (stBadge) {
+    const ca = raw.ca || 0;
+    stBadge.textContent = ca > 0 ? `Stenoz: ${ca} ta yirik tomir toraygan` : "Stenoz yo'q: Qon oqimi me'yorda";
+    stBadge.className = ca > 0 
+      ? "font-mono font-bold text-xs px-2.5 py-1 rounded bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-900"
+      : "font-mono font-bold text-xs px-2.5 py-1 rounded bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900";
+  }
+}
+
+// 7. Ovozli AI Kardiolog (Text-to-Speech & Speech-to-Text)
+let isSpeaking = false;
+let isDictating = false;
+let speechRecognizer = null;
+
+function toggleVoiceSpeech() {
+  if (typeof window.speechSynthesis === 'undefined') {
+    alert("Brauzeringiz ovozli sintezni qo'llab-quvvatlamaydi.");
+    return;
+  }
+
+  if (isSpeaking) {
+    window.speechSynthesis.cancel();
+    isSpeaking = false;
+    updateVoiceIcon(false);
+    return;
+  }
+
+  const current = getCurrentVector();
+  if (!current) return;
+
+  const raw = current.raw;
+  const scaled = scaleVector(current.vector);
+  const ens = predictEnsemble(scaled, raw);
+  const riskPct = Math.round(ens.prob * 100);
+
+  let speechText = "";
+  let langCode = "uz-UZ";
+
+  if (currentLang === 'ru') {
+    langCode = "ru-RU";
+    speechText = `Клинический диагноз Искусственного Интеллекта. Риск сердечно-сосудистых заболеваний составляет ${riskPct} процентов. `;
+    if (riskPct >= 75) {
+      speechText += "Обнаружен критический риск ишемии. Рекомендована срочная госпитализация и коронарография.";
+    } else if (riskPct >= 50) {
+      speechText += "Высокий риск. Рекомендован тредмил-тест, мониторинг давления и липидная терапия.";
+    } else {
+      speechText += "Показатели стабильны. Сердечно-сосудистая функция в норме.";
+    }
+  } else if (currentLang === 'en') {
+    langCode = "en-US";
+    speechText = `Artificial Intelligence diagnostic assessment. Consensus cardiovascular risk is ${riskPct} percent. `;
+    if (riskPct >= 75) {
+      speechText += "Critical ischemia likelihood. Urgent coronary catheterization and cardiology referral recommended.";
+    } else if (riskPct >= 50) {
+      speechText += "Elevated risk profile. Pharmacotherapy and clinical stress testing are strongly indicated.";
+    } else {
+      speechText += "Cardiovascular parameters are stable and within physiological limits.";
+    }
+  } else {
+    langCode = "uz-UZ";
+    speechText = `Sun'iy Intellekt kardiologik tahlili. Bemorning yurak kasalligi xavfi ${riskPct} foizni tashkil etmoqda. `;
+    if (riskPct >= 75) {
+      speechText += "Miokard ishemiyasi bo'yicha kritik xavf aniqlandi. Zudlik bilan kardiolog ko'rigidan o'tish va koronarografiya qilish tavsiya etiladi.";
+    } else if (riskPct >= 50) {
+      speechText += "Xavf yuqori guruhda. Qon bosimi va xolesterinni qat'iy nazoratga olish, dori terapiyasi zarur.";
+    } else {
+      speechText += "Ko'rsatkichlar me'yorida. Yurak-qon tomir tizimi funksiyasi barqaror.";
+    }
+  }
+
+  const utterance = new SpeechSynthesisUtterance(speechText);
+  utterance.lang = langCode;
+  utterance.rate = 1.0;
+
+  utterance.onstart = () => {
+    isSpeaking = true;
+    updateVoiceIcon(true);
+  };
+  utterance.onend = () => {
+    isSpeaking = false;
+    updateVoiceIcon(false);
+  };
+  utterance.onerror = () => {
+    isSpeaking = false;
+    updateVoiceIcon(false);
+  };
+
+  window.speechSynthesis.speak(utterance);
+}
+
+function updateVoiceIcon(speaking) {
+  const icon = document.getElementById('voice-read-icon');
+  const btn = document.getElementById('btn-voice-read');
+  if (icon && btn) {
+    if (speaking) {
+      icon.className = "fa-solid fa-stop text-rose-500 animate-pulse";
+      btn.classList.add('bg-rose-100', 'dark:bg-rose-900/60');
+    } else {
+      icon.className = "fa-solid fa-volume-high";
+      btn.classList.remove('bg-rose-100', 'dark:bg-rose-900/60');
+    }
+  }
+}
+
+function toggleVoiceDictation() {
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRec) {
+    alert("Brauzeringiz ovozli diktovkani qo'llab-quvvatlamaydi (Chrome tavsiya etiladi).");
+    return;
+  }
+
+  const icon = document.getElementById('voice-dictate-icon');
+  const btn = document.getElementById('btn-voice-dictate');
+
+  if (isDictating && speechRecognizer) {
+    speechRecognizer.stop();
+    isDictating = false;
+    if (icon) icon.className = "fa-solid fa-microphone";
+    if (btn) btn.classList.remove('bg-rose-100', 'text-rose-600', 'border-rose-400');
+    return;
+  }
+
+  speechRecognizer = new SpeechRec();
+  speechRecognizer.continuous = false;
+  speechRecognizer.interimResults = false;
+  speechRecognizer.lang = currentLang === 'ru' ? 'ru-RU' : (currentLang === 'en' ? 'en-US' : 'uz-UZ');
+
+  speechRecognizer.onstart = () => {
+    isDictating = true;
+    if (icon) icon.className = "fa-solid fa-microphone-lines text-rose-500 animate-ping";
+    if (btn) btn.classList.add('bg-rose-100', 'text-rose-600', 'border-rose-400');
+  };
+
+  speechRecognizer.onresult = event => {
+    const transcript = event.results[0][0].transcript.toLowerCase();
+    parseVoiceParameters(transcript);
+  };
+
+  speechRecognizer.onend = () => {
+    isDictating = false;
+    if (icon) icon.className = "fa-solid fa-microphone";
+    if (btn) btn.classList.remove('bg-rose-100', 'text-rose-600', 'border-rose-400');
+  };
+
+  speechRecognizer.start();
+}
+
+function parseVoiceParameters(text) {
+  // Voice command extraction: e.g. "yosh 60", "bosim 140", "xolesterin 240", "puls 160"
+  const numbers = text.match(/\d+/g);
+  if (!numbers) return;
+
+  if (text.includes("yosh") || text.includes("age") || text.includes("возраст")) {
+    const ageVal = parseInt(numbers[0]);
+    if (ageVal >= 25 && ageVal <= 80) handleSliderChange('age', ageVal);
+  } else if (text.includes("bosim") || text.includes("давление") || text.includes("pressure")) {
+    const bpVal = parseInt(numbers[0]);
+    if (bpVal >= 90 && bpVal <= 200) handleSliderChange('trestbps', bpVal);
+  } else if (text.includes("xolesterin") || text.includes("холестерин") || text.includes("cholesterol")) {
+    const cholVal = parseInt(numbers[0]);
+    if (cholVal >= 120 && cholVal <= 550) handleSliderChange('chol', cholVal);
+  } else if (text.includes("puls") || text.includes("пульс") || text.includes("heart")) {
+    const hrVal = parseInt(numbers[0]);
+    if (hrVal >= 70 && hrVal <= 210) handleSliderChange('thalach', hrVal);
+  }
+}
+
+// 8. Virtual Farmakoterapiya Simulyatori
+function applyPharmaAdjustments(raw) {
+  const adjusted = { ...raw };
+
+  const statin = document.getElementById('drug-statin')?.checked;
+  const beta = document.getElementById('drug-beta')?.checked;
+  const ace = document.getElementById('drug-ace')?.checked;
+  const aspirin = document.getElementById('drug-aspirin')?.checked;
+
+  if (statin) {
+    adjusted.chol = Math.max(130, adjusted.chol - 65);
+  }
+  if (beta) {
+    adjusted.thalach = Math.max(65, adjusted.thalach - 15);
+    adjusted.trestbps = Math.max(105, adjusted.trestbps - 12);
+  }
+  if (ace) {
+    adjusted.trestbps = Math.max(100, adjusted.trestbps - 18);
+  }
+  if (aspirin) {
+    adjusted.oldpeak = Math.max(0, adjusted.oldpeak - 0.4);
+  }
+
+  return adjusted;
+}
+
+function resetPharmaDrugs() {
+  ['drug-statin', 'drug-beta', 'drug-ace', 'drug-aspirin'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.checked = false;
+  });
+  runPrediction();
+}
+
+// 9. Bruce Protocol Virtual Treadmill Stress-Test Simulator
+let treadmillRunning = false;
+let treadmillStage = 0;
+let treadmillSeconds = 0;
+let treadmillInterval = null;
+
+const BRUCE_STAGES = [
+  { name_uz: "0-Bosqich: Tinch holat", speed: 0.0, incline: 0, hrBonus: 0 },
+  { name_uz: "1-Bosqich: Yengil yurish", speed: 2.7, incline: 10, hrBonus: 25 },
+  { name_uz: "2-Bosqich: Tez yurish", speed: 4.0, incline: 12, hrBonus: 50 },
+  { name_uz: "3-Bosqich: Yugurish (Maks)", speed: 5.5, incline: 14, hrBonus: 75 }
+];
+
+function toggleStressTest() {
+  if (treadmillRunning) {
+    pauseStressTest();
+  } else {
+    startStressTest();
+  }
+}
+
+function startStressTest() {
+  treadmillRunning = true;
+  const btn = document.getElementById('btn-stress-toggle');
+  const icon = document.getElementById('stress-icon');
+  const btnText = document.getElementById('stress-btn-text');
+  const sprite = document.getElementById('runner-sprite');
+
+  if (btn) btn.className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white transition shadow-sm";
+  if (icon) icon.className = "fa-solid fa-pause mr-1";
+  if (btnText) btnText.textContent = "To'xtatish";
+  if (sprite) sprite.className = "inline-block text-lg animate-runner";
+
+  treadmillInterval = setInterval(() => {
+    treadmillSeconds++;
+    const mins = Math.floor(treadmillSeconds / 60);
+    const secs = treadmillSeconds % 60;
+    const timeStr = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    document.getElementById('stress-time-display').textContent = timeStr;
+
+    // Advance Stage every 4 seconds of demo simulation time
+    if (treadmillSeconds % 5 === 0 && treadmillStage < 3) {
+      treadmillStage++;
+      updateTreadmillUI();
+    }
+  }, 1000);
+
+  updateTreadmillUI();
+}
+
+function pauseStressTest() {
+  treadmillRunning = false;
+  if (treadmillInterval) clearInterval(treadmillInterval);
+
+  const btn = document.getElementById('btn-stress-toggle');
+  const icon = document.getElementById('stress-icon');
+  const btnText = document.getElementById('stress-btn-text');
+  const sprite = document.getElementById('runner-sprite');
+
+  if (btn) btn.className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white transition shadow-sm";
+  if (icon) icon.className = "fa-solid fa-play mr-1";
+  if (btnText) btnText.textContent = "Davom ettirish";
+  if (sprite) sprite.className = "inline-block text-lg";
+}
+
+function resetStressTest() {
+  pauseStressTest();
+  treadmillStage = 0;
+  treadmillSeconds = 0;
+  document.getElementById('stress-time-display').textContent = "00:00";
+  document.getElementById('stress-btn-text').textContent = "Testni Boshlash";
+  updateTreadmillUI();
+}
+
+function updateTreadmillUI() {
+  const stage = BRUCE_STAGES[treadmillStage] || BRUCE_STAGES[0];
+  const stageNameEl = document.getElementById('stress-stage-name');
+  const speedEl = document.getElementById('stress-speed-val');
+  const inclineEl = document.getElementById('stress-incline-val');
+  const hrEl = document.getElementById('stress-hr-val');
+  const alarmBox = document.getElementById('stress-alarm-box');
+  const alarmText = document.getElementById('stress-alarm-text');
+
+  if (stageNameEl) stageNameEl.textContent = stage.name_uz;
+  if (speedEl) speedEl.textContent = `${stage.speed} km/h`;
+  if (inclineEl) inclineEl.textContent = `${stage.incline}%`;
+
+  const raw = getCurrentVector()?.raw || { thalach: 145, oldpeak: 1.0, exang: 0 };
+  const currentExercisingHR = Math.min(210, 75 + stage.hrBonus);
+  if (hrEl) hrEl.textContent = `${currentExercisingHR} BPM`;
+
+  if (alarmBox && alarmText) {
+    if (treadmillStage >= 2 && (raw.oldpeak >= 1.5 || raw.exang === 1)) {
+      alarmBox.className = "p-2.5 rounded-lg text-[11px] bg-rose-950/70 border border-rose-800 text-rose-300 flex items-center space-x-2 animate-pulse";
+      alarmText.innerHTML = "<b>⚠️ Ishemiya chegarasi:</b> EKGda ST depressiyasi chuqurlashdi va stenokardik og'riq xavfi paydo bo'ldi. Test to'xtatildi.";
+      pauseStressTest();
+    } else if (treadmillStage === 3) {
+      alarmBox.className = "p-2.5 rounded-lg text-[11px] bg-emerald-950/70 border border-emerald-800 text-emerald-300 flex items-center space-x-2";
+      alarmText.innerHTML = "<b>✓ Maksimal yuklama:</b> Bemor Bruce protokolining barcha bosqichlarini barqaror yakunladi.";
+    } else {
+      alarmBox.className = "p-2.5 rounded-lg text-[11px] bg-slate-900 text-slate-400 flex items-center space-x-2";
+      alarmText.textContent = treadmillRunning ? "Yuklama oshirilmoqda, EKG ritmi telemetriyada kuzatilmoqda..." : "Testni boshlash uchun 'Testni Boshlash' tugmasini bosing.";
+    }
+  }
+}
+
+// 10. Form Elementlarini Render Qilish
 function renderFormInputs() {
   if (!MODEL_DATA || !MODEL_DATA.features) return;
   const container = document.getElementById('form-fields-container');
   if (!container) return;
 
   const currentValues = getCurrentVector()?.raw || {};
-
   container.innerHTML = '';
 
   MODEL_DATA.features.forEach(f => {
@@ -380,11 +1094,13 @@ function renderFormInputs() {
 
 function handleSliderChange(id, val) {
   const display = document.getElementById(`val-${id}`);
+  const slider = document.getElementById(`slider-${id}`);
   if (display) display.textContent = val;
+  if (slider) slider.value = val;
   runPrediction();
 }
 
-// 6. Klinik Profillar (Presets)
+// 11. Klinik Profillar (Presets)
 const CLINICAL_PRESETS = [
   {
     id: "healthy",
@@ -457,7 +1173,7 @@ function resetForm() {
   applyPreset('healthy');
 }
 
-// 7. Joriy Vektor va Parametrlarni Olish
+// 12. Joriy Vektor va Parametrlarni Olish
 function getCurrentVector() {
   if (!MODEL_DATA || !MODEL_DATA.features) return null;
 
@@ -483,7 +1199,6 @@ function getCurrentVector() {
   return { vector: values, raw: rawDict };
 }
 
-// 8. StandardScaler orqali masshtablash
 function scaleVector(vec) {
   if (!MODEL_DATA || !MODEL_DATA.scaler) return vec;
   const mean = MODEL_DATA.scaler.mean;
@@ -496,7 +1211,7 @@ function scaleVector(vec) {
   });
 }
 
-// 9. KNN Inference Engine
+// 13. ML Inference Engine (KNN, SVM, Ensemble)
 function predictKNN(scaledVec) {
   if (!MODEL_DATA || !MODEL_DATA.inference_engine || !MODEL_DATA.inference_engine.knn_train_points) {
     return { prob: 0.5, pred: 0 };
@@ -534,11 +1249,9 @@ function predictKNN(scaledVec) {
 
   const prob = totalWeight > 0 ? positiveWeight / totalWeight : 0.5;
   const pred = prob >= 0.5 ? 1 : 0;
-
   return { prob, pred };
 }
 
-// 10. SVM Inference Engine (RBF Kernel)
 function predictSVM(scaledVec) {
   if (!MODEL_DATA || !MODEL_DATA.inference_engine || !MODEL_DATA.inference_engine.svm_support_vectors) {
     return { prob: 0.5, pred: 0 };
@@ -573,16 +1286,13 @@ function predictSVM(scaledVec) {
 
   prob = Math.max(0.01, Math.min(0.99, prob));
   const pred = prob >= 0.5 ? 1 : 0;
-
   return { prob, pred, decision };
 }
 
-// 11. SOTA Ensemble Soft-Voting Engine
 function predictEnsemble(scaledVec, raw) {
   const knn = predictKNN(scaledVec);
   const svm = predictSVM(scaledVec);
 
-  // Gradient Boosting & Tree-based heuristic log-odds
   let gbScore = 0.0;
   if (raw.cp === 0) gbScore += 0.25;
   if (raw.oldpeak >= 2.0) gbScore += 0.25;
@@ -592,20 +1302,12 @@ function predictEnsemble(scaledVec, raw) {
   if (raw.thalach < 130) gbScore += 0.12;
   const gbProb = Math.min(0.98, Math.max(0.02, 1 / (1 + Math.exp(- (gbScore - 0.45) * 3))));
 
-  // Weighted Soft-Voting Consensus
   const ensembleProb = (svm.prob * 0.35) + (gbProb * 0.35) + (knn.prob * 0.30);
   const pred = ensembleProb >= 0.5 ? 1 : 0;
 
-  return {
-    prob: ensembleProb,
-    pred: pred,
-    knnProb: knn.prob,
-    svmProb: svm.prob,
-    gbProb: gbProb
-  };
+  return { prob: ensembleProb, pred, knnProb: knn.prob, svmProb: svm.prob, gbProb };
 }
 
-// 12. Framingham 10-Year Cardiovascular Disease Risk Score (ATP III)
 function calculateFramingham(raw) {
   let points = 0;
   const isMale = raw.sex === 1;
@@ -615,7 +1317,6 @@ function calculateFramingham(raw) {
   const diabetes = raw.fbs === 1;
 
   if (isMale) {
-    // Male Age Points
     if (age <= 34) points += -9;
     else if (age <= 39) points += -4;
     else if (age <= 44) points += 0;
@@ -627,20 +1328,16 @@ function calculateFramingham(raw) {
     else if (age <= 74) points += 12;
     else points += 13;
 
-    // Male Cholesterol
     if (chol >= 280) points += 3;
     else if (chol >= 240) points += 2;
     else if (chol >= 200) points += 1;
 
-    // Male BP
     if (bp >= 160) points += 3;
     else if (bp >= 140) points += 2;
     else if (bp >= 130) points += 1;
-    else if (bp < 120) points += 0;
 
     if (diabetes) points += 2;
   } else {
-    // Female Age Points
     if (age <= 34) points += -7;
     else if (age <= 39) points += -3;
     else if (age <= 44) points += 0;
@@ -651,21 +1348,17 @@ function calculateFramingham(raw) {
     else if (age <= 69) points += 12;
     else points += 14;
 
-    // Female Cholesterol
     if (chol >= 280) points += 4;
     else if (chol >= 240) points += 3;
     else if (chol >= 200) points += 1;
 
-    // Female BP
     if (bp >= 160) points += 4;
     else if (bp >= 140) points += 3;
     else if (bp >= 130) points += 2;
-    else if (bp < 120) points += 0;
 
     if (diabetes) points += 4;
   }
 
-  // Convert points to 10-year risk percentage
   let riskPct = 1;
   if (points <= 0) riskPct = 1;
   else if (points <= 4) riskPct = 2;
@@ -680,7 +1373,7 @@ function calculateFramingham(raw) {
   return { points, riskPct };
 }
 
-// 13. Real-Time ECG Bedside Cardiomonitor Engine (Canvas + Web Audio)
+// 14. Real-Time ECG Bedside Monitor
 let ecgCanvas = null;
 let ecgCtx = null;
 let ecgAnimId = null;
@@ -694,7 +1387,6 @@ function initEcgMonitor() {
   ecgCanvas = document.getElementById('ecg-canvas');
   if (!ecgCanvas) return;
   ecgCtx = ecgCanvas.getContext('2d');
-
   drawEcgGrid();
   startEcgLoop();
 }
@@ -707,7 +1399,6 @@ function drawEcgGrid() {
   ecgCtx.fillStyle = '#02120b';
   ecgCtx.fillRect(0, 0, w, h);
 
-  // 10px minor grid, 50px major grid
   ecgCtx.lineWidth = 0.5;
   ecgCtx.strokeStyle = 'rgba(16, 185, 129, 0.12)';
   for (let x = 0; x < w; x += 10) {
@@ -741,8 +1432,7 @@ function drawEcgGrid() {
 
 function startEcgLoop() {
   if (ecgAnimId) cancelAnimationFrame(ecgAnimId);
-
-  const speed = 2.5; // pixels per frame
+  const speed = 2.5;
 
   function step() {
     if (!ecgCtx || !ecgCanvas) return;
@@ -751,16 +1441,21 @@ function startEcgLoop() {
     const h = ecgCanvas.height;
     const midY = h / 2;
 
-    const current = getCurrentVector()?.raw || { thalach: 140, oldpeak: 1.0, restecg: 1, slope: 1 };
-    const bpm = Math.max(50, Math.min(220, current.thalach || 140));
+    const current = getCurrentVector()?.raw || { thalach: 140, oldpeak: 1.0, restecg: 1 };
+    let bpm = Math.max(50, Math.min(220, current.thalach || 140));
+
+    // If treadmill stress test is running, add treadmill bonus HR
+    if (treadmillRunning) {
+      const stage = BRUCE_STAGES[treadmillStage] || BRUCE_STAGES[0];
+      bpm = Math.min(210, 75 + stage.hrBonus);
+    }
+
     const oldpeak = current.oldpeak || 0;
     const restecg = current.restecg || 0;
 
-    // Erase beam ahead
     ecgCtx.fillStyle = '#02120b';
     ecgCtx.fillRect(ecgX, 0, 16, h);
 
-    // Redraw faint grid in erased slot
     ecgCtx.lineWidth = 0.5;
     ecgCtx.strokeStyle = 'rgba(16, 185, 129, 0.12)';
     for (let gx = Math.floor(ecgX / 10) * 10; gx <= ecgX + 16; gx += 10) {
@@ -772,50 +1467,36 @@ function startEcgLoop() {
       }
     }
 
-    // Mathematical P-Q-R-S-T wave calculation
-    const cyclePixels = (60 / bpm) * 180; // pixels for one heartbeat
-    const phase = (ecgX % cyclePixels) / cyclePixels; // 0 to 1
+    const cyclePixels = (60 / bpm) * 180;
+    const phase = (ecgX % cyclePixels) / cyclePixels;
 
-    let waveY = 0; // mV offset
-
+    let waveY = 0;
     if (phase > 0.08 && phase < 0.16) {
-      // P wave
       waveY = Math.sin((phase - 0.08) / 0.08 * Math.PI) * 0.18;
     } else if (phase >= 0.19 && phase < 0.22) {
-      // Q wave
       waveY = -0.15;
     } else if (phase >= 0.22 && phase < 0.27) {
-      // R peak
       const rRatio = (phase - 0.22) / 0.05;
       const lvhBonus = restecg === 2 ? 0.45 : 0;
       waveY = (1.2 + lvhBonus) * (1 - Math.abs(rRatio - 0.5) * 2);
 
-      // Audio Beep Trigger on R peak
       if (ecgAudioEnabled && Date.now() - lastBeepTime > (60000 / bpm) * 0.7) {
         playBeepSound();
         lastBeepTime = Date.now();
       }
     } else if (phase >= 0.27 && phase < 0.31) {
-      // S wave
       waveY = -0.32;
     } else if (phase >= 0.31 && phase < 0.48) {
-      // ST Segment (Oldpeak Depression!)
-      const depressionOffset = -(oldpeak * 0.15); // mm of depression translated to canvas mV
-      waveY = depressionOffset;
+      waveY = -(oldpeak * 0.15);
     } else if (phase >= 0.48 && phase < 0.65) {
-      // T wave (Inverted if restecg == 1 or severe ischemia)
       const tSign = (restecg === 1 || oldpeak >= 2.0) ? -1 : 1;
-      waveY = tSign * Math.sin((phase - 0.48) / 0.17 * Math.PI) * 0.32;
-      // Add persistent ST depression level
-      waveY -= (oldpeak * 0.08);
+      waveY = tSign * Math.sin((phase - 0.48) / 0.17 * Math.PI) * 0.32 - (oldpeak * 0.08);
     } else {
-      // Isoelectric baseline
       waveY = 0;
     }
 
     const currentY = midY - (waveY * 50);
 
-    // Draw glowing phosphor line
     ecgCtx.lineWidth = 2.2;
     ecgCtx.shadowBlur = 6;
     ecgCtx.shadowColor = '#10b981';
@@ -845,26 +1526,14 @@ function toggleEcgAudio() {
   const btn = document.getElementById('sound-toggle-btn');
 
   if (ecgAudioEnabled) {
-    if (!ecgAudioCtx) {
-      ecgAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    if (ecgAudioCtx.state === 'suspended') {
-      ecgAudioCtx.resume();
-    }
-    if (icon) {
-      icon.className = "fa-solid fa-volume-high text-emerald-500 animate-pulse";
-    }
-    if (btn) {
-      btn.classList.add('bg-emerald-50', 'dark:bg-emerald-950/40', 'border-emerald-500/50');
-    }
+    if (!ecgAudioCtx) ecgAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (ecgAudioCtx.state === 'suspended') ecgAudioCtx.resume();
+    if (icon) icon.className = "fa-solid fa-volume-high text-emerald-500 animate-pulse";
+    if (btn) btn.classList.add('bg-emerald-50', 'dark:bg-emerald-950/40', 'border-emerald-500/50');
     playBeepSound();
   } else {
-    if (icon) {
-      icon.className = "fa-solid fa-volume-xmark text-slate-400";
-    }
-    if (btn) {
-      btn.classList.remove('bg-emerald-50', 'dark:bg-emerald-950/40', 'border-emerald-500/50');
-    }
+    if (icon) icon.className = "fa-solid fa-volume-xmark text-slate-400";
+    if (btn) btn.classList.remove('bg-emerald-50', 'dark:bg-emerald-950/40', 'border-emerald-500/50');
   }
 }
 
@@ -873,16 +1542,12 @@ function playBeepSound() {
   try {
     const osc = ecgAudioCtx.createOscillator();
     const gain = ecgAudioCtx.createGain();
-
     osc.type = 'sine';
-    osc.frequency.setValueAtTime(880, ecgAudioCtx.currentTime); // 880 Hz standard hospital telemetry beep
-
+    osc.frequency.setValueAtTime(880, ecgAudioCtx.currentTime);
     gain.gain.setValueAtTime(0.08, ecgAudioCtx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, ecgAudioCtx.currentTime + 0.06);
-
     osc.connect(gain);
     gain.connect(ecgAudioCtx.destination);
-
     osc.start();
     osc.stop(ecgAudioCtx.currentTime + 0.06);
   } catch (e) {
@@ -890,7 +1555,7 @@ function playBeepSound() {
   }
 }
 
-// 14. Asosiy Bashorat Funksiyasi (Real-vaqtda barcha panellarni yangilash)
+// 15. Asosiy Bashorat Funksiyasi (Real-vaqtda barcha panellarni yangilash)
 function runPrediction() {
   const current = getCurrentVector();
   if (!current) return;
@@ -898,24 +1563,42 @@ function runPrediction() {
   const raw = current.raw;
   const scaled = scaleVector(current.vector);
 
-  // Ensemble prediction
+  // Baseline Ensemble prediction
   const ensRes = predictEnsemble(scaled, raw);
-  const riskPct = Math.round(ensRes.prob * 100);
+  const baselineRiskPct = Math.round(ensRes.prob * 100);
+
+  // Virtual Pharmacology Simulation
+  const pharmaRaw = applyPharmaAdjustments(raw);
+  const pharmaVector = MODEL_DATA.features.map(f => pharmaRaw[f.id] ?? f.default);
+  const pharmaScaled = scaleVector(pharmaVector);
+  const pharmaEns = predictEnsemble(pharmaScaled, pharmaRaw);
+  const pharmaRiskPct = Math.round(pharmaEns.prob * 100);
+
+  const pharmaReduction = Math.max(0, baselineRiskPct - pharmaRiskPct);
+  const pharmaBadge = document.getElementById('pharma-reduction-badge');
+  if (pharmaBadge) {
+    pharmaBadge.textContent = pharmaReduction > 0 ? `-${pharmaReduction}% xavf kamayishi` : "0%";
+    pharmaBadge.className = pharmaReduction > 0 ? "font-mono font-black text-sm text-emerald-500 animate-pulse" : "font-mono font-black text-sm text-indigo-400";
+  }
+
+  // Active risk percentage used for display
+  const effectiveRiskPct = pharmaReduction > 0 ? pharmaRiskPct : baselineRiskPct;
 
   // Framingham score
   const framingham = calculateFramingham(raw);
 
   // Updates
-  updateGauge(riskPct);
-  updateEcgReadout(raw, riskPct);
-  updateFraminghamCard(framingham, riskPct);
-  updateExplainableAIWaterfall(raw, riskPct);
+  updateGauge(effectiveRiskPct);
+  updateBioAge(raw, effectiveRiskPct);
+  updateEcgReadout(raw, effectiveRiskPct);
+  updateFraminghamCard(framingham, effectiveRiskPct);
+  updateExplainableAIWaterfall(raw, effectiveRiskPct);
   updateWhatIfSimulator(raw, ensRes.prob);
-  updateClinicalAdvice(raw, riskPct);
+  updateClinicalAdvice(raw, effectiveRiskPct);
   updatePatientRadar(raw);
+  updatePCAPatientPosition(scaled, raw);
 }
 
-// 15. EKG Raqamli Ko'rsatkichlarini Yangilash
 function updateEcgReadout(raw, riskPct) {
   const bpmDisplay = document.getElementById('ecg-bpm-display');
   const rhythmBadge = document.getElementById('ecg-rhythm-badge');
@@ -945,7 +1628,6 @@ function updateEcgReadout(raw, riskPct) {
   }
 }
 
-// 16. 4-Darajali Gauge Stratifikatsiyasi
 function updateGauge(riskPct) {
   const gaugeFill = document.getElementById('gauge-fill');
   const gaugeText = document.getElementById('gauge-percent');
@@ -1006,7 +1688,6 @@ function updateGauge(riskPct) {
   }
 }
 
-// 17. Framingham ATP III vs AI Comparison Card
 function updateFraminghamCard(framingham, aiPct) {
   const fPctEl = document.getElementById('framingham-percent');
   const fCatEl = document.getElementById('framingham-category');
@@ -1042,45 +1723,33 @@ function updateFraminghamCard(framingham, aiPct) {
   }
 }
 
-// 18. Explainable AI (SHAP-Style Feature Attribution Waterfall)
 function updateExplainableAIWaterfall(raw, patientRiskPct) {
   const container = document.getElementById('xai-waterfall-container');
   const insightEl = document.getElementById('xai-top-insight');
   if (!container || !MODEL_DATA || !MODEL_DATA.feature_importance) return;
 
-  const healthyBaseline = MODEL_DATA.radar_baselines.healthy; // [age, trestbps, chol, thalach, oldpeak, ca]
-  const radarFeatures = MODEL_DATA.radar_baselines.features;
-
   const attributions = [];
 
-  // 1. Ko'krak qafasi og'rig'i (cp)
   if (raw.cp === 0) attributions.push({ name: currentLang === 'ru' ? 'Типичная стенокардия (cp)' : (currentLang === 'en' ? 'Typical Angina (cp)' : "Tipik stenokardiya (cp)"), impact: +22, direction: 'danger' });
   else if (raw.cp === 3) attributions.push({ name: currentLang === 'ru' ? 'Бессимптомная боль' : (currentLang === 'en' ? 'Asymptomatic pain' : "Asimptomatik og'riq"), impact: -8, direction: 'safe' });
 
-  // 2. ST Depressiyasi (oldpeak)
   if (raw.oldpeak >= 2.0) attributions.push({ name: currentLang === 'ru' ? `Депрессия ST (${raw.oldpeak}mm)` : (currentLang === 'en' ? `ST Depression (${raw.oldpeak}mm)` : `ST Depressiyasi (${raw.oldpeak}mm)`), impact: Math.min(25, Math.round(raw.oldpeak * 7)), direction: 'danger' });
   else if (raw.oldpeak <= 0.2) attributions.push({ name: currentLang === 'ru' ? 'Изолиния ST в норме' : (currentLang === 'en' ? 'Normal ST baseline' : "ST segmenti me'yorda"), impact: -7, direction: 'safe' });
 
-  // 3. Tomirlar stenozi (ca)
   if (raw.ca > 0) attributions.push({ name: currentLang === 'ru' ? `Стеноз сосудов (${raw.ca} сос.)` : (currentLang === 'en' ? `Vessels Fluoroscopy (${raw.ca})` : `Zararlangan tomirlar (${raw.ca} ta)`), impact: Math.min(24, raw.ca * 9), direction: 'danger' });
   else attributions.push({ name: currentLang === 'ru' ? 'Чистые сосуды (ca=0)' : (currentLang === 'en' ? 'Clear vessels (ca=0)' : "Toza qon tomirlari (ca=0)"), impact: -10, direction: 'safe' });
 
-  // 4. Qon bosimi (trestbps)
   if (raw.trestbps >= 145) attributions.push({ name: currentLang === 'ru' ? `Гипертония (${raw.trestbps} mmHg)` : (currentLang === 'en' ? `Hypertension (${raw.trestbps} mmHg)` : `Gipertoniya (${raw.trestbps} mm Hg)`), impact: +12, direction: 'danger' });
   else if (raw.trestbps <= 120) attributions.push({ name: currentLang === 'ru' ? `Оптимальное АД (${raw.trestbps})` : (currentLang === 'en' ? `Optimal BP (${raw.trestbps})` : `Optimal bosim (${raw.trestbps})`), impact: -6, direction: 'safe' });
 
-  // 5. Maksimal puls zaxirasi (thalach)
   if (raw.thalach < 125) attributions.push({ name: currentLang === 'ru' ? `Низкий резерв ЧСС (${raw.thalach})` : (currentLang === 'en' ? `Low HR reserve (${raw.thalach})` : `Past puls zaxirasi (${raw.thalach})`), impact: +14, direction: 'danger' });
   else if (raw.thalach >= 165) attributions.push({ name: currentLang === 'ru' ? `Высокая толерантность (${raw.thalach})` : (currentLang === 'en' ? `High HR tolerance (${raw.thalach})` : `Yuqori puls zaxirasi (${raw.thalach})`), impact: -12, direction: 'safe' });
 
-  // 6. Xolesterin (chol)
   if (raw.chol >= 260) attributions.push({ name: currentLang === 'ru' ? `Холестерин (${raw.chol} mg/dl)` : (currentLang === 'en' ? `Hypercholesterolemia (${raw.chol})` : `Giperxolesterinemiya (${raw.chol})`), impact: +11, direction: 'danger' });
   else if (raw.chol <= 185) attributions.push({ name: currentLang === 'ru' ? `Норма холестерина (${raw.chol})` : (currentLang === 'en' ? `Healthy lipids (${raw.chol})` : `Me'yordagi xolesterin (${raw.chol})`), impact: -8, direction: 'safe' });
 
-  // 7. Mashq stenokardiyasi (exang)
   if (raw.exang === 1) attributions.push({ name: currentLang === 'ru' ? 'Стенокардия напряжения' : (currentLang === 'en' ? 'Exercise Angina' : "Mashq stenokardiyasi"), impact: +13, direction: 'danger' });
 
-  // Sort by impact descending
   attributions.sort((a, b) => b.impact - a.impact);
 
   container.innerHTML = attributions.slice(0, 5).map(attr => {
@@ -1120,7 +1789,6 @@ function updateExplainableAIWaterfall(raw, patientRiskPct) {
   }
 }
 
-// 19. "What-If" Interaktiv Profilaktika Simulyatori
 function updateWhatIfSimulator(raw, currentProb) {
   const container = document.getElementById('whatif-container');
   if (!container || !MODEL_DATA) return;
@@ -1165,14 +1833,7 @@ function applyOptimalTherapy() {
   const current = getCurrentVector()?.raw;
   if (!current) return;
 
-  const target = {
-    ...current,
-    trestbps: 120,
-    chol: 185,
-    oldpeak: 0.2,
-    exang: 0
-  };
-
+  const target = { ...current, trestbps: 120, chol: 185, oldpeak: 0.2, exang: 0 };
   Object.entries(target).forEach(([key, val]) => {
     const slider = document.getElementById(`slider-${key}`);
     const display = document.getElementById(`val-${key}`);
@@ -1187,13 +1848,11 @@ function applyOptimalTherapy() {
   runPrediction();
 }
 
-// 20. Klinik Harakat Tavsiyalari
 function updateClinicalAdvice(raw, riskPct) {
   const list = document.getElementById('clinical-advice-list');
   if (!list) return;
 
   const items = [];
-
   if (riskPct >= 75) {
     items.push({ icon: 'fa-truck-medical text-rose-500', text: currentLang === 'ru' ? 'Экстренная консультация кардиолога и селективная коронарография' : (currentLang === 'en' ? 'Urgent cardiology evaluation and coronary angiography' : "Zudlik bilan kardiolog ko'rigi va selektiv koronarografiya") });
     items.push({ icon: 'fa-pills text-indigo-500', text: currentLang === 'ru' ? 'Антиишемическая терапия (статины, бета-блокаторы, дезагреганты)' : (currentLang === 'en' ? 'Aggressive medical therapy (Statins, Beta-blockers, Antiplatelets)' : "Statinlar, beta-blokatorlar va antiaqregantlar terapiyasi") });
@@ -1215,7 +1874,6 @@ function updateClinicalAdvice(raw, riskPct) {
   `).join('');
 }
 
-// 21. 360° Radar Diagrammasi
 function updatePatientRadar(raw) {
   if (!MODEL_DATA || !MODEL_DATA.radar_baselines) return;
   const ctx = document.getElementById('patient-radar-chart');
@@ -1225,15 +1883,7 @@ function updatePatientRadar(raw) {
   const labels = base[`labels_${currentLang}`] || base.labels_uz;
   const healthyNorm = base.healthy;
 
-  const currentValues = [
-    raw.age,
-    raw.trestbps,
-    raw.chol,
-    raw.thalach,
-    raw.oldpeak,
-    raw.ca
-  ];
-
+  const currentValues = [raw.age, raw.trestbps, raw.chol, raw.thalach, raw.oldpeak, raw.ca];
   const maxScales = [80, 200, 350, 210, 6.0, 3];
   const patientNorm = currentValues.map((v, i) => Math.min(100, Math.round((v / maxScales[i]) * 100)));
   const benchmarkNorm = healthyNorm.map((v, i) => Math.min(100, Math.round((v / maxScales[i]) * 100)));
@@ -1275,196 +1925,214 @@ function updatePatientRadar(raw) {
           r: {
             angleLines: { color: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)' },
             grid: { color: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)' },
-            pointLabels: {
-              color: isDark ? '#94a3b8' : '#64748b',
-              font: { size: 10, weight: 'bold' }
-            },
+            pointLabels: { color: isDark ? '#94a3b8' : '#64748b', font: { size: 10, weight: 'bold' } },
             ticks: { display: false }
           }
         },
         plugins: {
-          legend: {
-            position: 'top',
-            labels: {
-              color: isDark ? '#e2e8f0' : '#334155',
-              font: { size: 11, weight: 'bold' }
-            }
-          }
+          legend: { position: 'top', labels: { color: isDark ? '#e2e8f0' : '#334155', font: { size: 11, weight: 'bold' } } }
         }
       }
     });
   }
 }
 
-// 22. Modellarni Taqqoslash Diagrammalari (5 Model: Multi-ROC, CV, Importance, K-Tune)
+// 16. PCA 2D Bemorlar Klasteri (Unsupervised Scatter Plot)
+function initPCAChart() {
+  const ctx = document.getElementById('pca-cluster-chart');
+  if (!ctx || !MODEL_DATA || !MODEL_DATA.pca) return;
+
+  if (charts.pca) charts.pca.destroy();
+
+  const isDark = document.documentElement.classList.contains('dark');
+  const textColor = isDark ? '#e2e8f0' : '#334155';
+  const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)';
+
+  const healthyPoints = MODEL_DATA.pca.points.filter(p => p.target === 0);
+  const diseasedPoints = MODEL_DATA.pca.points.filter(p => p.target === 1);
+
+  charts.pca = new Chart(ctx, {
+    type: 'scatter',
+    data: {
+      datasets: [
+        {
+          label: currentLang === 'ru' ? 'Здоровые (0)' : (currentLang === 'en' ? 'Healthy (0)' : "Sog'lom (0)"),
+          data: healthyPoints,
+          backgroundColor: 'rgba(16, 185, 129, 0.65)',
+          pointRadius: 4,
+          pointHoverRadius: 6
+        },
+        {
+          label: currentLang === 'ru' ? 'Высокий риск (1)' : (currentLang === 'en' ? 'High Risk (1)' : "Xavf Yuqori (1)"),
+          data: diseasedPoints,
+          backgroundColor: 'rgba(244, 63, 94, 0.65)',
+          pointRadius: 4,
+          pointHoverRadius: 6
+        },
+        {
+          label: currentLang === 'ru' ? 'Текущий пациент' : (currentLang === 'en' ? 'Current Patient' : "Joriy Bemor"),
+          data: [{ x: 0, y: 0 }],
+          backgroundColor: '#fbbf24',
+          borderColor: '#b45309',
+          borderWidth: 3,
+          pointRadius: 9,
+          pointHoverRadius: 11,
+          pointStyle: 'star'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          title: { display: true, text: `PC1 (Asosiy O'q: ${MODEL_DATA.pca.variance_ratio[0]}% dispersiya)`, color: textColor, font: { size: 10 } },
+          grid: { color: gridColor },
+          ticks: { color: textColor, font: { size: 10 } }
+        },
+        y: {
+          title: { display: true, text: `PC2 (Ikkinchi O'q: ${MODEL_DATA.pca.variance_ratio[1]}% dispersiya)`, color: textColor, font: { size: 10 } },
+          grid: { color: gridColor },
+          ticks: { color: textColor, font: { size: 10 } }
+        }
+      },
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 10, color: textColor, font: { size: 10 } } },
+        tooltip: {
+          callbacks: {
+            label: context => {
+              const pt = context.raw;
+              if (context.datasetIndex === 2) return `Joriy Bemor: PC1=${pt.x.toFixed(2)}, PC2=${pt.y.toFixed(2)}`;
+              return `Bemor #${pt.id || ''}: Yoshi=${pt.age}, Bosim=${pt.trestbps || pt.bp}, Xol=${pt.chol} [${pt.target === 1 ? 'Xavf Yuqori' : 'Sog\'lom'}]`;
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+function updatePCAPatientPosition(scaledVec, raw) {
+  if (!MODEL_DATA || !MODEL_DATA.pca || !MODEL_DATA.pca.components || !charts.pca) return;
+
+  const comp0 = MODEL_DATA.pca.components[0];
+  const comp1 = MODEL_DATA.pca.components[1];
+
+  let px = 0;
+  let py = 0;
+  for (let j = 0; j < scaledVec.length; j++) {
+    px += scaledVec[j] * comp0[j];
+    py += scaledVec[j] * comp1[j];
+  }
+
+  // Update current patient point
+  charts.pca.data.datasets[2].data = [{ x: round(px, 3), y: round(py, 3) }];
+  charts.pca.update('none');
+
+  // Find 3 Nearest Neighbors in PCA space
+  const distances = MODEL_DATA.pca.points.map((p, idx) => {
+    const dx = p.x - px;
+    const dy = p.y - py;
+    return { id: idx + 1, dist: Math.sqrt(dx * dx + dy * dy), target: p.target, age: p.age, bp: p.trestbps || p.bp, chol: p.chol };
+  });
+
+  distances.sort((a, b) => a.dist - b.dist);
+  const nearest = distances.slice(0, 3);
+
+  const textEl = document.getElementById('pca-nearest-neighbors-text');
+  if (textEl) {
+    textEl.innerHTML = `
+      <b class="text-slate-800 dark:text-slate-200">Eng o'xshash 3 ta bemor tarixi (Klinik analoglar):</b> 
+      ${nearest.map((n, i) => `
+        <span class="inline-block mr-3">
+          #${n.id} (${n.age} yosh, ${n.bp} mmHg, ${n.chol} mg/dl) ➔ 
+          <span class="font-bold ${n.target === 1 ? 'text-rose-500' : 'text-emerald-500'}">${n.target === 1 ? 'Xavf Yuqori' : 'Sog\'lom'}</span>
+        </span>
+      `).join('')}
+    `;
+  }
+}
+
+function round(val, dec) {
+  return Number(Math.round(val + 'e' + dec) + 'e-' + dec);
+}
+
+// 17. Modellarni Taqqoslash Diagrammalari
 function initEnhancedCharts() {
   if (!MODEL_DATA) return;
   const isDark = document.documentElement.classList.contains('dark');
   const textColor = isDark ? '#e2e8f0' : '#334155';
   const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)';
 
-  // 1. Multi-line ROC Curves (5 Models!)
+  initPCAChart();
+
+  // Multi-line ROC Curves
   const rocCtx = document.getElementById('multi-roc-chart');
   if (rocCtx && MODEL_DATA.roc_curves) {
     if (charts.roc) charts.roc.destroy();
-
     const curves = MODEL_DATA.roc_curves;
     charts.roc = new Chart(rocCtx, {
       type: 'line',
       data: {
         datasets: [
-          {
-            label: 'Ensemble Soft-Voting (AUC: 90.7%)',
-            data: curves.ensemble || [],
-            borderColor: '#f43f5e',
-            borderWidth: 3,
-            tension: 0.1,
-            pointRadius: 0
-          },
-          {
-            label: 'Gradient Boosting (AUC: 88.0%)',
-            data: curves.gb || [],
-            borderColor: '#10b981',
-            borderWidth: 2,
-            tension: 0.1,
-            pointRadius: 0
-          },
-          {
-            label: 'Random Forest (AUC: 89.8%)',
-            data: curves.rf || [],
-            borderColor: '#f59e0b',
-            borderWidth: 2,
-            tension: 0.1,
-            pointRadius: 0
-          },
-          {
-            label: 'SVM RBF (AUC: 88.1%)',
-            data: curves.svm || [],
-            borderColor: '#6366f1',
-            borderWidth: 2,
-            tension: 0.1,
-            pointRadius: 0
-          },
-          {
-            label: 'KNN k=7 (AUC: 88.2%)',
-            data: curves.knn || [],
-            borderColor: '#3b82f6',
-            borderWidth: 2,
-            tension: 0.1,
-            pointRadius: 0
-          },
-          {
-            label: 'Tasodifiy (Random Chance: 50%)',
-            data: [{x: 0, y: 0}, {x: 1, y: 1}],
-            borderColor: '#94a3b8',
-            borderDash: [4, 4],
-            borderWidth: 1.5,
-            pointRadius: 0
-          }
+          { label: 'Ensemble Soft-Voting (AUC: 90.7%)', data: curves.ensemble || [], borderColor: '#f43f5e', borderWidth: 3, tension: 0.1, pointRadius: 0 },
+          { label: 'Gradient Boosting (AUC: 88.0%)', data: curves.gb || [], borderColor: '#10b981', borderWidth: 2, tension: 0.1, pointRadius: 0 },
+          { label: 'Random Forest (AUC: 89.8%)', data: curves.rf || [], borderColor: '#f59e0b', borderWidth: 2, tension: 0.1, pointRadius: 0 },
+          { label: 'SVM RBF (AUC: 88.1%)', data: curves.svm || [], borderColor: '#6366f1', borderWidth: 2, tension: 0.1, pointRadius: 0 },
+          { label: 'KNN k=7 (AUC: 88.2%)', data: curves.knn || [], borderColor: '#3b82f6', borderWidth: 2, tension: 0.1, pointRadius: 0 },
+          { label: 'Tasodifiy (50%)', data: [{x: 0, y: 0}, {x: 1, y: 1}], borderColor: '#94a3b8', borderDash: [4, 4], borderWidth: 1.5, pointRadius: 0 }
         ]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         scales: {
-          x: {
-            type: 'linear',
-            min: 0,
-            max: 1,
-            title: { display: true, text: 'False Positive Rate (1 - Specificity)', color: textColor, font: { size: 10 } },
-            grid: { color: gridColor },
-            ticks: { color: textColor, font: { size: 10 } }
-          },
-          y: {
-            min: 0,
-            max: 1,
-            title: { display: true, text: 'True Positive Rate (Recall / Sensitivity)', color: textColor, font: { size: 10 } },
-            grid: { color: gridColor },
-            ticks: { color: textColor, font: { size: 10 } }
-          }
+          x: { type: 'linear', min: 0, max: 1, title: { display: true, text: 'False Positive Rate (1 - Specificity)', color: textColor, font: { size: 10 } }, grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 } } },
+          y: { min: 0, max: 1, title: { display: true, text: 'True Positive Rate (Recall / Sensitivity)', color: textColor, font: { size: 10 } }, grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 } } }
         },
-        plugins: {
-          legend: { position: 'bottom', labels: { boxWidth: 12, color: textColor, font: { size: 10 } } }
-        }
+        plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, color: textColor, font: { size: 10 } } } }
       }
     });
   }
 
-  // 2. 5-Fold Stratified Cross-Validation Chart
+  // 5-Fold Cross Validation Chart
   const cvCtx = document.getElementById('cross-validation-chart');
   if (cvCtx && MODEL_DATA.models) {
     if (charts.cv) charts.cv.destroy();
-
     const m = MODEL_DATA.models;
     charts.cv = new Chart(cvCtx, {
       type: 'bar',
       data: {
         labels: ['Fold 1', 'Fold 2', 'Fold 3', 'Fold 4', 'Fold 5'],
         datasets: [
-          {
-            label: 'Ensemble (Avg 81.4%)',
-            data: m.ensemble.metrics.cv_folds,
-            backgroundColor: 'rgba(244, 63, 94, 0.85)',
-            borderRadius: 4
-          },
-          {
-            label: 'Gradient Boosting (Avg 80.4%)',
-            data: m.gb.metrics.cv_folds,
-            backgroundColor: 'rgba(16, 185, 129, 0.85)',
-            borderRadius: 4
-          },
-          {
-            label: 'Random Forest (Avg 83.7%)',
-            data: m.rf.metrics.cv_folds,
-            backgroundColor: 'rgba(245, 158, 11, 0.85)',
-            borderRadius: 4
-          },
-          {
-            label: 'SVM (Avg 81.1%)',
-            data: m.svm.metrics.cv_folds,
-            backgroundColor: 'rgba(99, 102, 241, 0.85)',
-            borderRadius: 4
-          }
+          { label: 'Ensemble (Avg 81.4%)', data: m.ensemble.metrics.cv_folds, backgroundColor: 'rgba(244, 63, 94, 0.85)', borderRadius: 4 },
+          { label: 'Gradient Boosting (Avg 80.4%)', data: m.gb.metrics.cv_folds, backgroundColor: 'rgba(16, 185, 129, 0.85)', borderRadius: 4 },
+          { label: 'Random Forest (Avg 83.7%)', data: m.rf.metrics.cv_folds, backgroundColor: 'rgba(245, 158, 11, 0.85)', borderRadius: 4 },
+          { label: 'SVM (Avg 81.1%)', data: m.svm.metrics.cv_folds, backgroundColor: 'rgba(99, 102, 241, 0.85)', borderRadius: 4 }
         ]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         scales: {
-          y: {
-            min: 65,
-            max: 100,
-            grid: { color: gridColor },
-            ticks: { color: textColor, font: { size: 10 } }
-          },
-          x: {
-            grid: { display: false },
-            ticks: { color: textColor, font: { size: 10 } }
-          }
+          y: { min: 65, max: 100, grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 } } },
+          x: { grid: { display: false }, ticks: { color: textColor, font: { size: 10 } } }
         },
-        plugins: {
-          legend: { position: 'bottom', labels: { boxWidth: 10, color: textColor, font: { size: 10 } } }
-        }
+        plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, color: textColor, font: { size: 10 } } } }
       }
     });
   }
 
-  // 3. Feature Importance Chart
+  // Feature Importance Chart
   const fiCtx = document.getElementById('feature-importance-chart');
   if (fiCtx && MODEL_DATA.feature_importance) {
     if (charts.fi) charts.fi.destroy();
-
     const topFeatures = MODEL_DATA.feature_importance.slice(0, 8);
     charts.fi = new Chart(fiCtx, {
       type: 'bar',
       data: {
         labels: topFeatures.map(f => f[`name_${currentLang}`] || f.name_uz),
-        datasets: [{
-          label: 'Ensemble Og\'irlik Indeksi (%)',
-          data: topFeatures.map(f => f.ensemble_weight),
-          backgroundColor: '#f59e0b',
-          borderRadius: 4
-        }]
+        datasets: [{ label: 'Ensemble Og\'irlik Indeksi (%)', data: topFeatures.map(f => f.ensemble_weight), backgroundColor: '#f59e0b', borderRadius: 4 }]
       },
       options: {
         indexAxis: 'y',
@@ -1479,32 +2147,18 @@ function initEnhancedCharts() {
     });
   }
 
-  // 4. KNN k-Tuning Chart
+  // KNN k-Tuning Chart
   const ktuneCtx = document.getElementById('k-tuning-chart');
   if (ktuneCtx && MODEL_DATA.k_tuning_curve) {
     if (charts.ktune) charts.ktune.destroy();
-
     const curve = MODEL_DATA.k_tuning_curve;
     charts.ktune = new Chart(ktuneCtx, {
       type: 'line',
       data: {
         labels: curve.map(c => `k=${c.k}`),
         datasets: [
-          {
-            label: 'Accuracy (%)',
-            data: curve.map(c => c.accuracy),
-            borderColor: '#3b82f6',
-            backgroundColor: 'rgba(59, 130, 246, 0.1)',
-            fill: true,
-            tension: 0.3
-          },
-          {
-            label: 'F1-Score (%)',
-            data: curve.map(c => c.f1_score),
-            borderColor: '#10b981',
-            borderDash: [3, 3],
-            tension: 0.3
-          }
+          { label: 'Accuracy (%)', data: curve.map(c => c.accuracy), borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.3 },
+          { label: 'F1-Score (%)', data: curve.map(c => c.f1_score), borderColor: '#10b981', borderDash: [3, 3], tension: 0.3 }
         ]
       },
       options: {
@@ -1530,7 +2184,7 @@ function updateAllChartsTheme() {
   initEnhancedCharts();
 }
 
-// 23. EMR & Dinamika Tahlili (Electronic Medical Records)
+// 18. EMR & Dinamika Tahlili
 const EMR_STORAGE_KEY = 'cardiorisk_emr_v3';
 
 function initDefaultEMRData() {
@@ -1585,7 +2239,6 @@ function saveCurrentPatientToEMR() {
     currentLang === 'ru' ? "Введите имя или номер пациента:" : (currentLang === 'en' ? "Enter Patient Name or ID:" : "Bemor ismi yoki ID raqamini kiriting:"),
     `Bemor #${Math.floor(100 + Math.random() * 900)}`
   );
-
   if (!patientName) return;
 
   const scaled = scaleVector(current.vector);
@@ -1675,7 +2328,6 @@ function loadPatientToCalculator(patientId) {
     if (select) select.value = val;
   });
 
-  // Switch to Tab 1
   document.querySelector('[data-tab-target="tab-calculator"]')?.click();
   runPrediction();
 }
@@ -1719,9 +2371,7 @@ function runDynamicsComparison() {
   container.innerHTML = `
     <div class="space-y-3">
       <div class="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-700">
-        <span class="text-xs font-bold text-slate-800 dark:text-slate-200">
-          ${p1.name} ➔ ${p2.name}
-        </span>
+        <span class="text-xs font-bold text-slate-800 dark:text-slate-200">${p1.name} ➔ ${p2.name}</span>
         <span class="px-2.5 py-1 rounded-md text-xs font-mono font-black ${isImprovement ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300' : 'bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300'}">
           ${riskDelta > 0 ? '+' : ''}${riskDelta}% Xavf O'zgarishi
         </span>
@@ -1760,7 +2410,7 @@ function runDynamicsComparison() {
   `;
 }
 
-// 24. UCI Cleveland Dataset Jadvali
+// 19. UCI Cleveland Dataset Jadvali
 function setTableFilter(filter) {
   currentTableFilter = filter;
   currentTablePage = 1;
@@ -1886,7 +2536,7 @@ function loadDatasetRowToForm(row) {
   runPrediction();
 }
 
-// 25. Tibbiy Diagnostika Hisobotini Chop Etish (PDF Export)
+// 20. Tibbiy Diagnostika Hisobotini Chop Etish (PDF Export)
 function printDiagnosticReport() {
   const current = getCurrentVector();
   if (!current) return;

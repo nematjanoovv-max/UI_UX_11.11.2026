@@ -1,6 +1,6 @@
 ================================================================================
 LOYIHA NOMI:
-07. Yurak kasalliklari xavfini bashorat qilish (CardioRisk AI Pro Max Enterprise)
+07. Yurak kasalliklari xavfini bashorat qilish (CardioRisk AI Pro Max Enterprise v3.5)
 ================================================================================
 
 1. GITHUB REPOZITORIY HAVOLASI:
@@ -13,55 +13,35 @@ https://heart-disease-risk-prediction-eosin.vercel.app
 https://www.kaggle.com/code/i0nlyaziz/heart-disease-risk-prediction
 
 ================================================================================
-TUBDAN O'ZGARTIRILGAN VA OPTIMALLASHTIRILGAN 5 TA SOTA MACHINE LEARNING MODELI:
-- Ma'lumotlar to'plami: UCI Machine Learning Repository (Cleveland Clinic, 302 bemor)
+TUBDAN KENGAYTIRILGAN VA AMALGA OSHIRILGAN YANGI IMKONIYATLAR:
+1. 3D Interaktiv Yurak Anatomiyasi (Three.js WebGL):
+   - 360° aylanuvchi 3D yurak modeli.
+   - Bemor pulsi chastotasida urib turuvchi sistola/diastola animatsiyasi.
+   - ca parametriga bog'liq holda LAD, RCA va LCx koronar tomirlaridagi stenoz
+     torayishlarining qizil/sariq nur bilan vizual miltillab turishi.
 
-1. Ensemble Soft-Voting (SOTA Meta-Model):
-   * ROC-AUC: 90.69% (Eng yuqori diskriminatsiya)
-   * Recall (Sezuvchanlik): 96.97% (33 tadan 32 ta bemor aniqlandi)
-   * F1-Score: 86.49%
-   * Aniqlik (Accuracy): 83.61%
-   * 5-Fold Stratified Kross-Validatsiya: 81.42% (±5.97%)
+2. Yurakning Biologik Yoshi (Cardiovascular Bio-Age):
+   - Pasport yoshi va qon tomirlar, qon bosimi hamda xolesterin eskirishi
+     natijasidagi haqiqiy biologik yurak yoshining qiyosiy ko'rsatkichi.
 
-2. Gradient Boosting:
-   * Aniqlik (Accuracy): 86.89% (Eng yuqori to'g'ri tashxis)
-   * Recall (Sezuvchanlik): 96.97%
-   * F1-Score: 88.89%
-   * ROC-AUC: 87.99%
-   * 5-Fold Stratified Kross-Validatsiya: 80.44% (±5.04%)
+3. Ovozli AI Kardiolog (Web Speech API):
+   - Tashxisni ovozda tinglash (TTS): O'zbek, Rus va Ingliz tillarida ovozli xulosa.
+   - Ovozli diktovka (STT): Mikrofonga aytilgan parametrlarni avtomatik formaga yozish.
 
-3. Support Vector Machine (SVM RBF):
-   * Aniqlik (Accuracy): 83.61%
-   * Recall (Sezuvchanlik): 93.94%
-   * Specificity (O'ziga xoslik): 71.43%
-   * F1-Score: 86.11%
-   * ROC-AUC: 88.10%
-   * 5-Fold Stratified Kross-Validatsiya: 81.09% (±6.09%)
+4. Virtual Farmakoterapiya Simulyatori (Digital Twin):
+   - Statinlar, Beta-blokatorlar, ACE ingibitorlari va Aspirin ta'sirini virtual
+     qo'llab, xavf necha foizga pasayishini real vaqtda ko'rish.
 
-4. Random Forest (100 Trees):
-   * 5-Fold Stratified Kross-Validatsiya: 83.74% (Eng yuqori umumlashtirish)
-   * ROC-AUC: 89.83%
-   * Recall: 93.94%
-   * Aniqlik: 80.33%
+5. Virtual Kardiologik Stress-Test (Bruce Protocol Treadmill):
+   - Bosqichma-bosqich tezlik va nishablikni oshirib borish, ishemiya chegarasini
+     va ST depressiyasi boshlanishini avtomatik aniqlash.
 
-5. K-Nearest Neighbors (KNN, k=7):
-   * Aniqlik (Accuracy): 81.97%
-   * Recall: 90.91%
-   * ROC-AUC: 88.20%
-   * 5-Fold Stratified Kross-Validatsiya: 81.07% (±7.86%)
+6. PCA 2D Bemorlar Klasteri Xaritasi:
+   - 13 o'lchamli ma'lumotlarni 2D fazoga tushirish, 302 ta bemor ichida joriy bemor
+     o'rnini yulduzcha sifatida ko'rsatish va 3 ta eng yaqin bemor analoglarini topish.
 
-================================================================================
-TUBDAN KIRITILGAN YANGI INTERFAOL VA KLINIK IMKONIYATLAR:
-1. Jonli EKG Kardiomonitori: HTML5 Canvas asosidagi real kardiomonitor, P-Q-R-S-T
-   to'lqinlari bemorning pulsi, ST depressiyasi va EKG anomaliyalariga to'liq bog'langan,
-   Web Audio API puls ovozi bilan ta'minlangan.
-2. Explainable AI (SHAP Waterfall): Har bir bemor uchun kasallik xavfiga eng katta
-   ta'sir qilgan omillarning aniq foiz taqsimoti (+% va -%).
-3. Klassik Kardiologiya vs AI: Amerika Kardiologiya Assotsiatsiyasining Framingham
-   ATP III 10-yillik xavf indeksi bilan Sun'iy Intellekt bevosita xavfi qiyosi.
-4. EMR va Dinamika Tahlili: Bemorlarning tashriflarini saqlash, terapiyadan oldingi
-   va keyingi holatni (Visit 1 vs Visit 2) solishtirib, sog'ayish dinamikasini hisoblash.
-5. Ko'p Tilli Platforma (i18n): O'zbekcha (UZ), Inglizcha (EN), Ruscha (RU) tillari.
-6. 360° Radar Tahlili va "What-If" Profilaktika Simulyatori.
-7. Shifokor imzosi va xulosasi aks etuvchi Chop Etiladigan Rasmiy Tibbiy Hisobot (PDF).
+7. Jonli EKG Kardiomonitori & Audio Telemetriya (Puls signali bilan).
+8. Explainable AI (SHAP Waterfall tahlili).
+9. EMR: Bemorlar tarixi va Dinamika Tahlili (Visit 1 vs Visit 2).
+10. Ko'p tilli platforma (UZ / EN / RU).
 ================================================================================
