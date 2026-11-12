@@ -226,50 +226,66 @@
         <!-- Left: Input Controls, 3D Heart, Pharmacology, Treadmill (7 Columns) -->
         <div class="lg:col-span-7 space-y-5">
           
-          <!-- 3D INTERACTIVE HEART ANATOMY (Three.js WebGL) -->
-          <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
-            <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-100 dark:border-slate-800">
+          <!-- 3D HYPER-REALISTIC INTERACTIVE HEART ANATOMY (Three.js WebGL) -->
+          <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm relative">
+            <div class="flex flex-wrap items-center justify-between pb-3 mb-3 border-b border-slate-100 dark:border-slate-800 gap-2">
               <div>
                 <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-2">
-                  <i class="fa-solid fa-cube text-rose-500"></i>
-                  <span data-i18n="three_heart_title">3D Interaktiv Yurak Anatomiyasi (Three.js)</span>
+                  <i class="fa-solid fa-cube text-rose-500 animate-pulse"></i>
+                  <span data-i18n="three_heart_title">100% Real 3D Kardiologik Yurak Anatomiyasi (Three.js PBR)</span>
                 </h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5" data-i18n="three_heart_sub">
-                  Sichqoncha bilan 360° aylantiring. Tomir stenozlari va puls real vaqtda aks etadi
+                  Anatomik qorinchalar, Aorta, O'pka arteriyasi, Vena Cava, Koronar tomirlar va stenoz blokadalari
                 </p>
               </div>
-              <div class="flex items-center space-x-2">
-                <button onclick="toggle3DAutoRotate()" id="btn-3d-rotate" class="px-2 py-1 rounded text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition">
+              <div class="flex flex-wrap items-center gap-1.5">
+                <button onclick="toggle3DAutoRotate()" id="btn-3d-rotate" class="px-2 py-1 rounded text-[11px] font-semibold bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-300 transition border border-rose-200 dark:border-rose-900">
                   <i class="fa-solid fa-arrows-rotate mr-1"></i> <span data-i18n="btn_rotate">Aylanish</span>
                 </button>
-                <button onclick="reset3DCamera()" class="px-2 py-1 rounded text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition">
+                <button onclick="toggle3DXRayMode()" id="btn-3d-xray" class="px-2 py-1 rounded text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition border border-slate-200 dark:border-slate-700">
+                  <i class="fa-solid fa-eye mr-1"></i> <span data-i18n="btn_xray">X-Ray (Shaffof)</span>
+                </button>
+                <button onclick="focus3DStenosis()" class="px-2 py-1 rounded text-[11px] font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100 transition border border-indigo-200 dark:border-indigo-900">
+                  <i class="fa-solid fa-crosshairs mr-1"></i> <span data-i18n="btn_focus">Stenoz</span>
+                </button>
+                <button onclick="reset3DCamera()" class="px-2 py-1 rounded text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition border border-slate-200 dark:border-slate-700">
                   <i class="fa-solid fa-camera-rotate mr-1"></i> Reset
                 </button>
               </div>
             </div>
 
             <!-- Three.js Canvas Container -->
-            <div id="three-heart-container" class="relative w-full h-72 rounded-xl bg-slate-950 overflow-hidden border border-rose-950/60 shadow-inner flex items-center justify-center">
+            <div id="three-heart-container" class="relative w-full h-80 sm:h-96 rounded-2xl bg-slate-950 overflow-hidden border border-rose-950/80 shadow-2xl flex items-center justify-center cursor-grab active:cursor-grabbing">
               <div id="three-loading-spinner" class="text-xs text-rose-400 flex items-center space-x-2">
                 <i class="fa-solid fa-circle-notch fa-spin"></i>
-                <span>3D Yurak modeli yuklanmoqda...</span>
+                <span>100% Real 3D Kardiologik model shakllanmoqda...</span>
+              </div>
+              
+              <!-- Floating Anatomical Info Overlay -->
+              <div id="three-tooltip-overlay" class="absolute bottom-3 left-3 px-3 py-1.5 rounded-lg bg-black/75 backdrop-blur-md border border-white/10 text-white text-[11px] font-mono pointer-events-none flex items-center space-x-2">
+                <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+                <span id="three-anatomy-tag">LAD Koronar Arteriya (Stenoz)</span>
               </div>
             </div>
 
             <!-- 3D Heart Legend / Stenosis Status -->
             <div class="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2 text-xs">
-              <div class="flex items-center space-x-4">
+              <div class="flex flex-wrap items-center gap-3">
                 <span class="flex items-center space-x-1.5">
-                  <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
-                  <span class="text-slate-600 dark:text-slate-400">LAD (Old tomir)</span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-rose-600"></span>
+                  <span class="text-slate-600 dark:text-slate-400">Chap Qorincha / Myocardium</span>
                 </span>
                 <span class="flex items-center space-x-1.5">
                   <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
-                  <span class="text-slate-600 dark:text-slate-400">RCA (O'ng tomir)</span>
+                  <span class="text-slate-600 dark:text-slate-400">Aorta / Shoxlar</span>
                 </span>
                 <span class="flex items-center space-x-1.5">
-                  <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
-                  <span class="text-slate-600 dark:text-slate-400">Aorta / O'pka arteriyasi</span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-cyan-500"></span>
+                  <span class="text-slate-600 dark:text-slate-400">O'pka Arteriyasi & Vena</span>
+                </span>
+                <span class="flex items-center space-x-1.5">
+                  <span class="w-2.5 h-2.5 rounded-full bg-red-400"></span>
+                  <span class="text-slate-600 dark:text-slate-400">LAD / RCA Tomirlari</span>
                 </span>
               </div>
               <span id="three-stenosis-badge" class="font-mono font-bold text-xs px-2.5 py-1 rounded bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-900">
