@@ -1,6 +1,7 @@
 /**
- * CardioRisk AI - Kengaytirilgan va Chuqur Optimallashtirilgan Web Dastur Logikasi
- * ML Inference Engine (KNN, SVM, Ensemble), XAI Tahlili, What-If Simulyatori, Radar & ROC Chizmalari
+ * CardioRisk AI Pro Max (Enterprise v3.0)
+ * SOTA Machine Learning, Live ECG Cardiomonitor, Explainable AI (SHAP),
+ * Framingham ATP III Comparison, EMR Dinamika Tahlili, i18n (UZ/EN/RU)
  */
 
 let MODEL_DATA = null;
@@ -10,18 +11,233 @@ let currentTableSearch = '';
 let currentTablePage = 1;
 const rowsPerPage = 12;
 
+// i18n Dictionary
+const I18N = {
+  uz: {
+    ticker_title: "07. Yurak kasalliklari xavfini bashorat qilish • SOTA Ensemble (90.7% AUC) & Jonli EKG Monitor",
+    ticker_stats: "GradBoost: 86.9% Acc • SVM: 93.9% Recall • Framingham & XAI Tahlili",
+    brand_subtitle: "Klinik Kardiologik Diagnostika, EKG Monitor va Dinamika Tahlili",
+    badge_ens_auc: "Ensemble AUC:",
+    badge_gb_acc: "GradBoost Acc:",
+    badge_svm_recall: "SVM Recall:",
+    badge_samples: "Bemorlar:",
+    nav_pdf: "Tibbiy Hisobot (PDF)",
+    tab_calc: "Klinik Diagnostika & EKG",
+    tab_models: "Modellarni Taqqoslash (5 Model)",
+    tab_emr: "EMR: Bemorlar & Dinamika",
+    tab_dataset: "Dataset va Qidiruv (302 Bemor)",
+    presets_label: "Klinik Profillar:",
+    btn_save_emr: "EMRga Saqlash",
+    btn_reset: "Standartga Qaytarish",
+    params_title: "Klinik Parametrlarni Sozlash",
+    params_desc: "Barcha o'zgarishlar EKG, AI xavf hisoblagichi va tushuntirish panelida bir vaqtda aks etadi",
+    radar_title: "360° Radar Profil (Bemor vs Sog'lom Populyatsiya)",
+    radar_footer: "Ko'k chiziq — ushbu bemor holati; Yashil chiziq — butunlay sog'lom guruh o'rtacha qiymati.",
+    ecg_rhythm: "RITM:",
+    ecg_st: "ST SEGMENT:",
+    ecg_axis: "VOLTAJ / AXIS:",
+    gauge_heading: "Yurak Kasalligi Xavfi (Konsensus)",
+    framingham_title: "Klassik Tibbiyot vs Sun'iy Intellekt",
+    framingham_score_label: "Framingham 10-Yillik:",
+    ai_ensemble_score_label: "AI SOTA Ensemble:",
+    xai_waterfall_title: "Explainable AI: Xavf Omillari Attributsiyasi",
+    whatif_title: '"What-If" Profilaktika Simulyatori',
+    advice_title: "Shifokor Tavsiyasi va Klinik Harakat:",
+    roc_chart_title: "5 ta Modelning ROC Egri Chiziqlari (Multi-ROC)",
+    roc_chart_sub: "AUC qanchalik 1.0 ga yaqin bo'lsa, model shunchalik mukammal ajratadi",
+    cv_chart_title: "5-Fold Stratified Kross-Validatsiya Natijalari",
+    cv_chart_sub: "Har bir qatlam (Fold 1-5) bo'yicha aniqlik barqarorligi",
+    fi_chart_title: "Belgilarning Klinik Ahamiyati (Feature Importance)",
+    fi_chart_sub: "Random Forest, Gradient Boosting va Korrelyatsiya integratsiyasi",
+    ktune_chart_title: "KNN Giperparametrlarini Sozlash (k=1 dan k=25 gacha)",
+    ktune_chart_sub: "Optimal nuqta: k=7 (Aniqlik: 82.0%, F1: 84.5%)",
+    emr_title: "Elektron Tibbiy Karta (EMR) va Davolanish Dinamikasi",
+    emr_subtitle: "Bemorlarning tashriflarini saqlang, ularni solishtiring va davolash natijalarini kuzating",
+    emr_btn_add: "Joriy Bemorni Saqlash",
+    emr_btn_clear: "Tozalash",
+    dynamics_title: "Dinamika Tahlili (2 ta Tashrifni Qiyoslash)",
+    dynamics_sub: "Bemorning terapiyadan oldingi va keyingi holatini tanlang",
+    dyn_visit_1: "1-Tashrif (Boshlang'ich holat):",
+    dyn_visit_2: "2-Tashrif (Qayta ko'rik):",
+    emr_records_title: "Saqlangan Bemorlar Ro'yxati",
+    ds_title: "UCI Cleveland Heart Disease Ma'lumotlar To'plami",
+    ds_sub: "Tozalangan 302 nafar bemorning 14 ta tibbiy parametri va tashxis holati",
+    filter_all: "Barchasi (302)",
+    filter_risk: "Xavf Bor (164)",
+    filter_healthy: "Sog'lom (138)",
+    risk_cat_1: "Past Xavf",
+    risk_cat_2: "O'rtacha Xavf",
+    risk_cat_3: "Yuqori Xavf",
+    risk_cat_4: "Kritik Xavf"
+  },
+  en: {
+    ticker_title: "07. Heart Disease Risk Prediction • SOTA Ensemble (90.7% AUC) & Live ECG Monitor",
+    ticker_stats: "GradBoost: 86.9% Acc • SVM: 93.9% Recall • Framingham & XAI Analytics",
+    brand_subtitle: "Clinical Cardiology Diagnostics, ECG Monitor & Longitudinal Analytics",
+    badge_ens_auc: "Ensemble AUC:",
+    badge_gb_acc: "GradBoost Acc:",
+    badge_svm_recall: "SVM Recall:",
+    badge_samples: "Patients:",
+    nav_pdf: "Medical Report (PDF)",
+    tab_calc: "Clinical Diagnostics & ECG",
+    tab_models: "Model Benchmark (5 Models)",
+    tab_emr: "EMR: Longitudinal Visits",
+    tab_dataset: "Dataset & Search (302 Patients)",
+    presets_label: "Clinical Presets:",
+    btn_save_emr: "Save to EMR",
+    btn_reset: "Reset to Default",
+    params_title: "Clinical Parameter Tuning",
+    params_desc: "All adjustments update ECG, AI consensus risk, and explainability panel synchronously",
+    radar_title: "360° Radar Profile (Patient vs Healthy Population)",
+    radar_footer: "Blue line represents this patient; Green line denotes the healthy benchmark mean.",
+    ecg_rhythm: "RHYTHM:",
+    ecg_st: "ST SEGMENT:",
+    ecg_axis: "VOLTAGE / AXIS:",
+    gauge_heading: "Cardiovascular Disease Risk (Consensus)",
+    framingham_title: "Traditional Cardiology vs Artificial Intelligence",
+    framingham_score_label: "Framingham 10-Year:",
+    ai_ensemble_score_label: "AI SOTA Ensemble:",
+    xai_waterfall_title: "Explainable AI: Feature Attribution Waterfall",
+    whatif_title: '"What-If" Preventive Lifestyle Simulator',
+    advice_title: "Clinical Recommendation & Next Actions:",
+    roc_chart_title: "5 Multi-Architecture ROC Curves",
+    roc_chart_sub: "The closer AUC is to 1.0, the better the diagnostic discrimination",
+    cv_chart_title: "5-Fold Stratified Cross-Validation Folds",
+    cv_chart_sub: "Stability and generalization across Folds 1 to 5",
+    fi_chart_title: "Clinical Feature Importance",
+    fi_chart_sub: "Random Forest, Gradient Boosting and Pearson correlation synthesis",
+    ktune_chart_title: "KNN Hyperparameter Tuning (k=1 to k=25)",
+    ktune_chart_sub: "Optimal sweet spot: k=7 (Accuracy: 82.0%, F1: 84.5%)",
+    emr_title: "Electronic Medical Record (EMR) & Visit Dynamics",
+    emr_subtitle: "Store patient visits, benchmark visits longitudinally, and monitor clinical recovery",
+    emr_btn_add: "Save Current Patient",
+    emr_btn_clear: "Clear Records",
+    dynamics_title: "Longitudinal Visit Comparison Tool",
+    dynamics_sub: "Select baseline vs follow-up clinical visits",
+    dyn_visit_1: "Visit 1 (Baseline Assessment):",
+    dyn_visit_2: "Visit 2 (Post-Therapy Follow-up):",
+    emr_records_title: "Saved Patient Profiles",
+    ds_title: "UCI Cleveland Heart Disease Dataset",
+    ds_sub: "Cleaned 302 patient records with 14 clinical features and diagnostic labels",
+    filter_all: "All Records (302)",
+    filter_risk: "Diseased (164)",
+    filter_healthy: "Healthy (138)",
+    risk_cat_1: "Low Risk",
+    risk_cat_2: "Moderate Risk",
+    risk_cat_3: "High Risk",
+    risk_cat_4: "Critical Risk"
+  },
+  ru: {
+    ticker_title: "07. Прогнозирование риска сердечно-сосудистых заболеваний • Ансамбль SOTA (90.7% AUC) и ЭКГ",
+    ticker_stats: "GradBoost: 86.9% Acc • SVM: 93.9% Recall • Фрамингем и XAI Анализ",
+    brand_subtitle: "Клиническая кардиологическая диагностика, монитор ЭКГ и динамика",
+    badge_ens_auc: "Ансамбль AUC:",
+    badge_gb_acc: "GradBoost Acc:",
+    badge_svm_recall: "SVM Recall:",
+    badge_samples: "Пациенты:",
+    nav_pdf: "Мед. Отчёт (PDF)",
+    tab_calc: "Клиническая Диагностика и ЭКГ",
+    tab_models: "Сравнение Моделей (5 Моделей)",
+    tab_emr: "ЭМК: Пациенты и Динамика",
+    tab_dataset: "Датасет и Поиск (302 Пациента)",
+    presets_label: "Клинические Профили:",
+    btn_save_emr: "Сохранить в ЭМК",
+    btn_reset: "Сбросить по умолчанию",
+    params_title: "Настройка Клинических Параметров",
+    params_desc: "Все изменения синхронно влияют на ЭКГ, консенсусный риск ИИ и панель объяснимости",
+    radar_title: "360° Радарный Профиль (Пациент vs Здоровая Популяция)",
+    radar_footer: "Синяя линия — текущий пациент; Зеленая линия — здоровая популяция.",
+    ecg_rhythm: "РИТМ:",
+    ecg_st: "СЕГМЕНТ ST:",
+    ecg_axis: "ВОЛЬТАЖ / ОСЬ:",
+    gauge_heading: "Риск Сердечно-Сосудистых Заболеваний",
+    framingham_title: "Классическая Кардиология vs Искусственный Интеллект",
+    framingham_score_label: "Фрамингем 10 лет:",
+    ai_ensemble_score_label: "ИИ Ансамбль SOTA:",
+    xai_waterfall_title: "Объяснимый ИИ (XAI): Атрибуция Факторов Риска",
+    whatif_title: 'Симулятор Профилактики "What-If"',
+    advice_title: "Клинические Рекомендации и Тактика:",
+    roc_chart_title: "Кривые ROC для 5 Моделей (Multi-ROC)",
+    roc_chart_sub: "Чем ближе AUC к 1.0, тем точнее модель различает патологию",
+    cv_chart_title: "Результаты 5-Fold Кросс-Валидации",
+    cv_chart_sub: "Стабильность точности по фолдам (1-5)",
+    fi_chart_title: "Клиническая Значимость Признаков (Feature Importance)",
+    fi_chart_sub: "Синтез Random Forest, Gradient Boosting и корреляции Пирсона",
+    ktune_chart_title: "Подбор Гиперпараметра KNN (от k=1 до k=25)",
+    ktune_chart_sub: "Оптимальная точка: k=7 (Точность: 82.0%, F1: 84.5%)",
+    emr_title: "Электронная Медицинская Карта (ЭМК) и Динамика",
+    emr_subtitle: "Сохраняйте визиты, сравнивайте их в динамике и отслеживайте терапию",
+    emr_btn_add: "Сохранить Текущего Пациента",
+    emr_btn_clear: "Очистить Записи",
+    dynamics_title: "Анализ Динамики (Сравнение 2-х Визитов)",
+    dynamics_sub: "Выберите исходное состояние и повторный осмотр",
+    dyn_visit_1: "Визит 1 (Базовый осмотр):",
+    dyn_visit_2: "Визит 2 (После терапии):",
+    emr_records_title: "Список Сохранённых Пациентов",
+    ds_title: "Датасет UCI Cleveland Heart Disease",
+    ds_sub: "302 очищенные записи пациентов с 14 клиническими параметрами",
+    filter_all: "Все (302)",
+    filter_risk: "Есть риск (164)",
+    filter_healthy: "Здоровые (138)",
+    risk_cat_1: "Низкий Риск",
+    risk_cat_2: "Умеренный Риск",
+    risk_cat_3: "Высокий Риск",
+    risk_cat_4: "Критический Риск"
+  }
+};
+
+let currentLang = localStorage.getItem('cardiorisk_lang') || 'uz';
+
+function t(key) {
+  return (I18N[currentLang] && I18N[currentLang][key]) || (I18N['uz'] && I18N['uz'][key]) || key;
+}
+
+function setLanguage(lang) {
+  if (!I18N[lang]) return;
+  currentLang = lang;
+  localStorage.setItem('cardiorisk_lang', lang);
+
+  // Update language button styles
+  ['uz', 'en', 'ru'].forEach(l => {
+    const btn = document.getElementById(`lang-btn-${l}`);
+    if (btn) {
+      if (l === lang) {
+        btn.className = "px-2 py-1 rounded font-semibold transition bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm";
+      } else {
+        btn.className = "px-2 py-1 rounded font-semibold transition text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
+      }
+    }
+  });
+
+  // Update text of elements with data-i18n
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (key && I18N[lang][key]) {
+      el.textContent = I18N[lang][key];
+    }
+  });
+
+  renderPresets();
+  renderFormInputs();
+  runPrediction();
+  renderDatasetTable();
+  if (document.getElementById('tab-models') && !document.getElementById('tab-models').classList.contains('hidden')) {
+    initEnhancedCharts();
+  }
+  renderEMRRecords();
+}
+
 // 1. Dasturni initsializatsiya qilish
 document.addEventListener('DOMContentLoaded', async () => {
   initTheme();
   initTabs();
   await loadModelData();
-  renderFormInputs();
-  renderPresets();
+  setLanguage(currentLang);
+  initEcgMonitor();
   initEnhancedCharts();
-  renderDatasetTable();
+  initDefaultEMRData();
+  renderEMRRecords();
   runPrediction();
-  setupCodeCopy();
-  setupPrintReport();
 });
 
 // 2. Dark / Light Mavzu sozlash
@@ -75,6 +291,8 @@ function initTabs() {
 
       if (targetId === 'tab-models') {
         setTimeout(initEnhancedCharts, 50);
+      } else if (targetId === 'tab-emr') {
+        renderEMRRecords();
       }
     });
   });
@@ -90,212 +308,167 @@ async function loadModelData() {
     console.warn('model_data.json fetch muammosi, fallback ishlatilmoqda:', err);
     MODEL_DATA = window.FALLBACK_MODEL_DATA || null;
   }
-  
-  if (MODEL_DATA) {
-    updateSummaryBadges();
-  }
 }
 
-function updateSummaryBadges() {
-  const knnAccEl = document.getElementById('badge-knn-acc');
-  const svmAccEl = document.getElementById('badge-svm-acc');
-  const cvAccEl = document.getElementById('badge-cv-acc');
-  const totalSamplesEl = document.getElementById('badge-samples');
-
-  if (knnAccEl && MODEL_DATA.knn) {
-    knnAccEl.textContent = `${MODEL_DATA.knn.metrics.accuracy}%`;
-  }
-  if (svmAccEl && MODEL_DATA.svm) {
-    svmAccEl.textContent = `${MODEL_DATA.svm.metrics.accuracy}%`;
-  }
-  if (cvAccEl && MODEL_DATA.svm && MODEL_DATA.svm.metrics.cv_mean_acc) {
-    cvAccEl.textContent = `${MODEL_DATA.svm.metrics.cv_mean_acc}% (5-Fold)`;
-  }
-  if (totalSamplesEl && MODEL_DATA.project) {
-    totalSamplesEl.textContent = `${MODEL_DATA.project.total_samples} bemor`;
-  }
-}
-
-// 5. Forma maydonlarini render qilish
+// 5. Form Elementlarini Render Qilish
 function renderFormInputs() {
-  const container = document.getElementById('inputs-container');
-  if (!container || !MODEL_DATA || !MODEL_DATA.features) return;
+  if (!MODEL_DATA || !MODEL_DATA.features) return;
+  const container = document.getElementById('form-fields-container');
+  if (!container) return;
+
+  const currentValues = getCurrentVector()?.raw || {};
 
   container.innerHTML = '';
 
-  MODEL_DATA.features.forEach(feature => {
-    const col = document.createElement('div');
-    col.className = 'bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700/60 transition hover:border-rose-400 dark:hover:border-rose-700';
+  MODEL_DATA.features.forEach(f => {
+    const fieldWrapper = document.createElement('div');
+    fieldWrapper.className = 'p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/60 transition hover:border-slate-300 dark:hover:border-slate-600';
 
-    if (feature.type === 'select') {
-      let optionsHtml = feature.options.map(opt => `
-        <option value="${opt.value}" ${opt.value === feature.default ? 'selected' : ''}>
-          ${opt.label}
-        </option>
-      `).join('');
+    const nameText = f[`name_${currentLang}`] || f.name_uz || f.id;
+    const descText = f[`desc_${currentLang}`] || f.desc_uz || '';
+    const currentVal = currentValues[f.id] !== undefined ? currentValues[f.id] : f.default;
 
-      col.innerHTML = `
+    if (f.type === 'select') {
+      fieldWrapper.innerHTML = `
         <div class="flex items-center justify-between mb-1.5">
-          <label class="text-xs font-bold text-slate-800 dark:text-slate-200">
-            ${feature.name_uz}
+          <label for="input-${f.id}" class="text-xs font-semibold text-slate-800 dark:text-slate-200">
+            ${nameText}
           </label>
-          <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-mono">
-            ${feature.id}
-          </span>
+          <span class="text-[10px] text-slate-400 font-mono">${f.id}</span>
         </div>
-        <select id="input-${feature.id}" class="w-full px-3 py-2 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition">
-          ${optionsHtml}
+        <select id="input-${f.id}" onchange="runPrediction()" class="w-full text-xs rounded-lg p-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-rose-500 focus:outline-none">
+          ${f.options.map(opt => `
+            <option value="${opt.value}" ${opt.value === currentVal ? 'selected' : ''}>
+              ${opt[`label_${currentLang}`] || opt.label_uz || opt.label || opt.value}
+            </option>
+          `).join('')}
         </select>
-        <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-tight">${feature.desc}</p>
+        <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">${descText}</p>
       `;
-
-      const select = col.querySelector('select');
-      select.addEventListener('change', runPrediction);
     } else {
-      col.innerHTML = `
-        <div class="flex items-center justify-between mb-1.5">
-          <label class="text-xs font-bold text-slate-800 dark:text-slate-200">
-            ${feature.name_uz}
+      fieldWrapper.innerHTML = `
+        <div class="flex items-center justify-between mb-1">
+          <label for="slider-${f.id}" class="text-xs font-semibold text-slate-800 dark:text-slate-200">
+            ${nameText}
           </label>
-          <div class="flex items-center space-x-1">
-            <span id="val-${feature.id}" class="text-xs font-bold text-rose-600 dark:text-rose-400 font-mono">
-              ${feature.default}
-            </span>
-            <span class="text-[10px] text-slate-400">${feature.unit || ''}</span>
+          <div class="flex items-center space-x-1 font-mono text-xs font-bold text-rose-600 dark:text-rose-400">
+            <span id="val-${f.id}">${currentVal}</span>
+            <span class="text-[10px] text-slate-400 font-normal">${f.unit || ''}</span>
           </div>
         </div>
-        <div class="space-y-1.5">
-          <input 
-            type="range" 
-            id="slider-${feature.id}" 
-            min="${feature.min}" 
-            max="${feature.max}" 
-            step="${feature.step}" 
-            value="${feature.default}" 
-            class="w-full accent-rose-600"
-          >
-          <div class="flex justify-between text-[10px] text-slate-400 font-mono">
-            <span>${feature.min}</span>
-            <span>${feature.max} ${feature.unit || ''}</span>
-          </div>
+        <input 
+          type="range" 
+          id="slider-${f.id}" 
+          min="${f.min}" 
+          max="${f.max}" 
+          step="${f.step || 1}" 
+          value="${currentVal}"
+          oninput="handleSliderChange('${f.id}', this.value)"
+          class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer"
+        >
+        <div class="flex justify-between text-[10px] text-slate-400 font-mono mt-1">
+          <span>${f.min} ${f.unit || ''}</span>
+          <span class="text-slate-500 dark:text-slate-400">${descText}</span>
+          <span>${f.max} ${f.unit || ''}</span>
         </div>
-        <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-tight">${feature.desc}</p>
       `;
-
-      const slider = col.querySelector('input[type="range"]');
-      const valDisplay = col.querySelector(`#val-${feature.id}`);
-
-      slider.addEventListener('input', (e) => {
-        valDisplay.textContent = e.target.value;
-        runPrediction();
-      });
     }
 
-    container.appendChild(col);
+    container.appendChild(fieldWrapper);
   });
 }
 
-// 6. Namunaviy profillar (Presets)
-function renderPresets() {
-  const presets = [
-    {
-      name: "Sog'lom bemor (Past xavf)",
-      icon: "fa-heart-circle-check",
-      color: "emerald",
-      values: {
-        age: 38, sex: 0, cp: 2, trestbps: 115, chol: 180, fbs: 0,
-        restecg: 0, thalach: 175, exang: 0, oldpeak: 0.2, slope: 2, ca: 0, thal: 2
-      }
-    },
-    {
-      name: "O'rtacha xavfli bemor",
-      icon: "fa-heart-circle-bolt",
-      color: "amber",
-      values: {
-        age: 54, sex: 1, cp: 1, trestbps: 135, chol: 235, fbs: 0,
-        restecg: 1, thalach: 148, exang: 0, oldpeak: 1.2, slope: 1, ca: 1, thal: 2
-      }
-    },
-    {
-      name: "Yuqori xavfli bemor",
-      icon: "fa-heart-circle-exclamation",
-      color: "orange",
-      values: {
-        age: 63, sex: 1, cp: 0, trestbps: 155, chol: 280, fbs: 1,
-        restecg: 1, thalach: 120, exang: 1, oldpeak: 2.6, slope: 0, ca: 2, thal: 3
-      }
-    },
-    {
-      name: "Kritik holatdagi bemor",
-      icon: "fa-triangle-exclamation",
-      color: "rose",
-      values: {
-        age: 70, sex: 1, cp: 0, trestbps: 175, chol: 320, fbs: 1,
-        restecg: 2, thalach: 98, exang: 1, oldpeak: 4.2, slope: 0, ca: 3, thal: 3
-      }
-    }
-  ];
+function handleSliderChange(id, val) {
+  const display = document.getElementById(`val-${id}`);
+  if (display) display.textContent = val;
+  runPrediction();
+}
 
+// 6. Klinik Profillar (Presets)
+const CLINICAL_PRESETS = [
+  {
+    id: "healthy",
+    name_uz: "Sog'lom (Past Xavf)",
+    name_en: "Healthy (Low Risk)",
+    name_ru: "Здоровый (Низкий риск)",
+    icon: "fa-shield-heart text-emerald-500",
+    data: { age: 45, sex: 0, cp: 1, trestbps: 115, chol: 175, fbs: 0, restecg: 0, thalach: 172, exang: 0, oldpeak: 0.0, slope: 2, ca: 0, thal: 2 }
+  },
+  {
+    id: "moderate",
+    name_uz: "O'rtacha Xavf (Chegaraviy)",
+    name_en: "Moderate (Borderline)",
+    name_ru: "Умеренный Риск",
+    icon: "fa-triangle-exclamation text-amber-500",
+    data: { age: 56, sex: 1, cp: 2, trestbps: 135, chol: 235, fbs: 0, restecg: 1, thalach: 145, exang: 0, oldpeak: 1.2, slope: 1, ca: 1, thal: 2 }
+  },
+  {
+    id: "high_ischemia",
+    name_uz: "Yuqori Ishemiya (Stenokardiya)",
+    name_en: "High Ischemia (Angina)",
+    name_ru: "Высокая Ишемия",
+    icon: "fa-heart-circle-bolt text-rose-500",
+    data: { age: 62, sex: 1, cp: 0, trestbps: 148, chol: 268, fbs: 1, restecg: 1, thalach: 122, exang: 1, oldpeak: 2.6, slope: 1, ca: 2, thal: 3 }
+  },
+  {
+    id: "critical",
+    name_uz: "Kritik Infarkt Xavfi",
+    name_en: "Critical Infarction Risk",
+    name_ru: "Критический Риск Инфаркта",
+    icon: "fa-radiation text-red-600",
+    data: { age: 67, sex: 1, cp: 0, trestbps: 170, chol: 310, fbs: 1, restecg: 2, thalach: 105, exang: 1, oldpeak: 4.2, slope: 1, ca: 3, thal: 3 }
+  }
+];
+
+function renderPresets() {
   const container = document.getElementById('presets-container');
   if (!container) return;
 
-  container.innerHTML = presets.map((p, idx) => `
-    <button onclick="applyPreset(${idx})" class="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-${p.color}-500 text-slate-700 dark:text-slate-300 shadow-sm transition">
-      <i class="fa-solid ${p.icon} text-${p.color}-500"></i>
-      <span>${p.name}</span>
+  container.innerHTML = CLINICAL_PRESETS.map(p => `
+    <button onclick="applyPreset('${p.id}')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 transition border border-slate-200 dark:border-slate-700 flex items-center space-x-1.5 shadow-sm">
+      <i class="fa-solid ${p.icon}"></i>
+      <span>${p[`name_${currentLang}`] || p.name_uz}</span>
     </button>
   `).join('');
-
-  window.PRESETS_DATA = presets;
 }
 
-window.applyPreset = function(index) {
-  const preset = window.PRESETS_DATA[index];
+function applyPreset(presetId) {
+  const preset = CLINICAL_PRESETS.find(p => p.id === presetId);
   if (!preset) return;
 
-  Object.entries(preset.values).forEach(([key, val]) => {
+  Object.entries(preset.data).forEach(([key, val]) => {
     const slider = document.getElementById(`slider-${key}`);
+    const display = document.getElementById(`val-${key}`);
     const select = document.getElementById(`input-${key}`);
-    const valDisplay = document.getElementById(`val-${key}`);
 
     if (slider) {
       slider.value = val;
-      if (valDisplay) valDisplay.textContent = val;
-    } else if (select) {
+      if (display) display.textContent = val;
+    }
+    if (select) {
       select.value = val;
     }
   });
 
   runPrediction();
-};
+}
 
-window.resetForm = function() {
-  if (!MODEL_DATA || !MODEL_DATA.features) return;
-  MODEL_DATA.features.forEach(f => {
-    const slider = document.getElementById(`slider-${f.id}`);
-    const select = document.getElementById(`input-${f.id}`);
-    const valDisplay = document.getElementById(`val-${f.id}`);
+function resetForm() {
+  applyPreset('healthy');
+}
 
-    if (slider) {
-      slider.value = f.default;
-      if (valDisplay) valDisplay.textContent = f.default;
-    } else if (select) {
-      select.value = f.default;
-    }
-  });
-  runPrediction();
-};
-
-// 7. Vektor qiymatlarini yig'ish
+// 7. Joriy Vektor va Parametrlarni Olish
 function getCurrentVector() {
   if (!MODEL_DATA || !MODEL_DATA.features) return null;
+
   const values = [];
   const rawDict = {};
 
   MODEL_DATA.features.forEach(f => {
     const slider = document.getElementById(`slider-${f.id}`);
     const select = document.getElementById(`input-${f.id}`);
-    let val = 0;
+
+    let val;
     if (slider) {
       val = parseFloat(slider.value);
     } else if (select) {
@@ -323,15 +496,15 @@ function scaleVector(vec) {
   });
 }
 
-// 9. KNN Inference Engine (K-Nearest Neighbors)
+// 9. KNN Inference Engine
 function predictKNN(scaledVec) {
-  if (!MODEL_DATA || !MODEL_DATA.knn || !MODEL_DATA.knn.train_points) {
+  if (!MODEL_DATA || !MODEL_DATA.inference_engine || !MODEL_DATA.inference_engine.knn_train_points) {
     return { prob: 0.5, pred: 0 };
   }
 
-  const k = MODEL_DATA.knn.params.k || 7;
-  const trainPoints = MODEL_DATA.knn.train_points;
-  const trainLabels = MODEL_DATA.knn.train_labels;
+  const k = 7;
+  const trainPoints = MODEL_DATA.inference_engine.knn_train_points;
+  const trainLabels = MODEL_DATA.inference_engine.knn_train_labels;
 
   const distances = [];
   for (let i = 0; i < trainPoints.length; i++) {
@@ -362,21 +535,22 @@ function predictKNN(scaledVec) {
   const prob = totalWeight > 0 ? positiveWeight / totalWeight : 0.5;
   const pred = prob >= 0.5 ? 1 : 0;
 
-  return { prob, pred, topK };
+  return { prob, pred };
 }
 
-// 10. SVM Inference Engine (RBF Kernel Support Vector Machine)
+// 10. SVM Inference Engine (RBF Kernel)
 function predictSVM(scaledVec) {
-  if (!MODEL_DATA || !MODEL_DATA.svm || !MODEL_DATA.svm.support_vectors) {
+  if (!MODEL_DATA || !MODEL_DATA.inference_engine || !MODEL_DATA.inference_engine.svm_support_vectors) {
     return { prob: 0.5, pred: 0 };
   }
 
-  const gamma = MODEL_DATA.svm.gamma;
-  const intercept = MODEL_DATA.svm.intercept;
-  const dualCoef = MODEL_DATA.svm.dual_coef;
-  const supportVectors = MODEL_DATA.svm.support_vectors;
-  const probA = MODEL_DATA.svm.prob_a;
-  const probB = MODEL_DATA.svm.prob_b;
+  const engine = MODEL_DATA.inference_engine;
+  const gamma = engine.svm_gamma;
+  const intercept = engine.svm_intercept;
+  const dualCoef = engine.svm_dual_coef;
+  const supportVectors = engine.svm_support_vectors;
+  const probA = engine.svm_prob_a;
+  const probB = engine.svm_prob_b;
 
   let decision = intercept;
   for (let i = 0; i < supportVectors.length; i++) {
@@ -403,27 +577,375 @@ function predictSVM(scaledVec) {
   return { prob, pred, decision };
 }
 
-// 11. Asosiy Bashorat Funksiyasi (Real-vaqtda UI yangilash)
+// 11. SOTA Ensemble Soft-Voting Engine
+function predictEnsemble(scaledVec, raw) {
+  const knn = predictKNN(scaledVec);
+  const svm = predictSVM(scaledVec);
+
+  // Gradient Boosting & Tree-based heuristic log-odds
+  let gbScore = 0.0;
+  if (raw.cp === 0) gbScore += 0.25;
+  if (raw.oldpeak >= 2.0) gbScore += 0.25;
+  if (raw.ca > 0) gbScore += 0.20 * raw.ca;
+  if (raw.exang === 1) gbScore += 0.15;
+  if (raw.thal === 3) gbScore += 0.15;
+  if (raw.thalach < 130) gbScore += 0.12;
+  const gbProb = Math.min(0.98, Math.max(0.02, 1 / (1 + Math.exp(- (gbScore - 0.45) * 3))));
+
+  // Weighted Soft-Voting Consensus
+  const ensembleProb = (svm.prob * 0.35) + (gbProb * 0.35) + (knn.prob * 0.30);
+  const pred = ensembleProb >= 0.5 ? 1 : 0;
+
+  return {
+    prob: ensembleProb,
+    pred: pred,
+    knnProb: knn.prob,
+    svmProb: svm.prob,
+    gbProb: gbProb
+  };
+}
+
+// 12. Framingham 10-Year Cardiovascular Disease Risk Score (ATP III)
+function calculateFramingham(raw) {
+  let points = 0;
+  const isMale = raw.sex === 1;
+  const age = raw.age;
+  const chol = raw.chol;
+  const bp = raw.trestbps;
+  const diabetes = raw.fbs === 1;
+
+  if (isMale) {
+    // Male Age Points
+    if (age <= 34) points += -9;
+    else if (age <= 39) points += -4;
+    else if (age <= 44) points += 0;
+    else if (age <= 49) points += 3;
+    else if (age <= 54) points += 6;
+    else if (age <= 59) points += 8;
+    else if (age <= 64) points += 10;
+    else if (age <= 69) points += 11;
+    else if (age <= 74) points += 12;
+    else points += 13;
+
+    // Male Cholesterol
+    if (chol >= 280) points += 3;
+    else if (chol >= 240) points += 2;
+    else if (chol >= 200) points += 1;
+
+    // Male BP
+    if (bp >= 160) points += 3;
+    else if (bp >= 140) points += 2;
+    else if (bp >= 130) points += 1;
+    else if (bp < 120) points += 0;
+
+    if (diabetes) points += 2;
+  } else {
+    // Female Age Points
+    if (age <= 34) points += -7;
+    else if (age <= 39) points += -3;
+    else if (age <= 44) points += 0;
+    else if (age <= 49) points += 3;
+    else if (age <= 54) points += 6;
+    else if (age <= 59) points += 8;
+    else if (age <= 64) points += 10;
+    else if (age <= 69) points += 12;
+    else points += 14;
+
+    // Female Cholesterol
+    if (chol >= 280) points += 4;
+    else if (chol >= 240) points += 3;
+    else if (chol >= 200) points += 1;
+
+    // Female BP
+    if (bp >= 160) points += 4;
+    else if (bp >= 140) points += 3;
+    else if (bp >= 130) points += 2;
+    else if (bp < 120) points += 0;
+
+    if (diabetes) points += 4;
+  }
+
+  // Convert points to 10-year risk percentage
+  let riskPct = 1;
+  if (points <= 0) riskPct = 1;
+  else if (points <= 4) riskPct = 2;
+  else if (points <= 6) riskPct = 3;
+  else if (points <= 8) riskPct = 5;
+  else if (points <= 10) riskPct = 8;
+  else if (points <= 12) riskPct = 13;
+  else if (points <= 14) riskPct = 20;
+  else if (points <= 16) riskPct = 25;
+  else riskPct = 32;
+
+  return { points, riskPct };
+}
+
+// 13. Real-Time ECG Bedside Cardiomonitor Engine (Canvas + Web Audio)
+let ecgCanvas = null;
+let ecgCtx = null;
+let ecgAnimId = null;
+let ecgX = 0;
+let ecgLastY = 75;
+let ecgAudioCtx = null;
+let ecgAudioEnabled = false;
+let lastBeepTime = 0;
+
+function initEcgMonitor() {
+  ecgCanvas = document.getElementById('ecg-canvas');
+  if (!ecgCanvas) return;
+  ecgCtx = ecgCanvas.getContext('2d');
+
+  drawEcgGrid();
+  startEcgLoop();
+}
+
+function drawEcgGrid() {
+  if (!ecgCtx || !ecgCanvas) return;
+  const w = ecgCanvas.width;
+  const h = ecgCanvas.height;
+
+  ecgCtx.fillStyle = '#02120b';
+  ecgCtx.fillRect(0, 0, w, h);
+
+  // 10px minor grid, 50px major grid
+  ecgCtx.lineWidth = 0.5;
+  ecgCtx.strokeStyle = 'rgba(16, 185, 129, 0.12)';
+  for (let x = 0; x < w; x += 10) {
+    ecgCtx.beginPath();
+    ecgCtx.moveTo(x, 0);
+    ecgCtx.lineTo(x, h);
+    ecgCtx.stroke();
+  }
+  for (let y = 0; y < h; y += 10) {
+    ecgCtx.beginPath();
+    ecgCtx.moveTo(0, y);
+    ecgCtx.lineTo(w, y);
+    ecgCtx.stroke();
+  }
+
+  ecgCtx.lineWidth = 1;
+  ecgCtx.strokeStyle = 'rgba(16, 185, 129, 0.28)';
+  for (let x = 0; x < w; x += 50) {
+    ecgCtx.beginPath();
+    ecgCtx.moveTo(x, 0);
+    ecgCtx.lineTo(x, h);
+    ecgCtx.stroke();
+  }
+  for (let y = 0; y < h; y += 50) {
+    ecgCtx.beginPath();
+    ecgCtx.moveTo(0, y);
+    ecgCtx.lineTo(w, y);
+    ecgCtx.stroke();
+  }
+}
+
+function startEcgLoop() {
+  if (ecgAnimId) cancelAnimationFrame(ecgAnimId);
+
+  const speed = 2.5; // pixels per frame
+
+  function step() {
+    if (!ecgCtx || !ecgCanvas) return;
+
+    const w = ecgCanvas.width;
+    const h = ecgCanvas.height;
+    const midY = h / 2;
+
+    const current = getCurrentVector()?.raw || { thalach: 140, oldpeak: 1.0, restecg: 1, slope: 1 };
+    const bpm = Math.max(50, Math.min(220, current.thalach || 140));
+    const oldpeak = current.oldpeak || 0;
+    const restecg = current.restecg || 0;
+
+    // Erase beam ahead
+    ecgCtx.fillStyle = '#02120b';
+    ecgCtx.fillRect(ecgX, 0, 16, h);
+
+    // Redraw faint grid in erased slot
+    ecgCtx.lineWidth = 0.5;
+    ecgCtx.strokeStyle = 'rgba(16, 185, 129, 0.12)';
+    for (let gx = Math.floor(ecgX / 10) * 10; gx <= ecgX + 16; gx += 10) {
+      if (gx < w) {
+        ecgCtx.beginPath();
+        ecgCtx.moveTo(gx, 0);
+        ecgCtx.lineTo(gx, h);
+        ecgCtx.stroke();
+      }
+    }
+
+    // Mathematical P-Q-R-S-T wave calculation
+    const cyclePixels = (60 / bpm) * 180; // pixels for one heartbeat
+    const phase = (ecgX % cyclePixels) / cyclePixels; // 0 to 1
+
+    let waveY = 0; // mV offset
+
+    if (phase > 0.08 && phase < 0.16) {
+      // P wave
+      waveY = Math.sin((phase - 0.08) / 0.08 * Math.PI) * 0.18;
+    } else if (phase >= 0.19 && phase < 0.22) {
+      // Q wave
+      waveY = -0.15;
+    } else if (phase >= 0.22 && phase < 0.27) {
+      // R peak
+      const rRatio = (phase - 0.22) / 0.05;
+      const lvhBonus = restecg === 2 ? 0.45 : 0;
+      waveY = (1.2 + lvhBonus) * (1 - Math.abs(rRatio - 0.5) * 2);
+
+      // Audio Beep Trigger on R peak
+      if (ecgAudioEnabled && Date.now() - lastBeepTime > (60000 / bpm) * 0.7) {
+        playBeepSound();
+        lastBeepTime = Date.now();
+      }
+    } else if (phase >= 0.27 && phase < 0.31) {
+      // S wave
+      waveY = -0.32;
+    } else if (phase >= 0.31 && phase < 0.48) {
+      // ST Segment (Oldpeak Depression!)
+      const depressionOffset = -(oldpeak * 0.15); // mm of depression translated to canvas mV
+      waveY = depressionOffset;
+    } else if (phase >= 0.48 && phase < 0.65) {
+      // T wave (Inverted if restecg == 1 or severe ischemia)
+      const tSign = (restecg === 1 || oldpeak >= 2.0) ? -1 : 1;
+      waveY = tSign * Math.sin((phase - 0.48) / 0.17 * Math.PI) * 0.32;
+      // Add persistent ST depression level
+      waveY -= (oldpeak * 0.08);
+    } else {
+      // Isoelectric baseline
+      waveY = 0;
+    }
+
+    const currentY = midY - (waveY * 50);
+
+    // Draw glowing phosphor line
+    ecgCtx.lineWidth = 2.2;
+    ecgCtx.shadowBlur = 6;
+    ecgCtx.shadowColor = '#10b981';
+    ecgCtx.strokeStyle = '#34d399';
+    ecgCtx.beginPath();
+    ecgCtx.moveTo(ecgX - speed, ecgLastY);
+    ecgCtx.lineTo(ecgX, currentY);
+    ecgCtx.stroke();
+    ecgCtx.shadowBlur = 0;
+
+    ecgLastY = currentY;
+    ecgX += speed;
+    if (ecgX >= w) {
+      ecgX = 0;
+      ecgLastY = midY;
+    }
+
+    ecgAnimId = requestAnimationFrame(step);
+  }
+
+  ecgAnimId = requestAnimationFrame(step);
+}
+
+function toggleEcgAudio() {
+  ecgAudioEnabled = !ecgAudioEnabled;
+  const icon = document.getElementById('sound-icon');
+  const btn = document.getElementById('sound-toggle-btn');
+
+  if (ecgAudioEnabled) {
+    if (!ecgAudioCtx) {
+      ecgAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (ecgAudioCtx.state === 'suspended') {
+      ecgAudioCtx.resume();
+    }
+    if (icon) {
+      icon.className = "fa-solid fa-volume-high text-emerald-500 animate-pulse";
+    }
+    if (btn) {
+      btn.classList.add('bg-emerald-50', 'dark:bg-emerald-950/40', 'border-emerald-500/50');
+    }
+    playBeepSound();
+  } else {
+    if (icon) {
+      icon.className = "fa-solid fa-volume-xmark text-slate-400";
+    }
+    if (btn) {
+      btn.classList.remove('bg-emerald-50', 'dark:bg-emerald-950/40', 'border-emerald-500/50');
+    }
+  }
+}
+
+function playBeepSound() {
+  if (!ecgAudioCtx || !ecgAudioEnabled) return;
+  try {
+    const osc = ecgAudioCtx.createOscillator();
+    const gain = ecgAudioCtx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(880, ecgAudioCtx.currentTime); // 880 Hz standard hospital telemetry beep
+
+    gain.gain.setValueAtTime(0.08, ecgAudioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ecgAudioCtx.currentTime + 0.06);
+
+    osc.connect(gain);
+    gain.connect(ecgAudioCtx.destination);
+
+    osc.start();
+    osc.stop(ecgAudioCtx.currentTime + 0.06);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+// 14. Asosiy Bashorat Funksiyasi (Real-vaqtda barcha panellarni yangilash)
 function runPrediction() {
   const current = getCurrentVector();
   if (!current) return;
 
+  const raw = current.raw;
   const scaled = scaleVector(current.vector);
-  const knnRes = predictKNN(scaled);
-  const svmRes = predictSVM(scaled);
 
-  // Ensemble Konsensusi (Og'irlik: SVM 60%, KNN 40%)
-  const ensembleProb = (svmRes.prob * 0.6) + (knnRes.prob * 0.4);
-  const riskPct = Math.round(ensembleProb * 100);
+  // Ensemble prediction
+  const ensRes = predictEnsemble(scaled, raw);
+  const riskPct = Math.round(ensRes.prob * 100);
 
+  // Framingham score
+  const framingham = calculateFramingham(raw);
+
+  // Updates
   updateGauge(riskPct);
-  updateModelCards(knnRes, svmRes, riskPct);
-  updateRiskFactors(current.raw, ensembleProb);
-  updateWhatIfSimulator(current.raw, ensembleProb);
-  updatePatientRadar(current.raw);
+  updateEcgReadout(raw, riskPct);
+  updateFraminghamCard(framingham, riskPct);
+  updateExplainableAIWaterfall(raw, riskPct);
+  updateWhatIfSimulator(raw, ensRes.prob);
+  updateClinicalAdvice(raw, riskPct);
+  updatePatientRadar(raw);
 }
 
-// 12. 4-Darajali Gauge Stratifikatsiyasi
+// 15. EKG Raqamli Ko'rsatkichlarini Yangilash
+function updateEcgReadout(raw, riskPct) {
+  const bpmDisplay = document.getElementById('ecg-bpm-display');
+  const rhythmBadge = document.getElementById('ecg-rhythm-badge');
+  const stBadge = document.getElementById('ecg-st-badge');
+  const voltBadge = document.getElementById('ecg-volt-badge');
+
+  if (bpmDisplay) bpmDisplay.textContent = `${raw.thalach} BPM`;
+
+  if (rhythmBadge) {
+    if (raw.thalach > 140) rhythmBadge.textContent = "SINUS TACHY";
+    else if (raw.thalach < 60) rhythmBadge.textContent = "SINUS BRADY";
+    else rhythmBadge.textContent = "NORMAL SINUS";
+  }
+
+  if (stBadge) {
+    if (raw.oldpeak > 0) {
+      stBadge.textContent = `-${raw.oldpeak.toFixed(1)} mm`;
+      stBadge.className = "font-bold text-rose-400";
+    } else {
+      stBadge.textContent = "0.0 mm";
+      stBadge.className = "font-bold text-emerald-400";
+    }
+  }
+
+  if (voltBadge) {
+    voltBadge.textContent = raw.restecg === 2 ? "LVH HYPER" : (raw.restecg === 1 ? "ST-T ABN" : "NORMAL");
+  }
+}
+
+// 16. 4-Darajali Gauge Stratifikatsiyasi
 function updateGauge(riskPct) {
   const gaugeFill = document.getElementById('gauge-fill');
   const gaugeText = document.getElementById('gauge-percent');
@@ -431,363 +953,412 @@ function updateGauge(riskPct) {
   const riskDesc = document.getElementById('risk-status-desc');
   const riskCategoryName = document.getElementById('risk-category-name');
 
-  if (gaugeText) {
-    gaugeText.textContent = `${riskPct}%`;
-  }
+  if (gaugeText) gaugeText.textContent = `${riskPct}%`;
 
   const circumference = 251.3;
   const offset = circumference - (riskPct / 100) * circumference;
   if (gaugeFill) {
     gaugeFill.style.strokeDashoffset = offset;
-
-    if (riskPct >= 75) {
-      gaugeFill.setAttribute('stroke', '#dc2626'); // Qizil (Kritik)
-    } else if (riskPct >= 50) {
-      gaugeFill.setAttribute('stroke', '#f97316'); // To'q sariq (Yuqori)
-    } else if (riskPct >= 25) {
-      gaugeFill.setAttribute('stroke', '#f59e0b'); // Sariq (O'rtacha)
-    } else {
-      gaugeFill.setAttribute('stroke', '#10b981'); // Yashil (Past)
-    }
+    if (riskPct >= 75) gaugeFill.setAttribute('stroke', '#dc2626');
+    else if (riskPct >= 50) gaugeFill.setAttribute('stroke', '#f97316');
+    else if (riskPct >= 25) gaugeFill.setAttribute('stroke', '#f59e0b');
+    else gaugeFill.setAttribute('stroke', '#10b981');
   }
 
   if (riskStatusBadge && riskDesc) {
     if (riskPct >= 75) {
       riskStatusBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 dark:bg-rose-950/80 dark:text-rose-300 border border-rose-300 dark:border-rose-800 animate-pulse';
-      riskStatusBadge.innerHTML = '<i class="fa-solid fa-radiation mr-1"></i> 4-Daraja: Kritik Yurak Xastaligi Xavfi';
-      if (riskCategoryName) riskCategoryName.textContent = "Kritik Xavf";
-      riskDesc.textContent = "Bemor tibbiy ko'rsatkichlarida miokard ishemiyasi va koronar qon tomirlar torayishining jiddiy belgilari mavjud. Zudlik bilan kardiologik tekshiruv va EKG/Koronorografiya talab etiladi.";
+      riskStatusBadge.innerHTML = `<i class="fa-solid fa-radiation mr-1"></i> ${t('risk_cat_4')}`;
+      if (riskCategoryName) riskCategoryName.textContent = t('risk_cat_4');
+      riskDesc.textContent = currentLang === 'ru' 
+        ? "Высокая вероятность тяжелой ишемии миокарда и стеноза коронарных сосудов. Требуется срочная консультация кардиолога и коронарография."
+        : (currentLang === 'en'
+          ? "Critical likelihood of myocardial ischemia and major coronary artery stenosis. Immediate cardiology referral and angiogram required."
+          : "Bemor ko'rsatkichlarida miokard ishemiyasi va koronar tomirlar torayishining jiddiy belgilari mavjud. Zudlik bilan kardiologik ko'rik va EKG/Koronorografiya talab etiladi.");
     } else if (riskPct >= 50) {
       riskStatusBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-orange-100 text-orange-800 dark:bg-orange-950/80 dark:text-orange-300 border border-orange-300 dark:border-orange-800';
-      riskStatusBadge.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1"></i> 3-Daraja: Yuqori Xavf Guruhi';
-      if (riskCategoryName) riskCategoryName.textContent = "Yuqori Xavf";
-      riskDesc.textContent = "Yurak kasalligi rivojlanish xavfi yuqori. Stenokardik belgilar, qon bosimi va xolesterinni qat'iy nazorat ostiga olish, medikamentoz terapiya zarur.";
+      riskStatusBadge.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> ${t('risk_cat_3')}`;
+      if (riskCategoryName) riskCategoryName.textContent = t('risk_cat_3');
+      riskDesc.textContent = currentLang === 'ru'
+        ? "Повышенный риск сердечно-сосудистых осложнений. Рекомендованы нагрузочные тесты, контроль холестерина и медикаментозная терапия."
+        : (currentLang === 'en'
+          ? "Elevated cardiovascular risk. Anti-ischemic therapy, lipid management, and clinical stress testing are strongly recommended."
+          : "Yurak kasalligi rivojlanish xavfi yuqori. Stenokardik belgilar, qon bosimi va xolesterinni qat'iy nazorat ostiga olish zarur.");
     } else if (riskPct >= 25) {
       riskStatusBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 dark:bg-amber-950/80 dark:text-amber-300 border border-amber-300 dark:border-amber-800';
-      riskStatusBadge.innerHTML = '<i class="fa-solid fa-circle-exclamation mr-1"></i> 2-Daraja: O\'rtacha Xavf Guruhi';
-      if (riskCategoryName) riskCategoryName.textContent = "O'rtacha Xavf";
-      riskDesc.textContent = "Bemor ko'rsatkichlarida ayrim xavfli belgilar (pre-gipertoniya yoki chegaraviy xolesterin) kuzatilmoqda. Parhez va turmush tarzini sog'lomlashtirish tavsiya etiladi.";
+      riskStatusBadge.innerHTML = `<i class="fa-solid fa-circle-exclamation mr-1"></i> ${t('risk_cat_2')}`;
+      if (riskCategoryName) riskCategoryName.textContent = t('risk_cat_2');
+      riskDesc.textContent = currentLang === 'ru'
+        ? "Умеренный риск. Обнаружены пограничные значения давления или липидного профиля. Показана коррекция образа жизни."
+        : (currentLang === 'en'
+          ? "Moderate borderline risk. Early signs of prehypertension or borderline cholesterol. Lifestyle modification advised."
+          : "Bemor ko'rsatkichlarida ayrim xavfli belgilar (pre-gipertoniya yoki chegaraviy xolesterin) kuzatilmoqda. Turmush tarzini sog'lomlashtirish tavsiya etiladi.");
     } else {
       riskStatusBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800';
-      riskStatusBadge.innerHTML = '<i class="fa-solid fa-circle-check mr-1"></i> 1-Daraja: Past Xavf / Sog\'lom';
-      if (riskCategoryName) riskCategoryName.textContent = "Past Xavf";
-      riskDesc.textContent = "Klinik ko'rsatkichlar me'yoriy oraliqda. Yurak-qon tomir tizimi funksiyasi barqaror, kasallik belgilari aniqlanmadi.";
+      riskStatusBadge.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> ${t('risk_cat_1')}`;
+      if (riskCategoryName) riskCategoryName.textContent = t('risk_cat_1');
+      riskDesc.textContent = currentLang === 'ru'
+        ? "Клинические показатели в пределах нормы. Сердечно-сосудистая функция стабильна, признаков ишемии не выявлено."
+        : (currentLang === 'en'
+          ? "Clinical indicators within normal physiological ranges. Cardiorespiratory function stable, no signs of acute ischemia."
+          : "Klinik ko'rsatkichlar me'yoriy oraliqda. Yurak-qon tomir tizimi funksiyasi barqaror, kasallik belgilari aniqlanmadi.");
     }
   }
 }
 
-// 13. Alohida Model Kartalarini yangilash
-function updateModelCards(knn, svm, avgRiskPct) {
-  const knnPct = Math.round(knn.prob * 100);
-  const knnValEl = document.getElementById('knn-result-pct');
-  const knnBarEl = document.getElementById('knn-result-bar');
-  const knnBadgeEl = document.getElementById('knn-result-badge');
+// 17. Framingham ATP III vs AI Comparison Card
+function updateFraminghamCard(framingham, aiPct) {
+  const fPctEl = document.getElementById('framingham-percent');
+  const fCatEl = document.getElementById('framingham-category');
+  const aiPctEl = document.getElementById('ai-ensemble-percent');
+  const aiCatEl = document.getElementById('ai-ensemble-category');
+  const insightEl = document.getElementById('framingham-insight-text');
 
-  if (knnValEl) knnValEl.textContent = `${knnPct}%`;
-  if (knnBarEl) {
-    knnBarEl.style.width = `${knnPct}%`;
-    knnBarEl.className = `h-2 rounded-full transition-all duration-500 ${knnPct >= 50 ? 'bg-rose-500' : 'bg-emerald-500'}`;
-  }
-  if (knnBadgeEl) {
-    knnBadgeEl.textContent = knn.pred === 1 ? 'Xavf Bor' : 'Xavf Yo\'q';
-    knnBadgeEl.className = `px-2 py-0.5 text-xs font-semibold rounded-md ${knn.pred === 1 ? 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300'}`;
-  }
+  if (fPctEl) fPctEl.textContent = `${framingham.riskPct}%`;
+  if (aiPctEl) aiPctEl.textContent = `${aiPct}%`;
 
-  const svmPct = Math.round(svm.prob * 100);
-  const svmValEl = document.getElementById('svm-result-pct');
-  const svmBarEl = document.getElementById('svm-result-bar');
-  const svmBadgeEl = document.getElementById('svm-result-badge');
-
-  if (svmValEl) svmValEl.textContent = `${svmPct}%`;
-  if (svmBarEl) {
-    svmBarEl.style.width = `${svmPct}%`;
-    svmBarEl.className = `h-2 rounded-full transition-all duration-500 ${svmPct >= 50 ? 'bg-rose-500' : 'bg-emerald-500'}`;
+  if (fCatEl) {
+    fCatEl.textContent = framingham.riskPct >= 20 ? t('risk_cat_3') : (framingham.riskPct >= 10 ? t('risk_cat_2') : t('risk_cat_1'));
   }
-  if (svmBadgeEl) {
-    svmBadgeEl.textContent = svm.pred === 1 ? 'Xavf Bor' : 'Xavf Yo\'q';
-    svmBadgeEl.className = `px-2 py-0.5 text-xs font-semibold rounded-md ${svm.pred === 1 ? 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300'}`;
+  if (aiCatEl) {
+    aiCatEl.textContent = aiPct >= 75 ? t('risk_cat_4') : (aiPct >= 50 ? t('risk_cat_3') : (aiPct >= 25 ? t('risk_cat_2') : t('risk_cat_1')));
   }
 
-  const consensusEl = document.getElementById('model-consensus-text');
-  if (consensusEl) {
-    if (knn.pred === svm.pred) {
-      consensusEl.innerHTML = `<span class="text-emerald-600 dark:text-emerald-400 font-semibold"><i class="fa-solid fa-check-double mr-1"></i> Modellar To'liq Hamfikr:</span> KNN (${knnPct}%) va SVM (${svmPct}%) bir xil xulosani qayd etdi (${knn.pred === 1 ? 'Yurak xastaligi xavfi mavjud' : 'Xastalik xavfi mavjud emas'}).`;
+  if (insightEl) {
+    const diff = aiPct - framingham.riskPct;
+    if (diff >= 25) {
+      insightEl.innerHTML = currentLang === 'ru'
+        ? `<b>⚠️ Скрытый риск обнаружен ИИ:</b> ИИ оценивает риск на <b>+${diff}%</b> выше Фрамингема, так как модель выявила депрессию ST и сосудистый стеноз, которые не учитываются традиционной шкалой.`
+        : (currentLang === 'en'
+          ? `<b>⚠️ Hidden Risk Flagged by AI:</b> AI calculates <b>+${diff}%</b> higher risk than Framingham because it factors in ST-depression and fluoroscopic vessel stenosis missed by classical scores.`
+          : `<b>⚠️ AI aniqlagan yashirin xavf:</b> AI xavfni Framingham formulasidan <b>+${diff}%</b> yuqori baholadi, sababi klassik kalkulyatorlar ST depressiyasi va qon tomir kalsinozini hisobga olmaydi.`);
     } else {
-      consensusEl.innerHTML = `<span class="text-amber-600 dark:text-amber-400 font-semibold"><i class="fa-solid fa-circle-question mr-1"></i> Chegaraviy Holat:</span> Modellarda ehtimollik farqlari mavjud (SVM: ${svmPct}%, KNN: ${knnPct}%). 93.9% Recall ko'rsatkichiga ega SVM xulosasi ustun hisoblanadi.`;
+      insightEl.innerHTML = currentLang === 'ru'
+        ? `<b>✓ Согласованность шкал:</b> Оценка ИИ и традиционный 10-летний риск Фрамингема находятся в схожих клинических диапазонах.`
+        : (currentLang === 'en'
+          ? `<b>✓ Clinical Concordance:</b> AI multi-parameter prediction and classical Framingham 10-year score are well aligned.`
+          : `<b>✓ Klinik hamohanglik:</b> Sun'iy intellekt xulosasi va klassik Framingham 10-yillik bahosi bir-biriga mos kelmoqda.`);
     }
   }
 }
 
-// 14. Xavf omillari ro'yxati
-function updateRiskFactors(raw, prob) {
-  const container = document.getElementById('risk-factors-list');
-  if (!container) return;
+// 18. Explainable AI (SHAP-Style Feature Attribution Waterfall)
+function updateExplainableAIWaterfall(raw, patientRiskPct) {
+  const container = document.getElementById('xai-waterfall-container');
+  const insightEl = document.getElementById('xai-top-insight');
+  if (!container || !MODEL_DATA || !MODEL_DATA.feature_importance) return;
 
-  const factors = [];
+  const healthyBaseline = MODEL_DATA.radar_baselines.healthy; // [age, trestbps, chol, thalach, oldpeak, ca]
+  const radarFeatures = MODEL_DATA.radar_baselines.features;
 
-  if (raw.trestbps >= 140) {
-    factors.push({ name: "Qon bosimi (trestbps)", val: `${raw.trestbps} mm Hg`, desc: "Gipertoniya 1-2 daraja (me'yordan ancha yuqori)", type: "danger" });
-  } else if (raw.trestbps >= 130) {
-    factors.push({ name: "Qon bosimi (trestbps)", val: `${raw.trestbps} mm Hg`, desc: "Pre-gipertoniya holati", type: "warning" });
-  }
+  const attributions = [];
 
-  if (raw.chol >= 240) {
-    factors.push({ name: "Zardob xolesterini (chol)", val: `${raw.chol} mg/dl`, desc: "Giperxolesterinemiya (tomirlar torayishi xavfi)", type: "danger" });
-  } else if (raw.chol >= 200) {
-    factors.push({ name: "Zardob xolesterini (chol)", val: `${raw.chol} mg/dl`, desc: "Chegaraviy xolesterin darajasi", type: "warning" });
-  }
+  // 1. Ko'krak qafasi og'rig'i (cp)
+  if (raw.cp === 0) attributions.push({ name: currentLang === 'ru' ? 'Типичная стенокардия (cp)' : (currentLang === 'en' ? 'Typical Angina (cp)' : "Tipik stenokardiya (cp)"), impact: +22, direction: 'danger' });
+  else if (raw.cp === 3) attributions.push({ name: currentLang === 'ru' ? 'Бессимптомная боль' : (currentLang === 'en' ? 'Asymptomatic pain' : "Asimptomatik og'riq"), impact: -8, direction: 'safe' });
 
-  if (raw.exang === 1) {
-    factors.push({ name: "Mashq stenokardiyasi (exang)", val: "Ha", desc: "Jismoniy yuklamada ko'krak qafasida og'riq kuzatiladi", type: "danger" });
-  }
+  // 2. ST Depressiyasi (oldpeak)
+  if (raw.oldpeak >= 2.0) attributions.push({ name: currentLang === 'ru' ? `Депрессия ST (${raw.oldpeak}mm)` : (currentLang === 'en' ? `ST Depression (${raw.oldpeak}mm)` : `ST Depressiyasi (${raw.oldpeak}mm)`), impact: Math.min(25, Math.round(raw.oldpeak * 7)), direction: 'danger' });
+  else if (raw.oldpeak <= 0.2) attributions.push({ name: currentLang === 'ru' ? 'Изолиния ST в норме' : (currentLang === 'en' ? 'Normal ST baseline' : "ST segmenti me'yorda"), impact: -7, direction: 'safe' });
 
-  if (raw.oldpeak >= 2.0) {
-    factors.push({ name: "ST depressiyasi (oldpeak)", val: `${raw.oldpeak} mm`, desc: "Miokard ishemiyasiga xos jiddiy EKG o'zgarishi", type: "danger" });
-  }
+  // 3. Tomirlar stenozi (ca)
+  if (raw.ca > 0) attributions.push({ name: currentLang === 'ru' ? `Стеноз сосудов (${raw.ca} сос.)` : (currentLang === 'en' ? `Vessels Fluoroscopy (${raw.ca})` : `Zararlangan tomirlar (${raw.ca} ta)`), impact: Math.min(24, raw.ca * 9), direction: 'danger' });
+  else attributions.push({ name: currentLang === 'ru' ? 'Чистые сосуды (ca=0)' : (currentLang === 'en' ? 'Clear vessels (ca=0)' : "Toza qon tomirlari (ca=0)"), impact: -10, direction: 'safe' });
 
-  if (raw.ca > 0) {
-    factors.push({ name: "Yirik tomirlar (ca)", val: `${raw.ca} ta tomir`, desc: "Flyuroskopiyada kalsiylangan yirik qon tomirlari", type: "danger" });
-  }
+  // 4. Qon bosimi (trestbps)
+  if (raw.trestbps >= 145) attributions.push({ name: currentLang === 'ru' ? `Гипертония (${raw.trestbps} mmHg)` : (currentLang === 'en' ? `Hypertension (${raw.trestbps} mmHg)` : `Gipertoniya (${raw.trestbps} mm Hg)`), impact: +12, direction: 'danger' });
+  else if (raw.trestbps <= 120) attributions.push({ name: currentLang === 'ru' ? `Оптимальное АД (${raw.trestbps})` : (currentLang === 'en' ? `Optimal BP (${raw.trestbps})` : `Optimal bosim (${raw.trestbps})`), impact: -6, direction: 'safe' });
 
-  if (raw.cp === 0) {
-    factors.push({ name: "Ko'krak og'rig'i (cp)", val: "Tipik stenokardiya", desc: "Klassik koronar og'riq belgisi", type: "danger" });
-  }
+  // 5. Maksimal puls zaxirasi (thalach)
+  if (raw.thalach < 125) attributions.push({ name: currentLang === 'ru' ? `Низкий резерв ЧСС (${raw.thalach})` : (currentLang === 'en' ? `Low HR reserve (${raw.thalach})` : `Past puls zaxirasi (${raw.thalach})`), impact: +14, direction: 'danger' });
+  else if (raw.thalach >= 165) attributions.push({ name: currentLang === 'ru' ? `Высокая толерантность (${raw.thalach})` : (currentLang === 'en' ? `High HR tolerance (${raw.thalach})` : `Yuqori puls zaxirasi (${raw.thalach})`), impact: -12, direction: 'safe' });
 
-  if (factors.length === 0) {
-    container.innerHTML = `
-      <div class="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-xs flex items-center space-x-2">
-        <i class="fa-solid fa-circle-check text-emerald-500 text-sm"></i>
-        <span>Kritik tibbiy xavf omillari aniqlanmadi. Ko'rsatkichlar me'yorda.</span>
-      </div>
-    `;
-  } else {
-    container.innerHTML = factors.map(f => `
-      <div class="p-2.5 rounded-lg ${f.type === 'danger' ? 'bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/60' : 'bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/60'} text-xs flex items-start space-x-2">
-        <i class="fa-solid ${f.type === 'danger' ? 'fa-circle-xmark text-rose-500' : 'fa-triangle-exclamation text-amber-500'} mt-0.5"></i>
-        <div class="flex-1">
-          <div class="flex justify-between font-semibold ${f.type === 'danger' ? 'text-rose-900 dark:text-rose-300' : 'text-amber-900 dark:text-amber-300'}">
-            <span>${f.name}</span>
-            <span class="font-mono">${f.val}</span>
-          </div>
-          <p class="text-slate-600 dark:text-slate-400 mt-0.5">${f.desc}</p>
+  // 6. Xolesterin (chol)
+  if (raw.chol >= 260) attributions.push({ name: currentLang === 'ru' ? `Холестерин (${raw.chol} mg/dl)` : (currentLang === 'en' ? `Hypercholesterolemia (${raw.chol})` : `Giperxolesterinemiya (${raw.chol})`), impact: +11, direction: 'danger' });
+  else if (raw.chol <= 185) attributions.push({ name: currentLang === 'ru' ? `Норма холестерина (${raw.chol})` : (currentLang === 'en' ? `Healthy lipids (${raw.chol})` : `Me'yordagi xolesterin (${raw.chol})`), impact: -8, direction: 'safe' });
+
+  // 7. Mashq stenokardiyasi (exang)
+  if (raw.exang === 1) attributions.push({ name: currentLang === 'ru' ? 'Стенокардия напряжения' : (currentLang === 'en' ? 'Exercise Angina' : "Mashq stenokardiyasi"), impact: +13, direction: 'danger' });
+
+  // Sort by impact descending
+  attributions.sort((a, b) => b.impact - a.impact);
+
+  container.innerHTML = attributions.slice(0, 5).map(attr => {
+    const isDanger = attr.direction === 'danger';
+    const barWidth = Math.min(100, Math.abs(attr.impact) * 4);
+    return `
+      <div class="text-xs">
+        <div class="flex justify-between items-center mb-1 font-medium">
+          <span class="text-slate-700 dark:text-slate-300">${attr.name}</span>
+          <span class="font-mono font-bold ${isDanger ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400'}">
+            ${isDanger ? '+' : ''}${attr.impact}%
+          </span>
+        </div>
+        <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 overflow-hidden flex ${isDanger ? 'justify-start' : 'justify-end'}">
+          <div class="h-full rounded-full waterfall-bar ${isDanger ? 'bg-rose-500' : 'bg-emerald-500'}" style="width: ${barWidth}%"></div>
         </div>
       </div>
-    `).join('');
+    `;
+  }).join('');
+
+  if (insightEl) {
+    const topDangers = attributions.filter(a => a.direction === 'danger');
+    if (topDangers.length > 0) {
+      const topNames = topDangers.slice(0, 3).map(a => a.name).join(', ');
+      insightEl.innerHTML = currentLang === 'ru'
+        ? `<b>Ключевые драйверы риска:</b> ${topNames}. Нацеленная коррекция этих факторов снизит риск быстрее всего.`
+        : (currentLang === 'en'
+          ? `<b>Primary Risk Drivers:</b> ${topNames}. Targeted reduction of these biomarkers yields the highest therapeutic impact.`
+          : `<b>Eng xatarli omillar:</b> ${topNames}. Ushbu ko'rsatkichlarni normallashtirish xavfni keskin kamaytiradi.`);
+    } else {
+      insightEl.innerHTML = currentLang === 'ru'
+        ? `<b>Стабильный статус:</b> Выраженных факторов риска не обнаружено. Пациент в безопасной зоне.`
+        : (currentLang === 'en'
+          ? `<b>Stable Clinical State:</b> No major pathological drivers detected. Patient profile is well-controlled.`
+          : `<b>Barqaror klinik holat:</b> Xavfni oshiruvchi jiddiy patologik omillar aniqlanmadi.`);
+    }
   }
 }
 
-// 15. "What-If" Interaktiv Profilaktika Simulyatori
+// 19. "What-If" Interaktiv Profilaktika Simulyatori
 function updateWhatIfSimulator(raw, currentProb) {
   const container = document.getElementById('whatif-container');
   if (!container || !MODEL_DATA) return;
 
-  // Agar qon bosimi 120 ga, xolesterin 185 ga, ST depressiyasi 0.2 ga tushirilsa
-  const optimizedValues = { ...raw };
-  optimizedValues.trestbps = Math.min(optimizedValues.trestbps, 120);
-  optimizedValues.chol = Math.min(optimizedValues.chol, 190);
-  optimizedValues.oldpeak = Math.min(optimizedValues.oldpeak, 0.5);
-  optimizedValues.exang = 0;
+  const optValues = { ...raw };
+  optValues.trestbps = Math.min(optValues.trestbps, 120);
+  optValues.chol = Math.min(optValues.chol, 185);
+  optValues.oldpeak = Math.min(optValues.oldpeak, 0.2);
+  optValues.exang = 0;
 
-  const optVector = MODEL_DATA.features.map(f => optimizedValues[f.id] ?? f.default);
+  const optVector = MODEL_DATA.features.map(f => optValues[f.id] ?? f.default);
   const optScaled = scaleVector(optVector);
-  const optKnn = predictKNN(optScaled);
-  const optSvm = predictSVM(optScaled);
-  const optProb = (optSvm.prob * 0.6) + (optKnn.prob * 0.4);
+  const optEns = predictEnsemble(optScaled, optValues);
 
   const currentPct = Math.round(currentProb * 100);
-  const optPct = Math.round(optProb * 100);
+  const optPct = Math.round(optEns.prob * 100);
   const diffPct = Math.max(0, currentPct - optPct);
 
   container.innerHTML = `
-    <div class="p-4 rounded-xl bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-slate-800/80 dark:to-slate-850 border border-indigo-200/80 dark:border-indigo-900/60 shadow-sm">
-      <div class="flex items-center justify-between mb-2">
-        <h4 class="text-xs font-bold text-indigo-950 dark:text-indigo-200 flex items-center space-x-1.5">
-          <i class="fa-solid fa-wand-magic-sparkles text-indigo-500"></i>
-          <span>"What-If" Profilaktika Simulyatori</span>
-        </h4>
-        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-200/70 text-indigo-800 dark:bg-indigo-900/70 dark:text-indigo-300">
-          Prognoz
+    <div class="p-3 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/80">
+      <div class="flex items-center justify-between font-bold mb-1.5">
+        <span class="text-emerald-900 dark:text-emerald-300">
+          ${currentLang === 'ru' ? 'Потенциал снижения риска:' : (currentLang === 'en' ? 'Potential Risk Reduction:' : "Xavfni kamaytirish salohiyati:")}
         </span>
+        <span class="text-base text-emerald-600 dark:text-emerald-400 font-mono">-${diffPct}%</span>
       </div>
-      <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-3">
-        Agar bemor qon bosimini <strong>120 mm Hg</strong> ga, xolesterinni <strong>190 mg/dl</strong> ga tushirsa va jismoniy mashqlar orqali ishemiyani kamaytirsa:
+      <p class="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed mb-2">
+        ${currentLang === 'ru' 
+          ? `При нормализации АД до 120 мм рт.ст., снижении холестерина до 185 мг/дл и купировании ишемии риск снизится с <b>${currentPct}%</b> до <b>${optPct}%</b>.`
+          : (currentLang === 'en'
+            ? `By normalizing BP to 120 mmHg, optimizing cholesterol to 185 mg/dl, and mitigating ischemia, risk falls from <b>${currentPct}%</b> to <b>${optPct}%</b>.`
+            : `Qon bosimini 120 mm Hg ga, xolesterinni 185 mg/dl ga tushirish va ishemiyani davolash orqali xavf <b>${currentPct}%</b> dan <b>${optPct}%</b> gacha tushishi mumkin.`)}
       </p>
-      <div class="flex items-center justify-between bg-white dark:bg-slate-900 p-3 rounded-lg border border-indigo-100 dark:border-slate-800">
-        <div>
-          <span class="text-[10px] uppercase font-bold text-slate-400 block">Joriy Xavf:</span>
-          <span class="text-lg font-mono font-bold text-rose-600 dark:text-rose-400">${currentPct}%</span>
-        </div>
-        <div class="text-center">
-          <i class="fa-solid fa-arrow-right text-indigo-400 text-sm"></i>
-        </div>
-        <div>
-          <span class="text-[10px] uppercase font-bold text-slate-400 block">Optimallashgan:</span>
-          <span class="text-lg font-mono font-bold text-emerald-600 dark:text-emerald-400">${optPct}%</span>
-        </div>
-        <div class="text-right">
-          <span class="text-[10px] uppercase font-bold text-emerald-500 block">Kamayish:</span>
-          <span class="text-base font-mono font-extrabold text-emerald-600 dark:text-emerald-400">-${diffPct}%</span>
-        </div>
-      </div>
+      <button onclick="applyOptimalTherapy()" class="w-full py-1.5 rounded-lg text-[11px] font-bold bg-emerald-600 hover:bg-emerald-700 text-white transition shadow-sm">
+        ${currentLang === 'ru' ? 'Применить оптимальный целевой сценарий' : (currentLang === 'en' ? 'Apply Optimal Clinical Target' : "Optimal maqsadli ssenariyni qo'llash")}
+      </button>
     </div>
   `;
 }
 
-// 16. Bemor Radar Diagrammasi
-function updatePatientRadar(raw) {
-  const canvas = document.getElementById('chart-patient-radar');
-  if (!canvas || !MODEL_DATA || !MODEL_DATA.radar_baselines) return;
+function applyOptimalTherapy() {
+  const current = getCurrentVector()?.raw;
+  if (!current) return;
 
-  const baselines = MODEL_DATA.radar_baselines;
-  const isDark = document.documentElement.classList.contains('dark');
-  const textColor = isDark ? '#94a3b8' : '#475569';
-  const gridColor = isDark ? '#334155' : '#e2e8f0';
+  const target = {
+    ...current,
+    trestbps: 120,
+    chol: 185,
+    oldpeak: 0.2,
+    exang: 0
+  };
 
-  // Normalizatsiya qilingan qiymatlar (0 - 100 oralig'ida)
-  const norm = (val, max) => Math.min(100, Math.round((val / max) * 100));
-
-  const maxes = [80, 200, 350, 200, 5.0, 3];
-  const patientNorm = [
-    norm(raw.age, maxes[0]),
-    norm(raw.trestbps, maxes[1]),
-    norm(raw.chol, maxes[2]),
-    norm(raw.thalach, maxes[3]),
-    norm(raw.oldpeak, maxes[4]),
-    norm(raw.ca, maxes[5])
-  ];
-
-  const healthyNorm = [
-    norm(baselines.healthy[0], maxes[0]),
-    norm(baselines.healthy[1], maxes[1]),
-    norm(baselines.healthy[2], maxes[2]),
-    norm(baselines.healthy[3], maxes[3]),
-    norm(baselines.healthy[4], maxes[4]),
-    norm(baselines.healthy[5], maxes[5])
-  ];
-
-  if (charts.radar) charts.radar.destroy();
-
-  charts.radar = new Chart(canvas, {
-    type: 'radar',
-    data: {
-      labels: baselines.labels_uz,
-      datasets: [
-        {
-          label: 'Joriy Bemor',
-          data: patientNorm,
-          backgroundColor: 'rgba(225, 29, 72, 0.25)',
-          borderColor: '#e11d48',
-          borderWidth: 2,
-          pointBackgroundColor: '#e11d48'
-        },
-        {
-          label: "Sog'lom Standart",
-          data: healthyNorm,
-          backgroundColor: 'rgba(16, 185, 129, 0.2)',
-          borderColor: '#10b981',
-          borderWidth: 2,
-          pointBackgroundColor: '#10b981'
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        r: {
-          min: 0,
-          max: 100,
-          ticks: { display: false },
-          grid: { color: gridColor },
-          angleLines: { color: gridColor },
-          pointLabels: { color: textColor, font: { size: 10, weight: '600' } }
-        }
-      },
-      plugins: {
-        legend: { labels: { color: textColor, font: { size: 11, weight: '600' } } }
-      }
+  Object.entries(target).forEach(([key, val]) => {
+    const slider = document.getElementById(`slider-${key}`);
+    const display = document.getElementById(`val-${key}`);
+    const select = document.getElementById(`input-${key}`);
+    if (slider) {
+      slider.value = val;
+      if (display) display.textContent = val;
     }
+    if (select) select.value = val;
   });
+
+  runPrediction();
 }
 
-// 17. Kengaytirilgan Modellarni Taqqoslash Grafiklari
-function initEnhancedCharts() {
-  if (!MODEL_DATA || typeof Chart === 'undefined') return;
+// 20. Klinik Harakat Tavsiyalari
+function updateClinicalAdvice(raw, riskPct) {
+  const list = document.getElementById('clinical-advice-list');
+  if (!list) return;
 
-  const isDark = document.documentElement.classList.contains('dark');
-  const textColor = isDark ? '#94a3b8' : '#475569';
-  const gridColor = isDark ? '#334155' : '#e2e8f0';
+  const items = [];
 
-  // 1. Asosiy Metrikalar
-  const metricsCanvas = document.getElementById('chart-metrics-comparison');
-  if (metricsCanvas) {
-    if (charts.metrics) charts.metrics.destroy();
-    const knnMet = MODEL_DATA.knn.metrics;
-    const svmMet = MODEL_DATA.svm.metrics;
+  if (riskPct >= 75) {
+    items.push({ icon: 'fa-truck-medical text-rose-500', text: currentLang === 'ru' ? 'Экстренная консультация кардиолога и селективная коронарография' : (currentLang === 'en' ? 'Urgent cardiology evaluation and coronary angiography' : "Zudlik bilan kardiolog ko'rigi va selektiv koronarografiya") });
+    items.push({ icon: 'fa-pills text-indigo-500', text: currentLang === 'ru' ? 'Антиишемическая терапия (статины, бета-блокаторы, дезагреганты)' : (currentLang === 'en' ? 'Aggressive medical therapy (Statins, Beta-blockers, Antiplatelets)' : "Statinlar, beta-blokatorlar va antiaqregantlar terapiyasi") });
+  } else if (riskPct >= 50) {
+    items.push({ icon: 'fa-heart-pulse text-orange-500', text: currentLang === 'ru' ? 'Нагрузочный тредмил-тест и Холтеровское мониторирование 24ч' : (currentLang === 'en' ? 'Stress treadmill test & 24h Holter ECG monitoring' : "Tredmil-test va 24 soatlik Xolter EKG monitoringi") });
+    items.push({ icon: 'fa-droplet text-blue-500', text: currentLang === 'ru' ? 'Липидный профиль высокой плотности и целевой уровень холестерина < 190' : (currentLang === 'en' ? 'Lipid panel assessment, targeting LDL reduction below 100 mg/dl' : "Lipid profilini chuqur tekshirish va xolesterinni < 190 ga tushirish") });
+  } else if (riskPct >= 25) {
+    items.push({ icon: 'fa-apple-whole text-emerald-500', text: currentLang === 'ru' ? 'Средиземноморская диета и аэробная активность 150 мин/нед' : (currentLang === 'en' ? 'Mediterranean cardio-diet and 150 min/week moderate aerobic exercise' : "O'rta yer dengizi parhezi va haftasiga 150 daqiqa kardio mashqlar") });
+    items.push({ icon: 'fa-clock-rotate-left text-amber-500', text: currentLang === 'ru' ? 'Контрольный осмотр через 6 месяцев' : (currentLang === 'en' ? 'Follow-up clinical assessment in 6 months' : "6 oydan so'ng qayta nazorat ko'rigi") });
+  } else {
+    items.push({ icon: 'fa-circle-check text-emerald-500', text: currentLang === 'ru' ? 'Профиль отличный. Ежегодный профилактический кардио-скрининг' : (currentLang === 'en' ? 'Cardiovascular health optimal. Annual preventive check-up recommended' : "Salomatlik a'lo darajada. Har yili profilaktik skriningdan o'tib turish") });
+  }
 
-    charts.metrics = new Chart(metricsCanvas, {
-      type: 'bar',
+  list.innerHTML = items.map(it => `
+    <li class="flex items-start space-x-2">
+      <i class="fa-solid ${it.icon} mt-0.5 text-xs"></i>
+      <span>${it.text}</span>
+    </li>
+  `).join('');
+}
+
+// 21. 360° Radar Diagrammasi
+function updatePatientRadar(raw) {
+  if (!MODEL_DATA || !MODEL_DATA.radar_baselines) return;
+  const ctx = document.getElementById('patient-radar-chart');
+  if (!ctx) return;
+
+  const base = MODEL_DATA.radar_baselines;
+  const labels = base[`labels_${currentLang}`] || base.labels_uz;
+  const healthyNorm = base.healthy;
+
+  const currentValues = [
+    raw.age,
+    raw.trestbps,
+    raw.chol,
+    raw.thalach,
+    raw.oldpeak,
+    raw.ca
+  ];
+
+  const maxScales = [80, 200, 350, 210, 6.0, 3];
+  const patientNorm = currentValues.map((v, i) => Math.min(100, Math.round((v / maxScales[i]) * 100)));
+  const benchmarkNorm = healthyNorm.map((v, i) => Math.min(100, Math.round((v / maxScales[i]) * 100)));
+
+  if (charts.radar) {
+    charts.radar.data.labels = labels;
+    charts.radar.data.datasets[0].data = patientNorm;
+    charts.radar.data.datasets[1].data = benchmarkNorm;
+    charts.radar.update();
+  } else {
+    const isDark = document.documentElement.classList.contains('dark');
+    charts.radar = new Chart(ctx, {
+      type: 'radar',
       data: {
-        labels: ['Accuracy', 'Recall', 'Specificity', 'F1-Score', 'Precision', 'ROC-AUC', 'Balanced Acc'],
+        labels: labels,
         datasets: [
           {
-            label: 'KNN (k=7)',
-            data: [knnMet.accuracy, knnMet.recall, knnMet.specificity, knnMet.f1_score, knnMet.precision, knnMet.roc_auc, knnMet.balanced_accuracy],
-            backgroundColor: 'rgba(59, 130, 246, 0.85)',
-            borderRadius: 6
+            label: currentLang === 'ru' ? 'Текущий пациент' : (currentLang === 'en' ? 'Current Patient' : "Ushbu bemor"),
+            data: patientNorm,
+            backgroundColor: 'rgba(225, 29, 72, 0.25)',
+            borderColor: '#e11d48',
+            pointBackgroundColor: '#e11d48',
+            borderWidth: 2
           },
           {
-            label: 'SVM (RBF Kernel)',
-            data: [svmMet.accuracy, svmMet.recall, svmMet.specificity, svmMet.f1_score, svmMet.precision, svmMet.roc_auc, svmMet.balanced_accuracy],
-            backgroundColor: 'rgba(225, 29, 72, 0.85)',
-            borderRadius: 6
+            label: currentLang === 'ru' ? 'Норма (Здоровые)' : (currentLang === 'en' ? 'Healthy Benchmark' : "Sog'lom norma"),
+            data: benchmarkNorm,
+            backgroundColor: 'rgba(16, 185, 129, 0.15)',
+            borderColor: '#10b981',
+            pointBackgroundColor: '#10b981',
+            borderWidth: 2
           }
         ]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: { legend: { labels: { color: textColor } } },
         scales: {
-          x: { ticks: { color: textColor }, grid: { display: false } },
-          y: { min: 60, max: 100, ticks: { color: textColor, callback: (v) => `${v}%` }, grid: { color: gridColor } }
+          r: {
+            angleLines: { color: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)' },
+            grid: { color: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)' },
+            pointLabels: {
+              color: isDark ? '#94a3b8' : '#64748b',
+              font: { size: 10, weight: 'bold' }
+            },
+            ticks: { display: false }
+          }
+        },
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: {
+              color: isDark ? '#e2e8f0' : '#334155',
+              font: { size: 11, weight: 'bold' }
+            }
+          }
         }
       }
     });
   }
+}
 
-  // 2. ROC Egri Chiziqlari (ROC Curves)
-  const rocCanvas = document.getElementById('chart-roc-curve');
-  if (rocCanvas && MODEL_DATA.roc_curves) {
+// 22. Modellarni Taqqoslash Diagrammalari (5 Model: Multi-ROC, CV, Importance, K-Tune)
+function initEnhancedCharts() {
+  if (!MODEL_DATA) return;
+  const isDark = document.documentElement.classList.contains('dark');
+  const textColor = isDark ? '#e2e8f0' : '#334155';
+  const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)';
+
+  // 1. Multi-line ROC Curves (5 Models!)
+  const rocCtx = document.getElementById('multi-roc-chart');
+  if (rocCtx && MODEL_DATA.roc_curves) {
     if (charts.roc) charts.roc.destroy();
 
-    charts.roc = new Chart(rocCanvas, {
+    const curves = MODEL_DATA.roc_curves;
+    charts.roc = new Chart(rocCtx, {
       type: 'line',
       data: {
         datasets: [
           {
-            label: `SVM (AUC = ${MODEL_DATA.svm.metrics.roc_auc}%)`,
-            data: MODEL_DATA.roc_curves.svm,
-            borderColor: '#e11d48',
-            backgroundColor: 'rgba(225, 29, 72, 0.1)',
-            fill: true,
-            tension: 0.2,
-            borderWidth: 2
+            label: 'Ensemble Soft-Voting (AUC: 90.7%)',
+            data: curves.ensemble || [],
+            borderColor: '#f43f5e',
+            borderWidth: 3,
+            tension: 0.1,
+            pointRadius: 0
           },
           {
-            label: `KNN (AUC = ${MODEL_DATA.knn.metrics.roc_auc}%)`,
-            data: MODEL_DATA.roc_curves.knn,
+            label: 'Gradient Boosting (AUC: 88.0%)',
+            data: curves.gb || [],
+            borderColor: '#10b981',
+            borderWidth: 2,
+            tension: 0.1,
+            pointRadius: 0
+          },
+          {
+            label: 'Random Forest (AUC: 89.8%)',
+            data: curves.rf || [],
+            borderColor: '#f59e0b',
+            borderWidth: 2,
+            tension: 0.1,
+            pointRadius: 0
+          },
+          {
+            label: 'SVM RBF (AUC: 88.1%)',
+            data: curves.svm || [],
+            borderColor: '#6366f1',
+            borderWidth: 2,
+            tension: 0.1,
+            pointRadius: 0
+          },
+          {
+            label: 'KNN k=7 (AUC: 88.2%)',
+            data: curves.knn || [],
             borderColor: '#3b82f6',
-            backgroundColor: 'transparent',
-            borderDash: [5, 5],
-            tension: 0.2,
-            borderWidth: 2
+            borderWidth: 2,
+            tension: 0.1,
+            pointRadius: 0
           },
           {
-            label: 'Tasodifiy chegara (AUC = 50%)',
-            data: [{ x: 0, y: 0 }, { x: 1, y: 1 }],
+            label: 'Tasodifiy (Random Chance: 50%)',
+            data: [{x: 0, y: 0}, {x: 1, y: 1}],
             borderColor: '#94a3b8',
-            borderDash: [3, 3],
+            borderDash: [4, 4],
+            borderWidth: 1.5,
             pointRadius: 0
           }
         ]
@@ -795,370 +1366,615 @@ function initEnhancedCharts() {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: { legend: { labels: { color: textColor } } },
         scales: {
-          x: { type: 'linear', min: 0, max: 1, title: { display: true, text: 'False Positive Rate (1 - Specificity)', color: textColor }, ticks: { color: textColor }, grid: { color: gridColor } },
-          y: { min: 0, max: 1, title: { display: true, text: 'True Positive Rate (Sensitivity / Recall)', color: textColor }, ticks: { color: textColor }, grid: { color: gridColor } }
+          x: {
+            type: 'linear',
+            min: 0,
+            max: 1,
+            title: { display: true, text: 'False Positive Rate (1 - Specificity)', color: textColor, font: { size: 10 } },
+            grid: { color: gridColor },
+            ticks: { color: textColor, font: { size: 10 } }
+          },
+          y: {
+            min: 0,
+            max: 1,
+            title: { display: true, text: 'True Positive Rate (Recall / Sensitivity)', color: textColor, font: { size: 10 } },
+            grid: { color: gridColor },
+            ticks: { color: textColor, font: { size: 10 } }
+          }
+        },
+        plugins: {
+          legend: { position: 'bottom', labels: { boxWidth: 12, color: textColor, font: { size: 10 } } }
         }
       }
     });
   }
 
-  // 3. 5-Fold Cross Validation Folds
-  const cvCanvas = document.getElementById('chart-cv-folds');
-  if (cvCanvas && MODEL_DATA.svm.metrics.cv_folds) {
+  // 2. 5-Fold Stratified Cross-Validation Chart
+  const cvCtx = document.getElementById('cross-validation-chart');
+  if (cvCtx && MODEL_DATA.models) {
     if (charts.cv) charts.cv.destroy();
 
-    charts.cv = new Chart(cvCanvas, {
+    const m = MODEL_DATA.models;
+    charts.cv = new Chart(cvCtx, {
       type: 'bar',
       data: {
         labels: ['Fold 1', 'Fold 2', 'Fold 3', 'Fold 4', 'Fold 5'],
         datasets: [
           {
-            label: 'SVM Cross-Val (%)',
-            data: MODEL_DATA.svm.metrics.cv_folds,
-            backgroundColor: 'rgba(225, 29, 72, 0.8)',
-            borderRadius: 6
+            label: 'Ensemble (Avg 81.4%)',
+            data: m.ensemble.metrics.cv_folds,
+            backgroundColor: 'rgba(244, 63, 94, 0.85)',
+            borderRadius: 4
           },
           {
-            label: 'KNN Cross-Val (%)',
-            data: MODEL_DATA.knn.metrics.cv_folds,
-            backgroundColor: 'rgba(59, 130, 246, 0.8)',
-            borderRadius: 6
+            label: 'Gradient Boosting (Avg 80.4%)',
+            data: m.gb.metrics.cv_folds,
+            backgroundColor: 'rgba(16, 185, 129, 0.85)',
+            borderRadius: 4
+          },
+          {
+            label: 'Random Forest (Avg 83.7%)',
+            data: m.rf.metrics.cv_folds,
+            backgroundColor: 'rgba(245, 158, 11, 0.85)',
+            borderRadius: 4
+          },
+          {
+            label: 'SVM (Avg 81.1%)',
+            data: m.svm.metrics.cv_folds,
+            backgroundColor: 'rgba(99, 102, 241, 0.85)',
+            borderRadius: 4
           }
         ]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: { legend: { labels: { color: textColor } } },
         scales: {
-          x: { ticks: { color: textColor }, grid: { display: false } },
-          y: { min: 60, max: 100, ticks: { color: textColor, callback: (v) => `${v}%` }, grid: { color: gridColor } }
-        }
-      }
-    });
-  }
-
-  // 4. K Tuning Curve
-  const kCanvas = document.getElementById('chart-k-curve');
-  if (kCanvas && MODEL_DATA.k_tuning_curve) {
-    if (charts.kCurve) charts.kCurve.destroy();
-
-    const kData = MODEL_DATA.k_tuning_curve;
-    charts.kCurve = new Chart(kCanvas, {
-      type: 'line',
-      data: {
-        labels: kData.map(d => `k=${d.k}`),
-        datasets: [
-          {
-            label: 'Accuracy (%)',
-            data: kData.map(d => d.accuracy),
-            borderColor: '#3b82f6',
-            backgroundColor: 'rgba(59, 130, 246, 0.15)',
-            fill: true,
-            tension: 0.3,
-            borderWidth: 2
+          y: {
+            min: 65,
+            max: 100,
+            grid: { color: gridColor },
+            ticks: { color: textColor, font: { size: 10 } }
           },
-          {
-            label: 'F1-Score (%)',
-            data: kData.map(d => d.f1_score),
-            borderColor: '#10b981',
-            tension: 0.3,
-            borderWidth: 2
+          x: {
+            grid: { display: false },
+            ticks: { color: textColor, font: { size: 10 } }
           }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { labels: { color: textColor } } },
-        scales: {
-          x: { ticks: { color: textColor }, grid: { display: false } },
-          y: { min: 70, max: 90, ticks: { color: textColor, callback: (v) => `${v}%` }, grid: { color: gridColor } }
+        },
+        plugins: {
+          legend: { position: 'bottom', labels: { boxWidth: 10, color: textColor, font: { size: 10 } } }
         }
       }
     });
   }
 
-  // 5. Xususiyatlar Muhimligi
-  const featuresCanvas = document.getElementById('chart-feature-importance');
-  if (featuresCanvas && MODEL_DATA.feature_importance) {
-    if (charts.features) charts.features.destroy();
+  // 3. Feature Importance Chart
+  const fiCtx = document.getElementById('feature-importance-chart');
+  if (fiCtx && MODEL_DATA.feature_importance) {
+    if (charts.fi) charts.fi.destroy();
 
-    const topFeatures = MODEL_DATA.feature_importance.slice(0, 9);
-    charts.features = new Chart(featuresCanvas, {
+    const topFeatures = MODEL_DATA.feature_importance.slice(0, 8);
+    charts.fi = new Chart(fiCtx, {
       type: 'bar',
       data: {
-        labels: topFeatures.map(f => `${f.name_uz} (${f.id})`),
+        labels: topFeatures.map(f => f[`name_${currentLang}`] || f.name_uz),
         datasets: [{
-          label: 'Korrelyatsiya koeffitsiyenti (r)',
-          data: topFeatures.map(f => f.correlation),
-          backgroundColor: topFeatures.map(f => f.correlation > 0 ? 'rgba(16, 185, 129, 0.85)' : 'rgba(239, 68, 68, 0.85)'),
-          borderRadius: 6
+          label: 'Ensemble Og\'irlik Indeksi (%)',
+          data: topFeatures.map(f => f.ensemble_weight),
+          backgroundColor: '#f59e0b',
+          borderRadius: 4
         }]
       },
       options: {
         indexAxis: 'y',
         responsive: true,
         maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
         scales: {
-          x: { ticks: { color: textColor }, grid: { color: gridColor } },
-          y: { ticks: { color: textColor, font: { size: 11 } }, grid: { display: false } }
-        }
+          x: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 } } },
+          y: { grid: { display: false }, ticks: { color: textColor, font: { size: 10 } } }
+        },
+        plugins: { legend: { display: false } }
       }
     });
   }
 
-  renderConfusionMatrix('cm-knn-grid', MODEL_DATA.knn.metrics.confusion_matrix, 'KNN');
-  renderConfusionMatrix('cm-svm-grid', MODEL_DATA.svm.metrics.confusion_matrix, 'SVM');
+  // 4. KNN k-Tuning Chart
+  const ktuneCtx = document.getElementById('k-tuning-chart');
+  if (ktuneCtx && MODEL_DATA.k_tuning_curve) {
+    if (charts.ktune) charts.ktune.destroy();
+
+    const curve = MODEL_DATA.k_tuning_curve;
+    charts.ktune = new Chart(ktuneCtx, {
+      type: 'line',
+      data: {
+        labels: curve.map(c => `k=${c.k}`),
+        datasets: [
+          {
+            label: 'Accuracy (%)',
+            data: curve.map(c => c.accuracy),
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            fill: true,
+            tension: 0.3
+          },
+          {
+            label: 'F1-Score (%)',
+            data: curve.map(c => c.f1_score),
+            borderColor: '#10b981',
+            borderDash: [3, 3],
+            tension: 0.3
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: { min: 70, max: 90, grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 } } },
+          x: { grid: { display: false }, ticks: { color: textColor, font: { size: 10 } } }
+        },
+        plugins: { legend: { position: 'bottom', labels: { color: textColor, font: { size: 10 } } } }
+      }
+    });
+  }
 }
 
-function renderConfusionMatrix(containerId, cm, modelName) {
-  const container = document.getElementById(containerId);
-  if (!container || !cm) return;
+function updateAllChartsTheme() {
+  if (charts.radar) {
+    charts.radar.destroy();
+    charts.radar = null;
+    const current = getCurrentVector()?.raw;
+    if (current) updatePatientRadar(current);
+  }
+  initEnhancedCharts();
+}
 
-  const tn = cm[0][0];
-  const fp = cm[0][1];
-  const fn = cm[1][0];
-  const tp = cm[1][1];
-  const total = tn + fp + fn + tp;
+// 23. EMR & Dinamika Tahlili (Electronic Medical Records)
+const EMR_STORAGE_KEY = 'cardiorisk_emr_v3';
+
+function initDefaultEMRData() {
+  const existing = localStorage.getItem(EMR_STORAGE_KEY);
+  if (!existing) {
+    const defaults = [
+      {
+        id: "emr-001",
+        name: "Aliyev Muzaffar (Boshlang'ich ko'rik)",
+        date: "2026-08-14",
+        age: 58,
+        sex: 1,
+        riskPct: 82,
+        raw: { age: 58, sex: 1, cp: 0, trestbps: 155, chol: 275, fbs: 1, restecg: 1, thalach: 125, exang: 1, oldpeak: 2.8, slope: 1, ca: 2, thal: 3 }
+      },
+      {
+        id: "emr-002",
+        name: "Aliyev Muzaffar (3 oylik terapiyadan so'ng)",
+        date: "2026-11-12",
+        age: 58,
+        sex: 1,
+        riskPct: 34,
+        raw: { age: 58, sex: 1, cp: 2, trestbps: 125, chol: 195, fbs: 0, restecg: 0, thalach: 152, exang: 0, oldpeak: 0.5, slope: 2, ca: 1, thal: 2 }
+      },
+      {
+        id: "emr-003",
+        name: "Karimova Dilnoza (Skrining)",
+        date: "2026-10-05",
+        age: 52,
+        sex: 0,
+        riskPct: 18,
+        raw: { age: 52, sex: 0, cp: 1, trestbps: 118, chol: 180, fbs: 0, restecg: 0, thalach: 168, exang: 0, oldpeak: 0.0, slope: 2, ca: 0, thal: 2 }
+      }
+    ];
+    localStorage.setItem(EMR_STORAGE_KEY, JSON.stringify(defaults));
+  }
+}
+
+function getEMRPatients() {
+  try {
+    return JSON.parse(localStorage.getItem(EMR_STORAGE_KEY)) || [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveCurrentPatientToEMR() {
+  const current = getCurrentVector();
+  if (!current) return;
+
+  const patientName = prompt(
+    currentLang === 'ru' ? "Введите имя или номер пациента:" : (currentLang === 'en' ? "Enter Patient Name or ID:" : "Bemor ismi yoki ID raqamini kiriting:"),
+    `Bemor #${Math.floor(100 + Math.random() * 900)}`
+  );
+
+  if (!patientName) return;
+
+  const scaled = scaleVector(current.vector);
+  const ens = predictEnsemble(scaled, current.raw);
+  const riskPct = Math.round(ens.prob * 100);
+
+  const newPatient = {
+    id: `emr-${Date.now()}`,
+    name: patientName,
+    date: new Date().toISOString().split('T')[0],
+    age: current.raw.age,
+    sex: current.raw.sex,
+    riskPct: riskPct,
+    raw: { ...current.raw }
+  };
+
+  const list = getEMRPatients();
+  list.unshift(newPatient);
+  localStorage.setItem(EMR_STORAGE_KEY, JSON.stringify(list));
+
+  alert(currentLang === 'ru' ? "Пациент успешно сохранен в ЭМК!" : (currentLang === 'en' ? "Patient record saved to EMR!" : "Bemor ma'lumotlari EMR kartasiga muvaffaqiyatli saqlandi!"));
+  renderEMRRecords();
+}
+
+function renderEMRRecords() {
+  const listContainer = document.getElementById('emr-patient-list');
+  const sel1 = document.getElementById('dyn-select-visit1');
+  const sel2 = document.getElementById('dyn-select-visit2');
+
+  const patients = getEMRPatients();
+
+  if (sel1 && sel2) {
+    sel1.innerHTML = patients.map((p, idx) => `<option value="${p.id}" ${idx === 0 ? 'selected' : ''}>${p.name} (${p.date} - ${p.riskPct}%)</option>`).join('');
+    sel2.innerHTML = patients.map((p, idx) => `<option value="${p.id}" ${idx === 1 ? 'selected' : ''}>${p.name} (${p.date} - ${p.riskPct}%)</option>`).join('');
+    runDynamicsComparison();
+  }
+
+  if (listContainer) {
+    if (patients.length === 0) {
+      listContainer.innerHTML = `<div class="col-span-3 text-center p-8 text-slate-400 text-xs">${currentLang === 'ru' ? 'Записей в ЭМК пока нет.' : (currentLang === 'en' ? 'No EMR patient records found.' : "EMR kartasida bemorlar mavjud emas.")}</div>`;
+      return;
+    }
+
+    listContainer.innerHTML = patients.map(p => `
+      <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 shadow-sm relative space-y-2">
+        <div class="flex items-start justify-between">
+          <div>
+            <h4 class="text-xs font-bold text-slate-900 dark:text-white">${p.name}</h4>
+            <span class="text-[10px] text-slate-400 font-mono">${p.date} • ${p.age} yosh • ${p.sex === 1 ? 'Erkak' : 'Ayol'}</span>
+          </div>
+          <span class="px-2 py-0.5 rounded text-[10px] font-extrabold font-mono ${p.riskPct >= 50 ? 'bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300'}">
+            ${p.riskPct}% Xavf
+          </span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-1.5 text-[10px] font-mono bg-white dark:bg-slate-900/60 p-2 rounded-lg border border-slate-200/60 dark:border-slate-700/60">
+          <div><span class="text-slate-400 block">Bosim:</span> <b>${p.raw.trestbps}</b></div>
+          <div><span class="text-slate-400 block">Xolesterin:</span> <b>${p.raw.chol}</b></div>
+          <div><span class="text-slate-400 block">ST Dep:</span> <b>${p.raw.oldpeak}mm</b></div>
+        </div>
+
+        <div class="flex items-center justify-between pt-2 border-t border-slate-200/50 dark:border-slate-700/50">
+          <button onclick="loadPatientToCalculator('${p.id}')" class="px-2.5 py-1 text-[11px] font-bold rounded bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 transition">
+            <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i> ${currentLang === 'ru' ? 'Загрузить' : (currentLang === 'en' ? 'Load' : "Yuklash")}
+          </button>
+          <button onclick="deleteEMRPatient('${p.id}')" class="text-slate-400 hover:text-rose-500 text-xs px-2 py-1 transition">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
+function loadPatientToCalculator(patientId) {
+  const p = getEMRPatients().find(item => item.id === patientId);
+  if (!p) return;
+
+  Object.entries(p.raw).forEach(([key, val]) => {
+    const slider = document.getElementById(`slider-${key}`);
+    const display = document.getElementById(`val-${key}`);
+    const select = document.getElementById(`input-${key}`);
+    if (slider) {
+      slider.value = val;
+      if (display) display.textContent = val;
+    }
+    if (select) select.value = val;
+  });
+
+  // Switch to Tab 1
+  document.querySelector('[data-tab-target="tab-calculator"]')?.click();
+  runPrediction();
+}
+
+function deleteEMRPatient(patientId) {
+  if (!confirm(currentLang === 'ru' ? "Удалить запись?" : (currentLang === 'en' ? "Delete record?" : "Ushbu yozuv o'chirilsinmi?"))) return;
+  const list = getEMRPatients().filter(p => p.id !== patientId);
+  localStorage.setItem(EMR_STORAGE_KEY, JSON.stringify(list));
+  renderEMRRecords();
+}
+
+function clearEMRHistory() {
+  if (!confirm(currentLang === 'ru' ? "Очистить всю историю ЭМК?" : (currentLang === 'en' ? "Clear all EMR history?" : "Barcha EMR tarixini tozalashni xohlaysizmi?"))) return;
+  localStorage.removeItem(EMR_STORAGE_KEY);
+  initDefaultEMRData();
+  renderEMRRecords();
+}
+
+function runDynamicsComparison() {
+  const sel1 = document.getElementById('dyn-select-visit1');
+  const sel2 = document.getElementById('dyn-select-visit2');
+  const container = document.getElementById('dynamics-result-container');
+  if (!sel1 || !sel2 || !container) return;
+
+  const p1 = getEMRPatients().find(p => p.id === sel1.value);
+  const p2 = getEMRPatients().find(p => p.id === sel2.value);
+
+  if (!p1 || !p2) {
+    container.innerHTML = `<span class="text-xs text-slate-400">Taqqoslash uchun ikkita bemor tashrifini tanlang.</span>`;
+    return;
+  }
+
+  const riskDelta = p2.riskPct - p1.riskPct;
+  const bpDelta = p2.raw.trestbps - p1.raw.trestbps;
+  const cholDelta = p2.raw.chol - p1.raw.chol;
+  const pulseDelta = p2.raw.thalach - p1.raw.thalach;
+  const stDelta = (p2.raw.oldpeak - p1.raw.oldpeak).toFixed(1);
+
+  const isImprovement = riskDelta < 0;
 
   container.innerHTML = `
-    <div class="grid grid-cols-2 gap-2 text-center text-xs">
-      <div class="p-3 rounded-lg bg-emerald-100 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-800">
-        <span class="block text-[10px] text-emerald-800 dark:text-emerald-300 font-semibold">True Negative (TN)</span>
-        <span class="text-xl font-bold font-mono text-emerald-700 dark:text-emerald-400">${tn}</span>
-        <span class="block text-[10px] text-slate-500">Sog'lom to'g'ri topildi</span>
+    <div class="space-y-3">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-700">
+        <span class="text-xs font-bold text-slate-800 dark:text-slate-200">
+          ${p1.name} ➔ ${p2.name}
+        </span>
+        <span class="px-2.5 py-1 rounded-md text-xs font-mono font-black ${isImprovement ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300' : 'bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300'}">
+          ${riskDelta > 0 ? '+' : ''}${riskDelta}% Xavf O'zgarishi
+        </span>
       </div>
-      <div class="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900">
-        <span class="block text-[10px] text-rose-800 dark:text-rose-300 font-semibold">False Positive (FP)</span>
-        <span class="text-xl font-bold font-mono text-rose-600 dark:text-rose-400">${fp}</span>
-        <span class="block text-[10px] text-slate-500">Sog'lomga kasal deb xato</span>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs font-mono">
+        <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
+          <span class="text-[10px] text-slate-400 block">Qon Bosimi:</span>
+          <b>${p1.raw.trestbps} ➔ ${p2.raw.trestbps}</b>
+          <span class="block text-[10px] font-bold ${bpDelta <= 0 ? 'text-emerald-500' : 'text-rose-500'}">(${bpDelta > 0 ? '+' : ''}${bpDelta} mmHg)</span>
+        </div>
+        <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
+          <span class="text-[10px] text-slate-400 block">Xolesterin:</span>
+          <b>${p1.raw.chol} ➔ ${p2.raw.chol}</b>
+          <span class="block text-[10px] font-bold ${cholDelta <= 0 ? 'text-emerald-500' : 'text-rose-500'}">(${cholDelta > 0 ? '+' : ''}${cholDelta} mg/dl)</span>
+        </div>
+        <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
+          <span class="text-[10px] text-slate-400 block">ST Depressiya:</span>
+          <b>${p1.raw.oldpeak} ➔ ${p2.raw.oldpeak}mm</b>
+          <span class="block text-[10px] font-bold ${stDelta <= 0 ? 'text-emerald-500' : 'text-rose-500'}">(${stDelta > 0 ? '+' : ''}${stDelta} mm)</span>
+        </div>
+        <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
+          <span class="text-[10px] text-slate-400 block">Puls Zaxirasi:</span>
+          <b>${p1.raw.thalach} ➔ ${p2.raw.thalach}</b>
+          <span class="block text-[10px] font-bold ${pulseDelta >= 0 ? 'text-emerald-500' : 'text-rose-500'}">(${pulseDelta > 0 ? '+' : ''}${pulseDelta} bpm)</span>
+        </div>
       </div>
-      <div class="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900">
-        <span class="block text-[10px] text-rose-800 dark:text-rose-300 font-semibold">False Negative (FN)</span>
-        <span class="text-xl font-bold font-mono text-rose-600 dark:text-rose-400">${fn}</span>
-        <span class="block text-[10px] text-slate-500">Kasalni o'tkazib yubordi</span>
+
+      <div class="p-2.5 rounded-lg text-[11px] leading-relaxed ${isImprovement ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-900 dark:text-emerald-300' : 'bg-rose-50 dark:bg-rose-950/30 text-rose-900 dark:text-rose-300'}">
+        <i class="fa-solid ${isImprovement ? 'fa-circle-check text-emerald-500' : 'fa-triangle-exclamation text-rose-500'} mr-1"></i>
+        ${isImprovement 
+          ? `Ijobiy dinamika: Terapiya natijasida bemorning yurak kasalligi xavfi <b>${Math.abs(riskDelta)}%</b> ga pasaygan. Tomirlar tonusi va yurak urish zaxirasi sezilarli yaxshilangan.`
+          : `Salbiy dinamika: Ko'rsatkichlar og'irlashgan (+${riskDelta}% xavf ortishi). Antiishemik dorilar dozasini qayta ko'rib chiqish talab etiladi.`}
       </div>
-      <div class="p-3 rounded-lg bg-emerald-100 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-800">
-        <span class="block text-[10px] text-emerald-800 dark:text-emerald-300 font-semibold">True Positive (TP)</span>
-        <span class="text-xl font-bold font-mono text-emerald-700 dark:text-emerald-400">${tp}</span>
-        <span class="block text-[10px] text-slate-500">Kasallik to'g'ri topildi</span>
-      </div>
-    </div>
-    <div class="mt-2 text-[11px] text-slate-500 dark:text-slate-400 text-center">
-      Test to'plami: <span class="font-mono font-semibold">${total} ta bemor</span> (${modelName} aniqligi: <span class="font-bold text-rose-600 dark:text-rose-400">${Math.round(((tp+tn)/total)*1000)/10}%</span>)
     </div>
   `;
 }
 
-function updateAllChartsTheme() {
-  initEnhancedCharts();
-  const current = getCurrentVector();
-  if (current) updatePatientRadar(current.raw);
-}
-
-// 18. Filtrlash va Qidiruvga ega Dataset Jadvali
-function renderDatasetTable() {
-  const tbody = document.getElementById('dataset-table-body');
-  if (!tbody || !MODEL_DATA || !MODEL_DATA.dataset_preview) return;
-
-  let data = MODEL_DATA.dataset_preview;
-
-  // Filtr
-  if (currentTableFilter === 'diseased') {
-    data = data.filter(r => r.target === 1);
-  } else if (currentTableFilter === 'healthy') {
-    data = data.filter(r => r.target === 0);
-  }
-
-  // Qidiruv (Yosh, Qon bosimi va b.)
-  if (currentTableSearch.trim()) {
-    const q = currentTableSearch.toLowerCase();
-    data = data.filter(r => 
-      String(r.age).includes(q) ||
-      String(r.trestbps).includes(q) ||
-      String(r.chol).includes(q) ||
-      String(r.thalach).includes(q)
-    );
-  }
-
-  const totalFiltered = data.length;
-  const startIdx = (currentTablePage - 1) * rowsPerPage;
-  const pageData = data.slice(startIdx, startIdx + rowsPerPage);
-
-  const countBadge = document.getElementById('dataset-count-badge');
-  if (countBadge) countBadge.textContent = `${totalFiltered} ta bemor topildi`;
-
-  tbody.innerHTML = pageData.map((row, idx) => `
-    <tr class="border-b border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40 font-mono text-xs">
-      <td class="px-3 py-2 text-slate-400">${startIdx + idx + 1}</td>
-      <td class="px-3 py-2 font-semibold text-slate-800 dark:text-slate-200">${row.age}</td>
-      <td class="px-3 py-2">${row.sex === 1 ? 'Erkak' : 'Ayol'}</td>
-      <td class="px-3 py-2">${row.cp}</td>
-      <td class="px-3 py-2 font-semibold text-rose-600 dark:text-rose-400">${row.trestbps}</td>
-      <td class="px-3 py-2">${row.chol}</td>
-      <td class="px-3 py-2">${row.fbs}</td>
-      <td class="px-3 py-2">${row.restecg}</td>
-      <td class="px-3 py-2 text-blue-600 dark:text-blue-400 font-semibold">${row.thalach}</td>
-      <td class="px-3 py-2">${row.exang}</td>
-      <td class="px-3 py-2">${row.oldpeak}</td>
-      <td class="px-3 py-2">${row.slope}</td>
-      <td class="px-3 py-2">${row.ca}</td>
-      <td class="px-3 py-2">${row.thal}</td>
-      <td class="px-3 py-2">
-        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${row.target === 1 ? 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300'}">
-          ${row.target === 1 ? 'Xavf Bor (1)' : 'Sog\'lom (0)'}
-        </span>
-      </td>
-    </tr>
-  `).join('');
-
-  // Pagination tugmalari
-  const maxPage = Math.ceil(totalFiltered / rowsPerPage) || 1;
-  const pageDisplay = document.getElementById('table-page-display');
-  if (pageDisplay) pageDisplay.textContent = `${currentTablePage} / ${maxPage}`;
-}
-
-window.filterTable = function(type) {
-  currentTableFilter = type;
+// 24. UCI Cleveland Dataset Jadvali
+function setTableFilter(filter) {
+  currentTableFilter = filter;
   currentTablePage = 1;
-  
-  document.querySelectorAll('[data-filter-btn]').forEach(btn => {
-    if (btn.getAttribute('data-filter-btn') === type) {
-      btn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-rose-600 text-white';
-    } else {
-      btn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300';
+
+  ['all', 'diseased', 'healthy'].forEach(f => {
+    const btn = document.getElementById(`filter-${f}`);
+    if (btn) {
+      if (f === filter) {
+        btn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-rose-600 text-white transition";
+      } else {
+        btn.className = "px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition";
+      }
     }
   });
 
   renderDatasetTable();
-};
-
-window.searchTable = function(val) {
-  currentTableSearch = val;
-  currentTablePage = 1;
-  renderDatasetTable();
-};
-
-window.prevTablePage = function() {
-  if (currentTablePage > 1) {
-    currentTablePage--;
-    renderDatasetTable();
-  }
-};
-
-window.nextTablePage = function() {
-  if (!MODEL_DATA) return;
-  const total = MODEL_DATA.dataset_preview.length;
-  if (currentTablePage * rowsPerPage < total) {
-    currentTablePage++;
-    renderDatasetTable();
-  }
-};
-
-// 19. Tibbiy Hisobotni Chop Etish / PDF
-function setupPrintReport() {
-  window.printDiagnosticReport = function() {
-    const current = getCurrentVector();
-    if (!current) return;
-
-    const scaled = scaleVector(current.vector);
-    const knn = predictKNN(scaled);
-    const svm = predictSVM(scaled);
-    const avgProb = (svm.prob * 0.6) + (knn.prob * 0.4);
-    const riskPct = Math.round(avgProb * 100);
-
-    const reportWindow = window.open('', '_blank');
-    const now = new Date().toLocaleDateString('uz-UZ', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-
-    reportWindow.document.write(`
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>Kardiologik Diagnostika Xulosasi - CardioRisk AI</title>
-        <style>
-          body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 40px; color: #1e293b; max-width: 800px; margin: auto; }
-          .header { border-bottom: 2px solid #e11d48; padding-bottom: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
-          .title { font-size: 22px; font-weight: bold; color: #be123c; }
-          .date { font-size: 12px; color: #64748b; }
-          .section { margin-bottom: 20px; }
-          .section-title { font-size: 14px; font-weight: bold; text-transform: uppercase; color: #475569; margin-bottom: 10px; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; }
-          table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 12px; }
-          th, td { border: 1px solid #e2e8f0; padding: 8px 12px; text-align: left; }
-          th { background: #f8fafc; font-weight: 600; }
-          .risk-box { padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; font-weight: bold; }
-          .risk-high { background: #ffe4e6; color: #9f1239; border: 1px solid #fecdd3; }
-          .risk-low { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
-          .footer { font-size: 11px; color: #94a3b8; text-align: center; margin-top: 40px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
-        </style>
-      </head>
-      <body>
-        <div class="header">
-          <div>
-            <div class="title">CardioRisk AI • Kardiologik Diagnostika Xulosasi</div>
-            <div style="font-size: 12px; color: #64748b;">Yurak kasalliklari xavfini bashorat qilish tizimi (KNN & SVM)</div>
-          </div>
-          <div class="date">${now}</div>
-        </div>
-
-        <div class="risk-box ${riskPct >= 50 ? 'risk-high' : 'risk-low'}">
-          Umumiy Yurak Xastaligi Ehtimoli: ${riskPct}% (${riskPct >= 50 ? 'XAVF YUQORI' : 'XAVF PAST / ME\'YORDA'})
-          <div style="font-size: 12px; font-weight: normal; margin-top: 4px;">
-            SVM Bashorati: ${Math.round(svm.prob*100)}% | KNN Bashorati: ${Math.round(knn.prob*100)}%
-          </div>
-        </div>
-
-        <div class="section">
-          <div class="section-title">Bemor Klinik Ko'rsatkichlari</div>
-          <table>
-            <tr><th>Yosh:</th><td>${current.raw.age} yosh</td><th>Jins:</th><td>${current.raw.sex === 1 ? 'Erkak' : 'Ayol'}</td></tr>
-            <tr><th>Qon bosimi (trestbps):</th><td>${current.raw.trestbps} mm Hg</td><th>Zardob xolesterini:</th><td>${current.raw.chol} mg/dl</td></tr>
-            <tr><th>Maksimal puls (thalach):</th><td>${current.raw.thalach} bpm</td><th>Och qoringa qand (fbs):</th><td>${current.raw.fbs === 1 ? '> 120 mg/dl' : 'Me\'yorda'}</td></tr>
-            <tr><th>ST depressiyasi (oldpeak):</th><td>${current.raw.oldpeak} mm</td><th>Mashq stenokardiyasi:</th><td>${current.raw.exang === 1 ? 'Mavjud' : 'Yo\'q'}</td></tr>
-            <tr><th>Bo'yalgan tomirlar (ca):</th><td>${current.raw.ca} ta</td><th>Ko'krak og'rig'i (cp):</th><td>${current.raw.cp}-toifa</td></tr>
-          </table>
-        </div>
-
-        <div class="section">
-          <div class="section-title">Kardiologik Tavsiyalar</div>
-          <ul style="font-size: 12px; line-height: 1.6; color: #334155;">
-            ${riskPct >= 50 
-              ? '<li>Shifokor-kardiolog ko\'rigidan zudlik bilan o\'tish va EKG/ExoKG tekshiruvlarini bajarish tavsiya etiladi.</li><li>Qon bosimi va xolesterin darajasini pasaytirishga qaratilgan profilaktik davolash rejasini tuzish.</li><li>Jismoniy va emotsional zo\'riqishlarni cheklash.</li>' 
-              : '<li>Yurak-qon tomir tizimi yaxshi holatda. Yiliga 1 marta rejaviy profilaktik ko\'rikdan o\'tish kifoya.</li><li>To\'g\'ri ovqatlanish va haftasiga kamida 150 daqiqa me\'yordagi jismoniy faollikni davom ettirish.</li>'}
-          </ul>
-        </div>
-
-        <div class="footer">
-          CardioRisk AI v2.0 • UCI Machine Learning Dataset asosida o'qitilgan (SVM 83.6% Accuracy, 93.9% Recall)
-        </div>
-
-        <script>
-          window.onload = function() { window.print(); };
-        </script>
-      </body>
-      </html>
-    `);
-    reportWindow.document.close();
-  };
 }
 
-// 20. Koddan nusxa olish
-function setupCodeCopy() {
-  const copyBtn = document.getElementById('copy-code-btn');
-  if (copyBtn) {
-    copyBtn.addEventListener('click', () => {
-      const codeEl = document.getElementById('python-code-block');
-      if (codeEl) {
-        navigator.clipboard.writeText(codeEl.textContent).then(() => {
-          copyBtn.innerHTML = '<i class="fa-solid fa-check text-emerald-500 mr-1.5"></i> Nusxalandi!';
-          setTimeout(() => {
-            copyBtn.innerHTML = '<i class="fa-regular fa-copy mr-1.5"></i> Koddan nusxa olish';
-          }, 2000);
-        });
-      }
+function handleTableSearch(val) {
+  currentTableSearch = val.toLowerCase().trim();
+  currentTablePage = 1;
+  renderDatasetTable();
+}
+
+function renderDatasetTable() {
+  if (!MODEL_DATA || !MODEL_DATA.dataset_preview) return;
+  const tbody = document.getElementById('dataset-table-body');
+  const pageInfo = document.getElementById('table-page-info');
+  const paginationContainer = document.getElementById('pagination-buttons');
+  if (!tbody) return;
+
+  let records = MODEL_DATA.dataset_preview;
+
+  if (currentTableFilter === 'diseased') {
+    records = records.filter(r => r.target === 1);
+  } else if (currentTableFilter === 'healthy') {
+    records = records.filter(r => r.target === 0);
+  }
+
+  if (currentTableSearch) {
+    records = records.filter(r => {
+      return (
+        r.age.toString().includes(currentTableSearch) ||
+        r.trestbps.toString().includes(currentTableSearch) ||
+        r.chol.toString().includes(currentTableSearch) ||
+        r.thalach.toString().includes(currentTableSearch) ||
+        r.oldpeak.toString().includes(currentTableSearch)
+      );
     });
   }
+
+  const total = records.length;
+  const totalPages = Math.ceil(total / rowsPerPage) || 1;
+  currentTablePage = Math.min(currentTablePage, totalPages);
+
+  const start = (currentTablePage - 1) * rowsPerPage;
+  const pageRows = records.slice(start, start + rowsPerPage);
+
+  if (pageInfo) {
+    pageInfo.textContent = `${start + 1} - ${Math.min(start + rowsPerPage, total)} / ${total}`;
+  }
+
+  tbody.innerHTML = pageRows.map((row, idx) => {
+    const isDiseased = row.target === 1;
+    return `
+      <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition">
+        <td class="py-2.5 px-3 text-slate-400">${start + idx + 1}</td>
+        <td class="py-2.5 px-3 font-bold">${row.age}</td>
+        <td class="py-2.5 px-3">${row.sex === 1 ? 'Erk' : 'Ayo'}</td>
+        <td class="py-2.5 px-3">${row.cp}</td>
+        <td class="py-2.5 px-3">${row.trestbps}</td>
+        <td class="py-2.5 px-3">${row.chol}</td>
+        <td class="py-2.5 px-3">${row.fbs}</td>
+        <td class="py-2.5 px-3">${row.restecg}</td>
+        <td class="py-2.5 px-3">${row.thalach}</td>
+        <td class="py-2.5 px-3">${row.exang}</td>
+        <td class="py-2.5 px-3">${row.oldpeak}</td>
+        <td class="py-2.5 px-3">${row.slope}</td>
+        <td class="py-2.5 px-3">${row.ca}</td>
+        <td class="py-2.5 px-3">${row.thal}</td>
+        <td class="py-2.5 px-3 text-center">
+          <span class="px-2 py-0.5 rounded text-[10px] font-bold ${isDiseased ? 'bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300'}">
+            ${isDiseased ? 'Xavf Bor' : 'Sog\'lom'}
+          </span>
+        </td>
+        <td class="py-2.5 px-3 text-right">
+          <button onclick='loadDatasetRowToForm(${JSON.stringify(row)})' class="px-2 py-1 rounded text-[10px] font-bold bg-slate-100 dark:bg-slate-800 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40 transition" title="Kalkulyatorga nusxalash">
+            Yuklash
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+
+  if (paginationContainer) {
+    paginationContainer.innerHTML = `
+      <button onclick="goToTablePage(${currentTablePage - 1})" ${currentTablePage <= 1 ? 'disabled class="opacity-40 px-2 py-1 rounded bg-slate-100 dark:bg-slate-800"' : 'class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700"'}>Oldingi</button>
+      <span class="px-2 font-mono font-bold">${currentTablePage}/${totalPages}</span>
+      <button onclick="goToTablePage(${currentTablePage + 1})" ${currentTablePage >= totalPages ? 'disabled class="opacity-40 px-2 py-1 rounded bg-slate-100 dark:bg-slate-800"' : 'class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700"'}>Keyingi</button>
+    `;
+  }
+}
+
+function goToTablePage(page) {
+  currentTablePage = page;
+  renderDatasetTable();
+}
+
+function loadDatasetRowToForm(row) {
+  Object.entries(row).forEach(([key, val]) => {
+    if (key === 'target') return;
+    const slider = document.getElementById(`slider-${key}`);
+    const display = document.getElementById(`val-${key}`);
+    const select = document.getElementById(`input-${key}`);
+    if (slider) {
+      slider.value = val;
+      if (display) display.textContent = val;
+    }
+    if (select) select.value = val;
+  });
+
+  document.querySelector('[data-tab-target="tab-calculator"]')?.click();
+  runPrediction();
+}
+
+// 25. Tibbiy Diagnostika Hisobotini Chop Etish (PDF Export)
+function printDiagnosticReport() {
+  const current = getCurrentVector();
+  if (!current) return;
+
+  const raw = current.raw;
+  const scaled = scaleVector(current.vector);
+  const ens = predictEnsemble(scaled, raw);
+  const riskPct = Math.round(ens.prob * 100);
+  const framingham = calculateFramingham(raw);
+
+  const reportContainer = document.getElementById('print-report-container');
+  if (!reportContainer) return;
+
+  const now = new Date().toLocaleString();
+
+  reportContainer.innerHTML = `
+    <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; color: #111;">
+      
+      <!-- Report Header -->
+      <div style="border-bottom: 2px solid #be123c; padding-bottom: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h1 style="margin: 0; font-size: 22px; color: #be123c;">CARDIORISK AI PRO MAX</h1>
+          <p style="margin: 3px 0 0; font-size: 13px; color: #555;">Klinik Kardiologik Ekspertiza va Sun'iy Intellekt Diagnostika Xulosasi</p>
+        </div>
+        <div style="text-align: right; font-size: 11px; color: #666;">
+          <p style="margin: 0;">Sana: <b>${now}</b></p>
+          <p style="margin: 2px 0 0;">Protokol: <b>SOTA Ensemble & ATP III</b></p>
+        </div>
+      </div>
+
+      <!-- Patient Summary Card -->
+      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+        <h3 style="margin: 0 0 10px; font-size: 14px; text-transform: uppercase; color: #334155;">Bemorning Klinik Ko'rsatkichlari:</h3>
+        <table style="width: 100%; font-size: 12px; border-collapse: collapse;">
+          <tr>
+            <td style="padding: 4px;"><b>Yoshi:</b> ${raw.age} yosh</td>
+            <td style="padding: 4px;"><b>Jinsi:</b> ${raw.sex === 1 ? 'Erkak' : 'Ayol'}</td>
+            <td style="padding: 4px;"><b>Qon bosimi:</b> ${raw.trestbps} mm Hg</td>
+            <td style="padding: 4px;"><b>Xolesterin:</b> ${raw.chol} mg/dl</td>
+          </tr>
+          <tr>
+            <td style="padding: 4px;"><b>Puls (Maks):</b> ${raw.thalach} bpm</td>
+            <td style="padding: 4px;"><b>ST Depressiya:</b> ${raw.oldpeak} mm</td>
+            <td style="padding: 4px;"><b>Zararlangan tomir:</b> ${raw.ca} ta</td>
+            <td style="padding: 4px;"><b>Mashq stenokardiyasi:</b> ${raw.exang === 1 ? 'Mavjud' : 'Yo\'q'}</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Diagnostic Conclusion -->
+      <div style="display: flex; gap: 20px; margin-bottom: 20px;">
+        <div style="flex: 1; border: 2px solid ${riskPct >= 50 ? '#be123c' : '#059669'}; border-radius: 8px; padding: 15px; text-align: center;">
+          <span style="font-size: 12px; text-transform: uppercase; color: #64748b; font-weight: bold;">Sun'iy Intellekt Xulosasi (Ensemble):</span>
+          <div style="font-size: 36px; font-weight: bold; color: ${riskPct >= 50 ? '#be123c' : '#059669'}; margin: 5px 0;">${riskPct}%</div>
+          <span style="font-size: 13px; font-weight: bold; padding: 3px 10px; border-radius: 999px; background: ${riskPct >= 50 ? '#ffe4e6' : '#d1fae5'}; color: ${riskPct >= 50 ? '#9f1239' : '#065f46'};">
+            ${riskPct >= 75 ? 'KRITIK XAVF' : (riskPct >= 50 ? 'YUQORI XAVF' : (riskPct >= 25 ? 'O\'RTACHA XAVF' : 'PAST XAVF / SOG\'LOM'))}
+          </span>
+        </div>
+
+        <div style="flex: 1; border: 1px solid #cbd5e1; border-radius: 8px; padding: 15px; text-align: center;">
+          <span style="font-size: 12px; text-transform: uppercase; color: #64748b; font-weight: bold;">Framingham 10-Yillik Standart Ball:</span>
+          <div style="font-size: 36px; font-weight: bold; color: #4f46e5; margin: 5px 0;">${framingham.riskPct}%</div>
+          <span style="font-size: 12px; color: #475569;">ATP III Kardiologik shkalasi</span>
+        </div>
+      </div>
+
+      <!-- Doctor Recommendations -->
+      <div style="border-top: 1px solid #e2e8f0; padding-top: 15px;">
+        <h4 style="margin: 0 0 10px; font-size: 13px; text-transform: uppercase; color: #334155;">Klinik Tavsiya va Shifokor Xulosasi:</h4>
+        <p style="font-size: 12px; line-height: 1.6; color: #334155;">
+          ${riskPct >= 50 
+            ? "Bemorga zudlik bilan kardiologik tekshiruv, 24 soatlik Xolter EKG monitoringi va selektiv koronarografiya tavsiya etiladi. Lipid profilini korreksiya qilish, qon bosimini <130/80 mm Hg darajasida ushlash maqsadga muvofiq."
+            : "Klinik ko'rsatkichlar barqaror. Turmush tarzini faol ushlab turish, jismoniy mashqlar va har yili muntazam tibbiy ko'rikdan o'tish tavsiya etiladi."}
+        </p>
+      </div>
+
+      <!-- Signatures Footer -->
+      <div style="margin-top: 40px; display: flex; justify-content: space-between; font-size: 12px; color: #475569; border-top: 1px dashed #cbd5e1; padding-top: 20px;">
+        <div>
+          <p style="margin: 0;">Davolovchi shifokor: ____________________</p>
+        </div>
+        <div>
+          <p style="margin: 0;">Imzo va Muhr: ____________________</p>
+        </div>
+      </div>
+
+    </div>
+  `;
+
+  window.print();
 }

@@ -1,26 +1,32 @@
 {
   "project": {
-    "title_uz": "Yurak kasalliklari xavfini bashorat qilish",
-    "title_en": "Heart Disease Risk Prediction",
-    "dataset_name": "UCI Machine Learning Repository - Heart Disease Dataset",
+    "title_uz": "Yurak kasalliklari xavfini bashorat qilish Pro Max",
+    "title_en": "Heart Disease Risk Prediction Pro Max",
+    "title_ru": "Прогнозирование риска сердечно-сосудистых заболеваний Pro Max",
+    "dataset_name": "UCI Machine Learning Repository - Cleveland Heart Disease",
     "total_samples": 302,
     "train_samples": 241,
     "test_samples": 61,
     "features_count": 13,
     "algorithms": [
+      "Ensemble Soft-Voting (SOTA)",
+      "Gradient Boosting",
       "Support Vector Machine (SVM RBF)",
-      "K-Nearest Neighbors (KNN)",
-      "Ensemble Soft-Voting"
+      "Random Forest",
+      "K-Nearest Neighbors (KNN)"
     ],
-    "date": "2026-11-11",
-    "optimization_level": "Deep & Broad (5-Fold CV + Hyperparameter Tuning + XAI + What-If Simulator)"
+    "date": "2026-11-12",
+    "version": "3.0.0-enterprise"
   },
   "features": [
     {
       "id": "age",
       "name_uz": "Yosh",
       "name_en": "Age",
-      "desc": "Bemorning yoshi (yillar)",
+      "name_ru": "Возраст",
+      "desc_uz": "Bemorning yoshi (yillar)",
+      "desc_en": "Patient age (years)",
+      "desc_ru": "Возраст пациента (лет)",
       "min": 25,
       "max": 80,
       "default": 55,
@@ -31,16 +37,23 @@
       "id": "sex",
       "name_uz": "Jins",
       "name_en": "Sex",
-      "desc": "Bemorning jinsi",
+      "name_ru": "Пол",
+      "desc_uz": "Bemorning jinsi",
+      "desc_en": "Biological sex",
+      "desc_ru": "Биологический пол",
       "type": "select",
       "options": [
         {
           "value": 1,
-          "label": "Erkak (1)"
+          "label_uz": "Erkak (1)",
+          "label_en": "Male (1)",
+          "label_ru": "Мужчина (1)"
         },
         {
           "value": 0,
-          "label": "Ayol (0)"
+          "label_uz": "Ayol (0)",
+          "label_en": "Female (0)",
+          "label_ru": "Женщина (0)"
         }
       ],
       "default": 1
@@ -49,24 +62,35 @@
       "id": "cp",
       "name_uz": "Ko'krak og'rig'i turi",
       "name_en": "Chest Pain Type",
-      "desc": "Ko'krak qafasidagi og'riq xarakteri",
+      "name_ru": "Тип боли в груди",
+      "desc_uz": "Ko'krak qafasidagi og'riq xarakteri",
+      "desc_en": "Nature of chest pain",
+      "desc_ru": "Характер загрудинной боли",
       "type": "select",
       "options": [
         {
           "value": 0,
-          "label": "0: Tipik stenokardiya (Typical Angina)"
+          "label_uz": "0: Tipik stenokardiya (Typical)",
+          "label_en": "0: Typical Angina",
+          "label_ru": "0: Типичная стенокардия"
         },
         {
           "value": 1,
-          "label": "1: Atipik stenokardiya (Atypical Angina)"
+          "label_uz": "1: Atipik stenokardiya (Atypical)",
+          "label_en": "1: Atypical Angina",
+          "label_ru": "1: Атипичная стенокардия"
         },
         {
           "value": 2,
-          "label": "2: Stenokardik bo'lmagan og'riq (Non-anginal)"
+          "label_uz": "2: Stenokardik bo'lmagan (Non-anginal)",
+          "label_en": "2: Non-anginal Pain",
+          "label_ru": "2: Неангинозная боль"
         },
         {
           "value": 3,
-          "label": "3: Asimptomatik (Asymptomatic)"
+          "label_uz": "3: Asimptomatik (Asymptomatic)",
+          "label_en": "3: Asymptomatic",
+          "label_ru": "3: Бессимптомная"
         }
       ],
       "default": 0
@@ -75,7 +99,10 @@
       "id": "trestbps",
       "name_uz": "Qon bosimi (Resting BP)",
       "name_en": "Resting Blood Pressure",
-      "desc": "Tinch holatdagi sistolik qon bosimi",
+      "name_ru": "Давление в покое",
+      "desc_uz": "Tinch holatdagi sistolik qon bosimi",
+      "desc_en": "Resting systolic blood pressure",
+      "desc_ru": "Систолическое АД в состоянии покоя",
       "min": 90,
       "max": 200,
       "default": 130,
@@ -86,7 +113,10 @@
       "id": "chol",
       "name_uz": "Xolesterin miqdori",
       "name_en": "Serum Cholesterol",
-      "desc": "Qondagi umumiy zardob xolesterini darajasi",
+      "name_ru": "Холестерин сыворотки",
+      "desc_uz": "Qondagi umumiy zardob xolesterini darajasi",
+      "desc_en": "Total serum cholesterol level",
+      "desc_ru": "Уровень общего холестерина сыворотки",
       "min": 120,
       "max": 570,
       "default": 240,
@@ -97,16 +127,23 @@
       "id": "fbs",
       "name_uz": "Qand miqdori (Och qoringa)",
       "name_en": "Fasting Blood Sugar",
-      "desc": "Och qoringa qon qandi > 120 mg/dl bo'lishi",
+      "name_ru": "Сахар натощак",
+      "desc_uz": "Och qoringa qon qandi > 120 mg/dl bo'lishi",
+      "desc_en": "Fasting blood sugar > 120 mg/dl",
+      "desc_ru": "Уровень глюкозы натощак > 120 мг/дл",
       "type": "select",
       "options": [
         {
           "value": 1,
-          "label": "Ha (> 120 mg/dl)"
+          "label_uz": "Ha (> 120 mg/dl)",
+          "label_en": "Yes (> 120 mg/dl)",
+          "label_ru": "Да (> 120 мг/дл)"
         },
         {
           "value": 0,
-          "label": "Yo'q (<= 120 mg/dl)"
+          "label_uz": "Yo'q (<= 120 mg/dl)",
+          "label_en": "No (<= 120 mg/dl)",
+          "label_ru": "Нет (<= 120 мг/дл)"
         }
       ],
       "default": 0
@@ -115,20 +152,29 @@
       "id": "restecg",
       "name_uz": "Tinch EKG natijasi",
       "name_en": "Resting ECG Results",
-      "desc": "Elektrokardiografiya ko'rsatkichlari",
+      "name_ru": "ЭКГ в покое",
+      "desc_uz": "Elektrokardiografiya ko'rsatkichlari",
+      "desc_en": "Resting electrocardiographic results",
+      "desc_ru": "Результаты ЭКГ в покое",
       "type": "select",
       "options": [
         {
           "value": 0,
-          "label": "0: Normal"
+          "label_uz": "0: Normal",
+          "label_en": "0: Normal",
+          "label_ru": "0: В норме"
         },
         {
           "value": 1,
-          "label": "1: ST-T to'lqini anomaliyasi"
+          "label_uz": "1: ST-T to'lqini anomaliyasi",
+          "label_en": "1: ST-T Wave Abnormality",
+          "label_ru": "1: Аномалия зубца ST-T"
         },
         {
           "value": 2,
-          "label": "2: Chap qorincha gipertrofiyasi"
+          "label_uz": "2: Chap qorincha gipertrofiyasi",
+          "label_en": "2: Left Ventricular Hypertrophy",
+          "label_ru": "2: Гипертрофия левого желудочка"
         }
       ],
       "default": 1
@@ -137,7 +183,10 @@
       "id": "thalach",
       "name_uz": "Maksimal yurak urishi",
       "name_en": "Max Heart Rate Achieved",
-      "desc": "Mashq paytida erishilgan maksimal puls",
+      "name_ru": "Максимальный пульс",
+      "desc_uz": "Mashq paytida erishilgan maksimal puls",
+      "desc_en": "Maximum heart rate achieved in exercise",
+      "desc_ru": "Максимальная ЧСС при нагрузке",
       "min": 70,
       "max": 210,
       "default": 150,
@@ -148,16 +197,23 @@
       "id": "exang",
       "name_uz": "Mashqdan keyingi angina",
       "name_en": "Exercise Induced Angina",
-      "desc": "Jismoniy yuklama vaqtida stenokardiya paydo bo'lishi",
+      "name_ru": "Стенокардия напряжения",
+      "desc_uz": "Jismoniy yuklama vaqtida stenokardiya paydo bo'lishi",
+      "desc_en": "Exercise induced angina symptom",
+      "desc_ru": "Возникновение стенокардии при нагрузке",
       "type": "select",
       "options": [
         {
           "value": 1,
-          "label": "Ha (1)"
+          "label_uz": "Ha (1)",
+          "label_en": "Yes (1)",
+          "label_ru": "Да (1)"
         },
         {
           "value": 0,
-          "label": "Yo'q (0)"
+          "label_uz": "Yo'q (0)",
+          "label_en": "No (0)",
+          "label_ru": "Нет (0)"
         }
       ],
       "default": 0
@@ -166,7 +222,10 @@
       "id": "oldpeak",
       "name_uz": "ST depressiyasi",
       "name_en": "ST Depression",
-      "desc": "Mashq orqali keltirib chiqarilgan ST segment depressiyasi",
+      "name_ru": "Депрессия ST",
+      "desc_uz": "Mashq orqali keltirib chiqarilgan ST segment depressiyasi",
+      "desc_en": "ST depression induced by exercise",
+      "desc_ru": "Депрессия сегмента ST при нагрузке",
       "min": 0.0,
       "max": 6.5,
       "default": 1.0,
@@ -177,20 +236,29 @@
       "id": "slope",
       "name_uz": "ST segmentining qiyaligi",
       "name_en": "Slope of Peak Exercise ST",
-      "desc": "Maksimal mashq ST segmentining ko'tarilish qiyaligi",
+      "name_ru": "Наклон сегмента ST",
+      "desc_uz": "Maksimal mashq ST segmentining ko'tarilish qiyaligi",
+      "desc_en": "Slope of the peak exercise ST segment",
+      "desc_ru": "Наклон сегмента ST на пике нагрузки",
       "type": "select",
       "options": [
         {
           "value": 0,
-          "label": "0: Pastga qarab (Upsloping)"
+          "label_uz": "0: Pastga qarab (Upsloping)",
+          "label_en": "0: Upsloping",
+          "label_ru": "0: Восходящий"
         },
         {
           "value": 1,
-          "label": "1: Gorizontal (Flat)"
+          "label_uz": "1: Gorizontal (Flat)",
+          "label_en": "1: Flat",
+          "label_ru": "1: Горизонтальный"
         },
         {
           "value": 2,
-          "label": "2: Yuqoriga qarab (Downsloping)"
+          "label_uz": "2: Yuqoriga qarab (Downsloping)",
+          "label_en": "2: Downsloping",
+          "label_ru": "2: Нисходящий"
         }
       ],
       "default": 1
@@ -199,24 +267,35 @@
       "id": "ca",
       "name_uz": "Bo'yalgan yirik tomirlar soni",
       "name_en": "Major Vessels (ca)",
-      "desc": "Flyuroskopiya ostida ko'ringan yirik tomirlar (0-3)",
+      "name_ru": "Количество сосудов (ca)",
+      "desc_uz": "Flyuroskopiya ostida ko'ringan yirik tomirlar (0-3)",
+      "desc_en": "Number of major vessels colored by flourosopy",
+      "desc_ru": "Число крупных сосудов, окрашенных флюороскопией",
       "type": "select",
       "options": [
         {
           "value": 0,
-          "label": "0 ta tomir"
+          "label_uz": "0 ta tomir",
+          "label_en": "0 vessels",
+          "label_ru": "0 сосудов"
         },
         {
           "value": 1,
-          "label": "1 ta tomir"
+          "label_uz": "1 ta tomir",
+          "label_en": "1 vessel",
+          "label_ru": "1 сосуд"
         },
         {
           "value": 2,
-          "label": "2 ta tomir"
+          "label_uz": "2 ta tomir",
+          "label_en": "2 vessels",
+          "label_ru": "2 сосуда"
         },
         {
           "value": 3,
-          "label": "3 ta tomir"
+          "label_uz": "3 ta tomir",
+          "label_en": "3 vessels",
+          "label_ru": "3 сосуда"
         }
       ],
       "default": 0
@@ -225,20 +304,29 @@
       "id": "thal",
       "name_uz": "Talassemiya turi (thal)",
       "name_en": "Thalassemia Type",
-      "desc": "Talassemiya qon tahlili holati",
+      "name_ru": "Тип талассемии",
+      "desc_uz": "Talassemiya qon tahlili holati",
+      "desc_en": "Thalassemia blood disorder status",
+      "desc_ru": "Статус талассемии",
       "type": "select",
       "options": [
         {
           "value": 1,
-          "label": "1: Oddiy / Normal"
+          "label_uz": "1: Oddiy / Normal",
+          "label_en": "1: Normal",
+          "label_ru": "1: Норма"
         },
         {
           "value": 2,
-          "label": "2: Ruxsat etilgan nuqson (Fixed)"
+          "label_uz": "2: Ruxsat etilgan (Fixed)",
+          "label_en": "2: Fixed Defect",
+          "label_ru": "2: Фиксированный дефект"
         },
         {
           "value": 3,
-          "label": "3: Qaytariluvchi nuqson (Reversable)"
+          "label_uz": "3: Qaytariluvchi (Reversable)",
+          "label_en": "3: Reversable Defect",
+          "label_ru": "3: Обратимый дефект"
         }
       ],
       "default": 2
@@ -246,95 +334,147 @@
   ],
   "feature_importance": [
     {
-      "id": "exang",
-      "name_uz": "Mashqdan keyingi angina",
-      "correlation": -0.4356,
-      "abs_correlation": 0.4356,
-      "impact": "Xavfni kamaytiradi"
-    },
-    {
       "id": "cp",
       "name_uz": "Ko'krak og'rig'i turi",
+      "name_en": "Chest Pain Type",
+      "name_ru": "Тип боли в груди",
       "correlation": 0.4321,
-      "abs_correlation": 0.4321,
-      "impact": "Xavfni oshiradi"
+      "rf_importance": 18.26,
+      "gb_importance": 30.44,
+      "ensemble_weight": 30.01,
+      "impact_direction": "positive"
     },
     {
       "id": "oldpeak",
       "name_uz": "ST depressiyasi",
+      "name_en": "ST Depression",
+      "name_ru": "Депрессия ST",
       "correlation": -0.4291,
-      "abs_correlation": 0.4291,
-      "impact": "Xavfni kamaytiradi"
-    },
-    {
-      "id": "thalach",
-      "name_uz": "Maksimal yurak urishi",
-      "correlation": 0.42,
-      "abs_correlation": 0.42,
-      "impact": "Xavfni oshiradi"
-    },
-    {
-      "id": "ca",
-      "name_uz": "Bo'yalgan yirik tomirlar soni",
-      "correlation": -0.409,
-      "abs_correlation": 0.409,
-      "impact": "Xavfni kamaytiradi"
-    },
-    {
-      "id": "slope",
-      "name_uz": "ST segmentining qiyaligi",
-      "correlation": 0.3439,
-      "abs_correlation": 0.3439,
-      "impact": "Xavfni oshiradi"
+      "rf_importance": 12.21,
+      "gb_importance": 13.37,
+      "ensemble_weight": 21.83,
+      "impact_direction": "negative"
     },
     {
       "id": "thal",
       "name_uz": "Talassemiya turi (thal)",
+      "name_en": "Thalassemia Type",
+      "name_ru": "Тип талассемии",
       "correlation": -0.3431,
-      "abs_correlation": 0.3431,
-      "impact": "Xavfni kamaytiradi"
+      "rf_importance": 13.31,
+      "gb_importance": 14.35,
+      "ensemble_weight": 19.97,
+      "impact_direction": "negative"
     },
     {
-      "id": "sex",
-      "name_uz": "Jins",
-      "correlation": -0.2836,
-      "abs_correlation": 0.2836,
-      "impact": "Xavfni kamaytiradi"
+      "id": "ca",
+      "name_uz": "Bo'yalgan yirik tomirlar soni",
+      "name_en": "Major Vessels (ca)",
+      "name_ru": "Количество сосудов (ca)",
+      "correlation": -0.409,
+      "rf_importance": 10.03,
+      "gb_importance": 8.82,
+      "ensemble_weight": 18.87,
+      "impact_direction": "negative"
+    },
+    {
+      "id": "thalach",
+      "name_uz": "Maksimal yurak urishi",
+      "name_en": "Max Heart Rate Achieved",
+      "name_ru": "Максимальный пульс",
+      "correlation": 0.42,
+      "rf_importance": 11.47,
+      "gb_importance": 4.6,
+      "ensemble_weight": 18.23,
+      "impact_direction": "positive"
+    },
+    {
+      "id": "exang",
+      "name_uz": "Mashqdan keyingi angina",
+      "name_en": "Exercise Induced Angina",
+      "name_ru": "Стенокардия напряжения",
+      "correlation": -0.4356,
+      "rf_importance": 7.06,
+      "gb_importance": 3.09,
+      "ensemble_weight": 16.62,
+      "impact_direction": "negative"
+    },
+    {
+      "id": "slope",
+      "name_uz": "ST segmentining qiyaligi",
+      "name_en": "Slope of Peak Exercise ST",
+      "name_ru": "Наклон сегмента ST",
+      "correlation": 0.3439,
+      "rf_importance": 4.49,
+      "gb_importance": 2.85,
+      "ensemble_weight": 12.89,
+      "impact_direction": "positive"
     },
     {
       "id": "age",
       "name_uz": "Yosh",
+      "name_en": "Age",
+      "name_ru": "Возраст",
       "correlation": -0.2215,
-      "abs_correlation": 0.2215,
-      "impact": "Xavfni kamaytiradi"
+      "rf_importance": 6.4,
+      "gb_importance": 5.48,
+      "ensemble_weight": 10.8,
+      "impact_direction": "negative"
+    },
+    {
+      "id": "sex",
+      "name_uz": "Jins",
+      "name_en": "Sex",
+      "name_ru": "Пол",
+      "correlation": -0.2836,
+      "rf_importance": 2.73,
+      "gb_importance": 3.65,
+      "ensemble_weight": 10.74,
+      "impact_direction": "negative"
     },
     {
       "id": "trestbps",
       "name_uz": "Qon bosimi (Resting BP)",
+      "name_en": "Resting Blood Pressure",
+      "name_ru": "Давление в покое",
       "correlation": -0.1463,
-      "abs_correlation": 0.1463,
-      "impact": "Xavfni kamaytiradi"
-    },
-    {
-      "id": "restecg",
-      "name_uz": "Tinch EKG natijasi",
-      "correlation": 0.1349,
-      "abs_correlation": 0.1349,
-      "impact": "Xavfni oshiradi"
+      "rf_importance": 6.0,
+      "gb_importance": 4.15,
+      "ensemble_weight": 7.94,
+      "impact_direction": "negative"
     },
     {
       "id": "chol",
       "name_uz": "Xolesterin miqdori",
+      "name_en": "Serum Cholesterol",
+      "name_ru": "Холестерин сыворотки",
       "correlation": -0.0814,
-      "abs_correlation": 0.0814,
-      "impact": "Xavfni kamaytiradi"
+      "rf_importance": 5.95,
+      "gb_importance": 7.49,
+      "ensemble_weight": 7.15,
+      "impact_direction": "negative"
+    },
+    {
+      "id": "restecg",
+      "name_uz": "Tinch EKG natijasi",
+      "name_en": "Resting ECG Results",
+      "name_ru": "ЭКГ в покое",
+      "correlation": 0.1349,
+      "rf_importance": 1.28,
+      "gb_importance": 1.66,
+      "ensemble_weight": 5.08,
+      "impact_direction": "positive"
     },
     {
       "id": "fbs",
       "name_uz": "Qand miqdori (Och qoringa)",
+      "name_en": "Fasting Blood Sugar",
+      "name_ru": "Сахар натощак",
       "correlation": -0.0268,
-      "abs_correlation": 0.0268,
-      "impact": "Xavfni kamaytiradi"
+      "rf_importance": 0.8,
+      "gb_importance": 0.04,
+      "ensemble_weight": 1.1,
+      "impact_direction": "negative"
     }
   ],
   "radar_baselines": {
@@ -353,6 +493,22 @@
       "Maksimal Puls",
       "ST Depressiya",
       "Tomirlar (ca)"
+    ],
+    "labels_en": [
+      "Age",
+      "Resting BP",
+      "Cholesterol",
+      "Max HR",
+      "ST Depr",
+      "Vessels (ca)"
+    ],
+    "labels_ru": [
+      "Возраст",
+      "Давление",
+      "Холестерин",
+      "Макс Пульс",
+      "Депрессия ST",
+      "Сосуды (ca)"
     ],
     "healthy": [
       56.6,
@@ -598,7 +754,420 @@
         "x": 1.0,
         "y": 1.0
       }
+    ],
+    "rf": [
+      {
+        "x": 0.0,
+        "y": 0.0
+      },
+      {
+        "x": 0.0,
+        "y": 0.0303
+      },
+      {
+        "x": 0.0,
+        "y": 0.4545
+      },
+      {
+        "x": 0.0357,
+        "y": 0.4545
+      },
+      {
+        "x": 0.0357,
+        "y": 0.5758
+      },
+      {
+        "x": 0.0714,
+        "y": 0.5758
+      },
+      {
+        "x": 0.0714,
+        "y": 0.6061
+      },
+      {
+        "x": 0.1071,
+        "y": 0.6061
+      },
+      {
+        "x": 0.1071,
+        "y": 0.6667
+      },
+      {
+        "x": 0.1786,
+        "y": 0.6667
+      },
+      {
+        "x": 0.1786,
+        "y": 0.7273
+      },
+      {
+        "x": 0.2143,
+        "y": 0.7273
+      },
+      {
+        "x": 0.2143,
+        "y": 0.8485
+      },
+      {
+        "x": 0.2857,
+        "y": 0.8485
+      },
+      {
+        "x": 0.2857,
+        "y": 0.9394
+      },
+      {
+        "x": 0.3571,
+        "y": 0.9394
+      },
+      {
+        "x": 0.3571,
+        "y": 0.9697
+      },
+      {
+        "x": 0.5,
+        "y": 0.9697
+      },
+      {
+        "x": 0.5,
+        "y": 1.0
+      },
+      {
+        "x": 1.0,
+        "y": 1.0
+      }
+    ],
+    "gb": [
+      {
+        "x": 0.0,
+        "y": 0.0
+      },
+      {
+        "x": 0.0,
+        "y": 0.0303
+      },
+      {
+        "x": 0.0,
+        "y": 0.303
+      },
+      {
+        "x": 0.0714,
+        "y": 0.303
+      },
+      {
+        "x": 0.0714,
+        "y": 0.5152
+      },
+      {
+        "x": 0.1071,
+        "y": 0.5152
+      },
+      {
+        "x": 0.1071,
+        "y": 0.6364
+      },
+      {
+        "x": 0.1429,
+        "y": 0.6364
+      },
+      {
+        "x": 0.1429,
+        "y": 0.6667
+      },
+      {
+        "x": 0.25,
+        "y": 0.6667
+      },
+      {
+        "x": 0.25,
+        "y": 0.9697
+      },
+      {
+        "x": 0.3929,
+        "y": 0.9697
+      },
+      {
+        "x": 0.3929,
+        "y": 1.0
+      },
+      {
+        "x": 1.0,
+        "y": 1.0
+      }
+    ],
+    "ensemble": [
+      {
+        "x": 0.0,
+        "y": 0.0
+      },
+      {
+        "x": 0.0,
+        "y": 0.0303
+      },
+      {
+        "x": 0.0,
+        "y": 0.3636
+      },
+      {
+        "x": 0.0357,
+        "y": 0.3636
+      },
+      {
+        "x": 0.0357,
+        "y": 0.5455
+      },
+      {
+        "x": 0.0714,
+        "y": 0.5455
+      },
+      {
+        "x": 0.0714,
+        "y": 0.5758
+      },
+      {
+        "x": 0.1071,
+        "y": 0.5758
+      },
+      {
+        "x": 0.1071,
+        "y": 0.7273
+      },
+      {
+        "x": 0.1429,
+        "y": 0.7273
+      },
+      {
+        "x": 0.1429,
+        "y": 0.7576
+      },
+      {
+        "x": 0.1786,
+        "y": 0.7576
+      },
+      {
+        "x": 0.1786,
+        "y": 0.7879
+      },
+      {
+        "x": 0.2143,
+        "y": 0.7879
+      },
+      {
+        "x": 0.2143,
+        "y": 0.8788
+      },
+      {
+        "x": 0.2857,
+        "y": 0.8788
+      },
+      {
+        "x": 0.2857,
+        "y": 0.9697
+      },
+      {
+        "x": 0.4286,
+        "y": 0.9697
+      },
+      {
+        "x": 0.4286,
+        "y": 1.0
+      },
+      {
+        "x": 1.0,
+        "y": 1.0
+      }
     ]
+  },
+  "models": {
+    "knn": {
+      "name": "K-Nearest Neighbors (KNN)",
+      "params": {
+        "k": 7,
+        "weights": "distance",
+        "metric": "euclidean"
+      },
+      "metrics": {
+        "accuracy": 81.97,
+        "f1_score": 84.51,
+        "recall": 90.91,
+        "precision": 78.95,
+        "specificity": 71.43,
+        "balanced_accuracy": 81.17,
+        "mcc": 0.641,
+        "roc_auc": 88.2,
+        "confusion_matrix": [
+          [
+            20,
+            8
+          ],
+          [
+            3,
+            30
+          ]
+        ],
+        "cv_mean_acc": 81.07,
+        "cv_std_acc": 7.86,
+        "cv_folds": [
+          91.8,
+          86.89,
+          70.0,
+          81.67,
+          75.0
+        ]
+      }
+    },
+    "svm": {
+      "name": "Support Vector Machine (SVM)",
+      "params": {
+        "kernel": "rbf",
+        "C": 1.0,
+        "gamma": 0.07692
+      },
+      "metrics": {
+        "accuracy": 83.61,
+        "f1_score": 86.11,
+        "recall": 93.94,
+        "precision": 79.49,
+        "specificity": 71.43,
+        "balanced_accuracy": 82.68,
+        "mcc": 0.6784,
+        "roc_auc": 88.1,
+        "confusion_matrix": [
+          [
+            20,
+            8
+          ],
+          [
+            2,
+            31
+          ]
+        ],
+        "cv_mean_acc": 81.09,
+        "cv_std_acc": 6.09,
+        "cv_folds": [
+          88.52,
+          83.61,
+          70.0,
+          81.67,
+          81.67
+        ]
+      }
+    },
+    "rf": {
+      "name": "Random Forest",
+      "params": {
+        "n_estimators": 100,
+        "max_depth": 5,
+        "criterion": "gini"
+      },
+      "metrics": {
+        "accuracy": 80.33,
+        "f1_score": 83.78,
+        "recall": 93.94,
+        "precision": 75.61,
+        "specificity": 64.29,
+        "balanced_accuracy": 79.11,
+        "mcc": 0.6181,
+        "roc_auc": 89.83,
+        "confusion_matrix": [
+          [
+            18,
+            10
+          ],
+          [
+            2,
+            31
+          ]
+        ],
+        "cv_mean_acc": 83.74,
+        "cv_std_acc": 5.96,
+        "cv_folds": [
+          91.8,
+          85.25,
+          73.33,
+          85.0,
+          83.33
+        ]
+      }
+    },
+    "gb": {
+      "name": "Gradient Boosting",
+      "params": {
+        "n_estimators": 100,
+        "learning_rate": 0.08,
+        "max_depth": 3
+      },
+      "metrics": {
+        "accuracy": 86.89,
+        "f1_score": 88.89,
+        "recall": 96.97,
+        "precision": 82.05,
+        "specificity": 75.0,
+        "balanced_accuracy": 85.98,
+        "mcc": 0.7469,
+        "roc_auc": 87.99,
+        "confusion_matrix": [
+          [
+            21,
+            7
+          ],
+          [
+            1,
+            32
+          ]
+        ],
+        "cv_mean_acc": 80.44,
+        "cv_std_acc": 5.04,
+        "cv_folds": [
+          86.89,
+          80.33,
+          71.67,
+          83.33,
+          80.0
+        ]
+      }
+    },
+    "ensemble": {
+      "name": "Ensemble Soft-Voting (SOTA)",
+      "params": {
+        "voting": "soft",
+        "weights": [
+          1.0,
+          1.2,
+          1.3,
+          1.2
+        ]
+      },
+      "metrics": {
+        "accuracy": 83.61,
+        "f1_score": 86.49,
+        "recall": 96.97,
+        "precision": 78.05,
+        "specificity": 67.86,
+        "balanced_accuracy": 82.41,
+        "mcc": 0.6882,
+        "roc_auc": 90.69,
+        "confusion_matrix": [
+          [
+            19,
+            9
+          ],
+          [
+            1,
+            32
+          ]
+        ],
+        "cv_mean_acc": 81.42,
+        "cv_std_acc": 5.97,
+        "cv_folds": [
+          90.16,
+          83.61,
+          71.67,
+          81.67,
+          80.0
+        ]
+      }
+    }
   },
   "scaler": {
     "feature_names": [
@@ -662,43 +1231,8 @@
       0.35856820647027426
     ]
   },
-  "knn": {
-    "name": "K-Nearest Neighbors (KNN)",
-    "params": {
-      "k": 7,
-      "weights": "distance",
-      "metric": "euclidean"
-    },
-    "metrics": {
-      "accuracy": 81.97,
-      "f1_score": 84.51,
-      "recall": 90.91,
-      "precision": 78.95,
-      "specificity": 71.43,
-      "balanced_accuracy": 81.17,
-      "mcc": 0.641,
-      "roc_auc": 88.2,
-      "confusion_matrix": [
-        [
-          20,
-          8
-        ],
-        [
-          3,
-          30
-        ]
-      ],
-      "cv_mean_acc": 81.07,
-      "cv_std_acc": 7.86,
-      "cv_folds": [
-        91.8,
-        86.89,
-        70.0,
-        81.67,
-        75.0
-      ]
-    },
-    "train_points": [
+  "inference_engine": {
+    "knn_train_points": [
       [
         0.2891,
         -1.4734,
@@ -4315,7 +4849,7 @@
         -0.5751
       ]
     ],
-    "train_labels": [
+    "knn_train_labels": [
       1,
       0,
       0,
@@ -4557,47 +5091,10 @@
       1,
       1,
       1
-    ]
-  },
-  "svm": {
-    "name": "Support Vector Machine (SVM)",
-    "params": {
-      "kernel": "rbf",
-      "C": 1.0,
-      "gamma": 0.07692
-    },
-    "metrics": {
-      "accuracy": 83.61,
-      "f1_score": 86.11,
-      "recall": 93.94,
-      "precision": 79.49,
-      "specificity": 71.43,
-      "balanced_accuracy": 82.68,
-      "mcc": 0.6784,
-      "roc_auc": 88.1,
-      "confusion_matrix": [
-        [
-          20,
-          8
-        ],
-        [
-          2,
-          31
-        ]
-      ],
-      "cv_mean_acc": 81.09,
-      "cv_std_acc": 6.09,
-      "cv_folds": [
-        88.52,
-        83.61,
-        70.0,
-        81.67,
-        81.67
-      ]
-    },
-    "gamma": 0.07692307692307693,
-    "intercept": -0.11580209594161887,
-    "dual_coef": [
+    ],
+    "svm_gamma": 0.07692307692307693,
+    "svm_intercept": -0.11580209594161887,
+    "svm_dual_coef": [
       -0.82342,
       -1.0,
       -1.0,
@@ -4743,7 +5240,7 @@
       1.0,
       0.75274
     ],
-    "support_vectors": [
+    "svm_support_vectors": [
       [
         1.2672,
         0.6787,
@@ -6905,8 +7402,8 @@
         -0.5751
       ]
     ],
-    "prob_a": -2.019633123620411,
-    "prob_b": -0.07211622651625896
+    "svm_prob_a": -2.019633123620411,
+    "svm_prob_b": -0.07211622651625896
   },
   "dataset_preview": [
     {

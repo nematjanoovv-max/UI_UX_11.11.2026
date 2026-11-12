@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CardioRisk AI | Yurak Kasalliklari Xavfini Bashorat Qilish (KNN & SVM)</title>
+  <title>CardioRisk AI Pro Max | Yurak Kasalliklari Xavfini Intellektual Tashxislash Platformasi</title>
   
   <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>❤️</text></svg>">
@@ -47,9 +47,9 @@
     <div class="max-w-7xl mx-auto flex items-center justify-between">
       <span class="flex items-center space-x-2">
         <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-        <span>07. Yurak kasalliklari xavfini bashorat qilish • 5-Fold Kross-Validatsiya & XAI Simulyatori</span>
+        <span id="ticker-text" data-i18n="ticker_title">07. Yurak kasalliklari xavfini bashorat qilish • SOTA Ensemble (90.7% AUC) & Jonli EKG Monitor</span>
       </span>
-      <span class="hidden md:inline-block opacity-90">SVM: 83.6% Aniqlik, 93.9% Recall • KNN: 82.0% Aniqlik</span>
+      <span class="hidden md:inline-block opacity-90" id="ticker-sub" data-i18n="ticker_stats">GradBoost: 86.9% Acc • SVM: 93.9% Recall • Framingham & XAI Tahlili</span>
     </div>
   </div>
 
@@ -68,37 +68,52 @@
             <span class="text-rose-600 dark:text-rose-400">AI</span>
             <span class="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 font-semibold border border-rose-200 dark:border-rose-900 ml-1">Pro Max</span>
           </h1>
-          <p class="text-xs text-slate-500 dark:text-slate-400 -mt-0.5 hidden sm:block">Yurak Kasalliklari Xavfini Intellektual Tashxislash va Simulyatsiya Tizimi</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400 -mt-0.5 hidden sm:block" data-i18n="brand_subtitle">Klinik Kardiologik Diagnostika, EKG Monitor va Dinamika Tahlili</p>
         </div>
       </div>
 
       <!-- Quick Metrics Chips -->
-      <div class="hidden lg:flex items-center space-x-3 text-xs">
-        <div class="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
-          <span class="text-slate-500 dark:text-slate-400">SVM Recall:</span>
-          <span class="font-bold text-emerald-600 dark:text-emerald-400 font-mono">93.94%</span>
+      <div class="hidden xl:flex items-center space-x-3 text-xs">
+        <div class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
+          <span class="text-slate-500 dark:text-slate-400" data-i18n="badge_ens_auc">Ensemble AUC:</span>
+          <span class="font-bold text-rose-600 dark:text-rose-400 font-mono">90.69%</span>
         </div>
-        <div class="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
-          <span class="text-slate-500 dark:text-slate-400">SVM Aniqlik:</span>
-          <span id="badge-svm-acc" class="font-bold text-rose-600 dark:text-rose-400 font-mono">83.61%</span>
+        <div class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
+          <span class="text-slate-500 dark:text-slate-400" data-i18n="badge_gb_acc">GradBoost Acc:</span>
+          <span class="font-bold text-emerald-600 dark:text-emerald-400 font-mono">86.89%</span>
         </div>
-        <div class="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
-          <span class="text-slate-500 dark:text-slate-400">5-Fold CV:</span>
-          <span id="badge-cv-acc" class="font-bold text-indigo-600 dark:text-indigo-400 font-mono">81.09%</span>
+        <div class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
+          <span class="text-slate-500 dark:text-slate-400" data-i18n="badge_svm_recall">SVM Recall:</span>
+          <span class="font-bold text-indigo-600 dark:text-indigo-400 font-mono">93.94%</span>
         </div>
-        <div class="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
-          <span class="text-slate-500 dark:text-slate-400">Bemorlar:</span>
-          <span id="badge-samples" class="font-bold text-blue-600 dark:text-blue-400 font-mono">302</span>
+        <div class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
+          <span class="text-slate-500 dark:text-slate-400" data-i18n="badge_samples">Bemorlar:</span>
+          <span class="font-bold text-blue-600 dark:text-blue-400 font-mono">302</span>
         </div>
       </div>
 
-      <!-- Actions: Report Print & Theme Toggle -->
+      <!-- Actions: Language, Sound, Print, Theme -->
       <div class="flex items-center space-x-2">
-        <button onclick="printDiagnosticReport()" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-200 dark:border-rose-900 hover:bg-rose-100 transition shadow-sm">
-          <i class="fa-solid fa-print"></i>
-          <span class="hidden sm:inline">Tibbiy Hisobot (PDF)</span>
+        
+        <!-- Language Selector -->
+        <div class="flex items-center bg-slate-100 dark:bg-slate-800 rounded-lg p-0.5 border border-slate-200 dark:border-slate-700 text-xs">
+          <button onclick="setLanguage('uz')" id="lang-btn-uz" class="px-2 py-1 rounded font-semibold transition bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm">UZ</button>
+          <button onclick="setLanguage('en')" id="lang-btn-en" class="px-2 py-1 rounded font-semibold transition text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">EN</button>
+          <button onclick="setLanguage('ru')" id="lang-btn-ru" class="px-2 py-1 rounded font-semibold transition text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">RU</button>
+        </div>
+
+        <!-- ECG Audio Beep Toggle -->
+        <button id="sound-toggle-btn" onclick="toggleEcgAudio()" title="EKG Puls ovozi" class="w-9 h-9 rounded-lg flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition border border-slate-200 dark:border-slate-800">
+          <i id="sound-icon" class="fa-solid fa-volume-xmark text-slate-400"></i>
         </button>
 
+        <!-- Print Diagnostic Report -->
+        <button onclick="printDiagnosticReport()" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-200 dark:border-rose-900 hover:bg-rose-100 transition shadow-sm">
+          <i class="fa-solid fa-print"></i>
+          <span class="hidden sm:inline" data-i18n="nav_pdf">Tibbiy Hisobot (PDF)</span>
+        </button>
+
+        <!-- Dark/Light Theme -->
         <button id="theme-toggle" aria-label="Mavzuni almashtirish" class="w-9 h-9 rounded-lg flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
           <i class="fa-solid fa-moon dark:hidden text-slate-700"></i>
           <i class="fa-solid fa-sun hidden dark:inline text-amber-400"></i>
@@ -111,15 +126,19 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-2 sm:space-x-8 overflow-x-auto">
         <button data-tab-target="tab-calculator" class="active py-3 px-3 text-xs sm:text-sm font-semibold border-b-2 border-rose-600 text-rose-600 dark:text-rose-400 flex items-center space-x-2 whitespace-nowrap transition">
           <i class="fa-solid fa-stethoscope"></i>
-          <span>Bemor Diagnostikasi & Simulyator</span>
+          <span data-i18n="tab_calc">Klinik Diagnostika & EKG</span>
         </button>
         <button data-tab-target="tab-models" class="py-3 px-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 flex items-center space-x-2 whitespace-nowrap transition">
           <i class="fa-solid fa-chart-pie"></i>
-          <span>Modellarni Taqqoslash (KNN, SVM, ROC)</span>
+          <span data-i18n="tab_models">Modellarni Taqqoslash (5 Model)</span>
+        </button>
+        <button data-tab-target="tab-emr" class="py-3 px-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 flex items-center space-x-2 whitespace-nowrap transition">
+          <i class="fa-solid fa-hospital-user"></i>
+          <span data-i18n="tab_emr">EMR: Bemorlar & Dinamika</span>
         </button>
         <button data-tab-target="tab-dataset" class="py-3 px-3 text-xs sm:text-sm font-medium border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 flex items-center space-x-2 whitespace-nowrap transition">
           <i class="fa-solid fa-database"></i>
-          <span>Dataset va Qidiruv (302 Bemor)</span>
+          <span data-i18n="tab_dataset">Dataset va Qidiruv (302 Bemor)</span>
         </button>
       </div>
     </div>
@@ -128,24 +147,30 @@
   <!-- Main Content Container -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
 
-    <!-- ========================================== -->
-    <!-- TAB 1: BEMOR DIAGNOSTIKASI & SIMULYATOR    -->
-    <!-- ========================================== -->
+    <!-- ======================================================== -->
+    <!-- TAB 1: BEMOR DIAGNOSTIKASI, EKG MONITOR & XAI WATERFALL  -->
+    <!-- ======================================================== -->
     <div id="tab-calculator" class="tab-pane space-y-6">
       
-      <!-- Presets Bar -->
+      <!-- Presets & Quick Actions Bar -->
       <div class="flex flex-wrap items-center justify-between gap-3 p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
         <div class="flex items-center space-x-2">
-          <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Klinik Profillar:</span>
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-400" data-i18n="presets_label">Klinik Profillar:</span>
           <div id="presets-container" class="flex flex-wrap gap-2"></div>
         </div>
-        <button onclick="resetForm()" class="px-3 py-2 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center space-x-1.5">
-          <i class="fa-solid fa-arrow-rotate-left"></i>
-          <span>Standartga Qaytarish</span>
-        </button>
+        <div class="flex items-center space-x-2">
+          <button onclick="saveCurrentPatientToEMR()" class="px-3 py-2 rounded-lg text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 transition flex items-center space-x-1.5 shadow-sm">
+            <i class="fa-solid fa-floppy-disk"></i>
+            <span data-i18n="btn_save_emr">EMRga Saqlash</span>
+          </button>
+          <button onclick="resetForm()" class="px-3 py-2 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center space-x-1.5">
+            <i class="fa-solid fa-arrow-rotate-left"></i>
+            <span data-i18n="btn_reset">Standartga Qaytarish</span>
+          </button>
+        </div>
       </div>
 
-      <!-- Grid: Form Inputs (Left) & Real-time Live Result (Right) -->
+      <!-- Grid: Form Inputs (Left) & Real-time Live Result / ECG (Right) -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
         <!-- Left: Input Controls (7 Columns) -->
@@ -156,133 +181,183 @@
               <div>
                 <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center space-x-2">
                   <i class="fa-solid fa-sliders text-rose-500"></i>
-                  <span>Klinik Parametrlarni Sozlash</span>
+                  <span data-i18n="params_title">Klinik Parametrlarni Sozlash</span>
                 </h2>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Bemorning 13 ta tibbiy laboratoriya ko'rsatkichlari</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5" data-i18n="params_desc">Barcha o'zgarishlar EKG, AI xavf hisoblagichi va tushuntirish panelida bir vaqtda aks etadi</p>
               </div>
-              <span class="text-[11px] px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-mono">
-                13 ta xususiyat
-              </span>
+              <span class="text-xs font-mono font-semibold text-rose-600 dark:text-rose-400 px-2.5 py-1 bg-rose-50 dark:bg-rose-950/50 rounded-md border border-rose-200 dark:border-rose-900">13 ta ko'rsatkich</span>
             </div>
 
-            <!-- Dynamic Form Inputs -->
-            <div id="inputs-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-              <!-- Dynamically populated by app.js -->
-            </div>
+            <form id="prediction-form" class="space-y-4">
+              <div id="form-fields-container" class="space-y-4">
+                <!-- Dynamically populated from MODEL_DATA.features -->
+              </div>
+            </form>
           </div>
 
-          <!-- Radar Chart Box (Bemor vs Sog'lom Standart) -->
-          <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
-            <div class="flex items-center justify-between mb-3">
-              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center space-x-1.5">
-                <i class="fa-solid fa-chart-radar text-indigo-500"></i>
-                <span>360° Radar Tahlil: Bemor vs Sog'lom Populyatsiya</span>
+          <!-- Radar Chart: Bemor vs Sog'lom Populyatsiya -->
+          <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
+            <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100 dark:border-slate-800">
+              <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                <i class="fa-solid fa-compass-drafting text-indigo-500"></i>
+                <span data-i18n="radar_title">360° Radar Profil (Bemor vs Sog'lom Populyatsiya)</span>
               </h3>
-              <span class="text-[10px] text-slate-400">Normalizatsiyalangan</span>
+              <span class="text-[11px] text-slate-400">UCI Cleveland 302 normativ</span>
             </div>
-            <div class="h-64">
-              <canvas id="chart-patient-radar"></canvas>
+            <div class="h-64 sm:h-72 w-full">
+              <canvas id="patient-radar-chart"></canvas>
             </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-3 text-center" data-i18n="radar_footer">
+              Ko'k chiziq — ushbu bemor holati; Yashil chiziq — butunlay sog'lom guruh o'rtacha qiymati.
+            </p>
           </div>
 
         </div>
 
-        <!-- Right: Live Diagnostic Results (5 Columns, Sticky) -->
-        <div class="lg:col-span-5 space-y-5 sticky top-28">
+        <!-- Right: Real-time Live Result, ECG Monitor & Explainable AI (5 Columns) -->
+        <div class="lg:col-span-5 space-y-5 sticky top-20">
           
-          <!-- Master Gauge Card -->
-          <div class="bg-gradient-to-br from-white via-white to-slate-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-950 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none relative overflow-hidden">
+          <!-- LIVE ECG MONITOR SCREEN (Bedside Cardiomonitor) -->
+          <div class="rounded-2xl p-4 bg-slate-950 border border-emerald-900/50 shadow-xl overflow-hidden relative">
             
-            <div class="flex items-center justify-between mb-3">
-              <span class="text-xs font-bold uppercase tracking-wider text-slate-400">4-Darajali Xavf Stratifikatsiyasi</span>
-              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-400">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1 animate-pulse"></span>
-                Jonli Konsensus
-              </span>
+            <!-- ECG Header Status Bar -->
+            <div class="flex items-center justify-between text-xs pb-2 border-b border-emerald-950/80 font-mono">
+              <div class="flex items-center space-x-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+                <span class="font-bold text-emerald-400" id="ecg-status-text">LEAD II | 25mm/s</span>
+              </div>
+              <div class="flex items-center space-x-3">
+                <span class="text-emerald-500/80">PULS:</span>
+                <span id="ecg-bpm-display" class="font-extrabold text-emerald-300 text-sm">150 BPM</span>
+              </div>
             </div>
 
-            <!-- Circular Gauge Visualization -->
-            <div class="flex flex-col items-center justify-center my-1">
-              <div class="relative w-40 h-40 flex items-center justify-center">
-                <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                  <circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="8" fill="transparent" class="text-slate-100 dark:text-slate-800"/>
-                  <circle id="gauge-fill" cx="50" cy="50" r="40" stroke="#f43f5e" stroke-width="8" stroke-dasharray="251.3" stroke-dashoffset="100" stroke-linecap="round" fill="transparent" class="gauge-circle"/>
+            <!-- ECG Canvas -->
+            <div class="ecg-screen-container rounded-xl my-2 border border-emerald-950">
+              <canvas id="ecg-canvas" width="600" height="150" class="w-full h-36 block"></canvas>
+            </div>
+
+            <!-- ECG Footer Indicators -->
+            <div class="grid grid-cols-3 gap-2 text-[10px] font-mono text-center pt-1 border-t border-emerald-950/80">
+              <div class="p-1 rounded bg-emerald-950/30 text-emerald-400">
+                <span class="text-slate-400 block" data-i18n="ecg_rhythm">RITM:</span>
+                <span id="ecg-rhythm-badge" class="font-bold">SINUS TACHY</span>
+              </div>
+              <div class="p-1 rounded bg-emerald-950/30 text-emerald-400">
+                <span class="text-slate-400 block" data-i18n="ecg_st">ST SEGMENT:</span>
+                <span id="ecg-st-badge" class="font-bold text-rose-400">-1.0 mm</span>
+              </div>
+              <div class="p-1 rounded bg-emerald-950/30 text-emerald-400">
+                <span class="text-slate-400 block" data-i18n="ecg_axis">VOLTAJ / AXIS:</span>
+                <span id="ecg-volt-badge" class="font-bold">NORMAL</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- PRIMARY RISK CARD (Gauge & 4-Tier Stratification) -->
+          <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-lg relative overflow-hidden">
+            <div class="text-center">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1" data-i18n="gauge_heading">Yurak Kasalligi Xavfi (Konsensus)</span>
+              
+              <!-- Circular SVG Gauge -->
+              <div class="relative w-44 h-44 mx-auto my-3 flex items-center justify-center">
+                <svg class="w-full h-full -rotate-90 transform" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="9" class="text-slate-100 dark:text-slate-800" fill="transparent"/>
+                  <circle id="gauge-fill" cx="50" cy="50" r="40" stroke="#f43f5e" stroke-width="9" class="gauge-circle" stroke-linecap="round" fill="transparent" stroke-dasharray="251.3" stroke-dashoffset="60"/>
                 </svg>
-                <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-                  <span id="gauge-percent" class="text-3xl font-extrabold font-mono text-slate-900 dark:text-white tracking-tight">50%</span>
-                  <span id="risk-category-name" class="text-[10px] font-bold uppercase tracking-wider text-rose-500 mt-0.5">Xavf Darajasi</span>
+                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                  <span id="gauge-percent" class="text-4xl font-extrabold text-slate-900 dark:text-white font-mono tracking-tight">--%</span>
+                  <span id="risk-category-name" class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-0.5">Xavf Guruh</span>
                 </div>
               </div>
 
-              <!-- Status Badge & Explanation -->
-              <div class="mt-3 text-center">
-                <div id="risk-status-badge" class="px-3 py-1 rounded-full text-xs font-bold inline-block bg-slate-100 text-slate-700 border border-slate-200">
-                  Hisoblanmoqda...
+              <!-- Risk Status Badge & Description -->
+              <div class="mt-2 space-y-2">
+                <div id="risk-status-badge" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 dark:bg-rose-950/80 dark:text-rose-300 border border-rose-300 dark:border-rose-800">
+                  <i class="fa-solid fa-heart-pulse mr-1"></i> Hisoblanmoqda...
                 </div>
-                <p id="risk-status-desc" class="text-xs text-slate-500 dark:text-slate-400 mt-2 px-1 leading-relaxed">
-                  Bemor ko'rsatkichlari tahlil qilinmoqda.
+                <p id="risk-status-desc" class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed max-w-sm mx-auto">
+                  Klinik ko'rsatkichlar tahlil qilinmoqda...
                 </p>
               </div>
             </div>
 
-            <!-- Model-by-Model Breakdown -->
-            <div class="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800 space-y-2.5">
-              <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Algoritmlar Alomatlari</div>
-              
-              <!-- SVM Card -->
-              <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
-                <div class="flex items-center justify-between text-xs mb-1">
-                  <span class="font-bold text-slate-700 dark:text-slate-200 flex items-center space-x-1.5">
-                    <span class="w-2 h-2 rounded-full bg-rose-500"></span>
-                    <span>SVM (RBF Kernel)</span>
-                  </span>
-                  <div class="flex items-center space-x-2">
-                    <span id="svm-result-badge" class="px-1.5 py-0.5 rounded text-[10px] font-bold">--</span>
-                    <span id="svm-result-pct" class="font-bold font-mono text-slate-800 dark:text-slate-200">--%</span>
+            <!-- FRAMINGHAM 10-YEAR RISK VS AI ENSEMBLE COMPARISON -->
+            <div class="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center space-x-1.5">
+                  <i class="fa-solid fa-scale-balanced text-indigo-500"></i>
+                  <span data-i18n="framingham_title">Klassik Tibbiyot vs Sun'iy Intellekt</span>
+                </span>
+                <span class="text-[10px] text-slate-400 font-mono">Framingham ATP III</span>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3 mb-2.5">
+                <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80">
+                  <span class="text-[10px] text-slate-500 dark:text-slate-400 block font-medium" data-i18n="framingham_score_label">Framingham 10-Yillik:</span>
+                  <div class="flex items-baseline space-x-1 mt-1">
+                    <span id="framingham-percent" class="text-xl font-extrabold text-indigo-600 dark:text-indigo-400 font-mono">--%</span>
+                    <span id="framingham-category" class="text-[10px] font-semibold text-slate-500">O'rtacha</span>
                   </div>
                 </div>
-                <div class="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
-                  <div id="svm-result-bar" class="h-full bg-rose-500 rounded-full transition-all duration-500" style="width: 50%"></div>
+                <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80">
+                  <span class="text-[10px] text-slate-500 dark:text-slate-400 block font-medium" data-i18n="ai_ensemble_score_label">AI SOTA Ensemble:</span>
+                  <div class="flex items-baseline space-x-1 mt-1">
+                    <span id="ai-ensemble-percent" class="text-xl font-extrabold text-rose-600 dark:text-rose-400 font-mono">--%</span>
+                    <span id="ai-ensemble-category" class="text-[10px] font-semibold text-slate-500">Yuqori</span>
+                  </div>
                 </div>
               </div>
 
-              <!-- KNN Card -->
-              <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
-                <div class="flex items-center justify-between text-xs mb-1">
-                  <span class="font-bold text-slate-700 dark:text-slate-200 flex items-center space-x-1.5">
-                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-                    <span>KNN (k=7 Neighbors)</span>
-                  </span>
-                  <div class="flex items-center space-x-2">
-                    <span id="knn-result-badge" class="px-1.5 py-0.5 rounded text-[10px] font-bold">--</span>
-                    <span id="knn-result-pct" class="font-bold font-mono text-slate-800 dark:text-slate-200">--%</span>
-                  </div>
-                </div>
-                <div class="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
-                  <div id="knn-result-bar" class="h-full bg-blue-500 rounded-full transition-all duration-500" style="width: 50%"></div>
-                </div>
+              <p id="framingham-insight-text" class="text-[11px] text-slate-500 dark:text-slate-400 leading-normal bg-indigo-50/60 dark:bg-indigo-950/20 p-2.5 rounded-lg border border-indigo-100 dark:border-indigo-900/40">
+                AI ko'p parametrli tahlil natijasida EKG o'zgarishlari va tomirlar stenozini hisobga olgan holda bevosita xavfni aniqlaydi.
+              </p>
+            </div>
+
+            <!-- EXPLAINABLE AI (SHAP-STYLE FEATURE ATTRIBUTION WATERFALL) -->
+            <div class="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center space-x-1.5">
+                  <i class="fa-solid fa-brain text-amber-500"></i>
+                  <span data-i18n="xai_waterfall_title">Explainable AI: Xavf Omillari Attributsiyasi</span>
+                </span>
+                <span class="text-[10px] text-slate-400 font-mono">SHAP tahlili</span>
               </div>
 
-              <!-- Consensus Text -->
-              <div id="model-consensus-text" class="text-xs p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 leading-relaxed">
-                Modellar tahlili tayyorlanmoqda...
+              <div id="xai-waterfall-container" class="space-y-2 mb-3">
+                <!-- Dynamically populated with horizontal contribution bars -->
+              </div>
+
+              <div id="xai-top-insight" class="text-[11px] text-slate-600 dark:text-slate-300 p-2.5 rounded-lg bg-amber-50/60 dark:bg-amber-950/20 border border-amber-200/60 dark:border-amber-900/40">
+                Eng katta salbiy ta'sir ko'rsatgan 3 ta omil aniqlanmoqda...
               </div>
             </div>
 
-          </div>
+            <!-- "WHAT-IF" PREVENTION SIMULATOR -->
+            <div class="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center space-x-1.5">
+                  <i class="fa-solid fa-wand-magic-sparkles text-emerald-500"></i>
+                  <span data-i18n="whatif_title">"What-If" Profilaktika Simulyatori</span>
+                </span>
+                <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/50">Optimal Ssenariy</span>
+              </div>
+              <div id="whatif-container" class="text-xs">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
 
-          <!-- What-If Simulator Box -->
-          <div id="whatif-container">
-            <!-- Dynamically rendered -->
-          </div>
+            <!-- Action Advice -->
+            <div class="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800">
+              <h4 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2 flex items-center space-x-1.5">
+                <i class="fa-solid fa-notes-medical text-rose-500"></i>
+                <span data-i18n="advice_title">Shifokor Tavsiyasi va Klinik Harakat:</span>
+              </h4>
+              <ul id="clinical-advice-list" class="space-y-1.5 text-xs text-slate-600 dark:text-slate-400">
+                <!-- Dynamically populated -->
+              </ul>
+            </div>
 
-          <!-- Risk Factors Alert Box -->
-          <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center space-x-1.5">
-              <i class="fa-solid fa-list-check text-rose-500"></i>
-              <span>Aniqlangan Klinik Xavf Omillari</span>
-            </h3>
-            <div id="risk-factors-list" class="space-y-2"></div>
           </div>
 
         </div>
@@ -291,313 +366,311 @@
 
     </div>
 
-    <!-- ========================================== -->
-    <!-- TAB 2: MODELLARNI TAQQOSLASH (KNN vs SVM)  -->
-    <!-- ========================================== -->
+    <!-- ======================================================== -->
+    <!-- TAB 2: MODELLARNI TAQQOSLASH (5 MODEL, SOTA ENSEMBLE)   -->
+    <!-- ======================================================== -->
     <div id="tab-models" class="tab-pane hidden space-y-6">
       
-      <!-- Top Metrics Cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- 5 Model Overview Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         
-        <!-- Accuracy -->
-        <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
-          <div class="flex items-center justify-between text-slate-400 text-xs mb-2">
-            <span class="font-bold uppercase tracking-wider">Aniqlik (Accuracy)</span>
-            <i class="fa-solid fa-bullseye text-rose-500"></i>
+        <!-- Ensemble Soft-Voting -->
+        <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border-2 border-rose-500/40 shadow-sm relative overflow-hidden">
+          <span class="absolute top-2 right-2 px-2 py-0.5 text-[9px] font-extrabold uppercase rounded bg-rose-500 text-white">SOTA</span>
+          <span class="text-xs font-bold text-slate-900 dark:text-white block mt-1">Ensemble Soft-Voting</span>
+          <div class="text-2xl font-black text-rose-600 dark:text-rose-400 font-mono mt-1" id="card-ens-auc">90.69%</div>
+          <span class="text-[11px] text-slate-500 block">ROC-AUC Metrikasi</span>
+          <div class="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800 text-[11px] space-y-1 text-slate-600 dark:text-slate-400">
+            <div class="flex justify-between"><span>Recall:</span> <b class="font-mono text-emerald-600 dark:text-emerald-400">96.97%</b></div>
+            <div class="flex justify-between"><span>Aniqlik:</span> <b class="font-mono">83.61%</b></div>
+            <div class="flex justify-between"><span>F1-Score:</span> <b class="font-mono">86.49%</b></div>
           </div>
-          <div class="flex items-baseline justify-between mt-1">
-            <div>
-              <span class="text-2xl font-extrabold font-mono text-slate-900 dark:text-white">83.61%</span>
-              <span class="text-xs text-rose-600 font-semibold block">SVM (RBF)</span>
-            </div>
-            <div class="text-right">
-              <span class="text-lg font-bold font-mono text-slate-500 dark:text-slate-400">81.97%</span>
-              <span class="text-xs text-blue-500 font-medium block">KNN (k=7)</span>
-            </div>
-          </div>
-          <p class="text-[11px] text-slate-400 mt-2">Test to'plamidagi 61 ta namunada to'g'ri tashxislar</p>
         </div>
 
-        <!-- Recall (Sensitivity) -->
-        <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
-          <div class="flex items-center justify-between text-slate-400 text-xs mb-2">
-            <span class="font-bold uppercase tracking-wider">Recall (Sezuvchanlik)</span>
-            <i class="fa-solid fa-shield-virus text-emerald-500"></i>
+        <!-- Gradient Boosting -->
+        <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+          <span class="text-xs font-bold text-slate-900 dark:text-white block">Gradient Boosting</span>
+          <div class="text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono mt-1" id="card-gb-acc">86.89%</div>
+          <span class="text-[11px] text-slate-500 block">Aniqlik (Accuracy)</span>
+          <div class="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800 text-[11px] space-y-1 text-slate-600 dark:text-slate-400">
+            <div class="flex justify-between"><span>Recall:</span> <b class="font-mono text-emerald-600 dark:text-emerald-400">96.97%</b></div>
+            <div class="flex justify-between"><span>F1-Score:</span> <b class="font-mono">88.89%</b></div>
+            <div class="flex justify-between"><span>ROC-AUC:</span> <b class="font-mono">87.99%</b></div>
           </div>
-          <div class="flex items-baseline justify-between mt-1">
-            <div>
-              <span class="text-2xl font-extrabold font-mono text-emerald-600 dark:text-emerald-400">93.94%</span>
-              <span class="text-xs text-rose-600 font-semibold block">SVM (RBF)</span>
-            </div>
-            <div class="text-right">
-              <span class="text-lg font-bold font-mono text-slate-500 dark:text-slate-400">90.91%</span>
-              <span class="text-xs text-blue-500 font-medium block">KNN (k=7)</span>
-            </div>
-          </div>
-          <p class="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium mt-2">Tibbiyotda eng muhim: kasallikni o'tkazib yubormaslik</p>
         </div>
 
-        <!-- F1 Score -->
-        <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
-          <div class="flex items-center justify-between text-slate-400 text-xs mb-2">
-            <span class="font-bold uppercase tracking-wider">F1-Score</span>
-            <i class="fa-solid fa-scale-balanced text-indigo-500"></i>
+        <!-- Support Vector Machine -->
+        <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+          <span class="text-xs font-bold text-slate-900 dark:text-white block">SVM (RBF Kernel)</span>
+          <div class="text-2xl font-black text-indigo-600 dark:text-indigo-400 font-mono mt-1" id="card-svm-acc">83.61%</div>
+          <span class="text-[11px] text-slate-500 block">Aniqlik (Accuracy)</span>
+          <div class="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800 text-[11px] space-y-1 text-slate-600 dark:text-slate-400">
+            <div class="flex justify-between"><span>Recall:</span> <b class="font-mono text-emerald-600 dark:text-emerald-400">93.94%</b></div>
+            <div class="flex justify-between"><span>F1-Score:</span> <b class="font-mono">86.11%</b></div>
+            <div class="flex justify-between"><span>ROC-AUC:</span> <b class="font-mono">88.10%</b></div>
           </div>
-          <div class="flex items-baseline justify-between mt-1">
-            <div>
-              <span class="text-2xl font-extrabold font-mono text-slate-900 dark:text-white">86.11%</span>
-              <span class="text-xs text-rose-600 font-semibold block">SVM (RBF)</span>
-            </div>
-            <div class="text-right">
-              <span class="text-lg font-bold font-mono text-slate-500 dark:text-slate-400">84.51%</span>
-              <span class="text-xs text-blue-500 font-medium block">KNN (k=7)</span>
-            </div>
-          </div>
-          <p class="text-[11px] text-slate-400 mt-2">Precision va Recall o'rtasidagi muvozanat</p>
         </div>
 
-        <!-- 5-Fold Cross Validation -->
-        <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
-          <div class="flex items-center justify-between text-slate-400 text-xs mb-2">
-            <span class="font-bold uppercase tracking-wider">5-Fold Kross-Validatsiya</span>
-            <i class="fa-solid fa-arrows-split-up-and-left text-amber-500"></i>
+        <!-- Random Forest -->
+        <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+          <span class="text-xs font-bold text-slate-900 dark:text-white block">Random Forest (100)</span>
+          <div class="text-2xl font-black text-amber-600 dark:text-amber-400 font-mono mt-1" id="card-rf-cv">83.74%</div>
+          <span class="text-[11px] text-slate-500 block">5-Fold CV Aniqlik</span>
+          <div class="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800 text-[11px] space-y-1 text-slate-600 dark:text-slate-400">
+            <div class="flex justify-between"><span>Recall:</span> <b class="font-mono text-emerald-600 dark:text-emerald-400">93.94%</b></div>
+            <div class="flex justify-between"><span>ROC-AUC:</span> <b class="font-mono">89.83%</b></div>
+            <div class="flex justify-between"><span>F1-Score:</span> <b class="font-mono">83.78%</b></div>
           </div>
-          <div class="flex items-baseline justify-between mt-1">
-            <div>
-              <span class="text-2xl font-extrabold font-mono text-slate-900 dark:text-white">81.09%</span>
-              <span class="text-xs text-rose-600 font-semibold block">SVM (±6.09%)</span>
-            </div>
-            <div class="text-right">
-              <span class="text-lg font-bold font-mono text-slate-500 dark:text-slate-400">81.07%</span>
-              <span class="text-xs text-blue-500 font-medium block">KNN (±7.86%)</span>
-            </div>
+        </div>
+
+        <!-- K-Nearest Neighbors -->
+        <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+          <span class="text-xs font-bold text-slate-900 dark:text-white block">KNN (k=7)</span>
+          <div class="text-2xl font-black text-blue-600 dark:text-blue-400 font-mono mt-1" id="card-knn-acc">81.97%</div>
+          <span class="text-[11px] text-slate-500 block">Aniqlik (Accuracy)</span>
+          <div class="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800 text-[11px] space-y-1 text-slate-600 dark:text-slate-400">
+            <div class="flex justify-between"><span>Recall:</span> <b class="font-mono text-emerald-600 dark:text-emerald-400">90.91%</b></div>
+            <div class="flex justify-between"><span>F1-Score:</span> <b class="font-mono">84.51%</b></div>
+            <div class="flex justify-between"><span>ROC-AUC:</span> <b class="font-mono">88.20%</b></div>
           </div>
-          <p class="text-[11px] text-slate-400 mt-2">To'liq ma'lumotlar to'plami bo'yicha 5 marta sinovdan o'tkazilgan barqarorlik</p>
         </div>
 
       </div>
 
-      <!-- Charts Row 1: Metrics & ROC Curve -->
+      <!-- Charts Row 1: Multi-Model ROC Curves & 5-Fold Stratified CV -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
-        <!-- Bar Chart: Comprehensive Metrics -->
+        <!-- Multi-line ROC Curves -->
         <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
-          <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-2 mb-4">
-            <i class="fa-solid fa-chart-column text-rose-500"></i>
-            <span>Barcha Metrikalar Bo'yicha Taqqoslash (%)</span>
-          </h3>
-          <div class="h-72">
-            <canvas id="chart-metrics-comparison"></canvas>
+          <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100 dark:border-slate-800">
+            <div>
+              <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                <i class="fa-solid fa-chart-line text-rose-500"></i>
+                <span data-i18n="roc_chart_title">5 ta Modelning ROC Egri Chiziqlari (Multi-ROC)</span>
+              </h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400" data-i18n="roc_chart_sub">AUC qanchalik 1.0 ga yaqin bo'lsa, model shunchalik mukammal ajratadi</p>
+            </div>
+            <span class="text-xs font-mono font-bold text-rose-600 dark:text-rose-400 px-2 py-0.5 rounded bg-rose-50 dark:bg-rose-950/60">AUC: 90.7%</span>
+          </div>
+          <div class="h-64 sm:h-72 w-full">
+            <canvas id="multi-roc-chart"></canvas>
           </div>
         </div>
 
-        <!-- Line Chart: ROC Curves -->
+        <!-- 5-Fold Cross Validation Fold-by-Fold -->
         <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
-          <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-2 mb-4">
-            <i class="fa-solid fa-chart-line text-rose-500"></i>
-            <span>ROC Egri Chizig'i (ROC Curve & AUC)</span>
-          </h3>
-          <div class="h-72">
-            <canvas id="chart-roc-curve"></canvas>
+          <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100 dark:border-slate-800">
+            <div>
+              <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                <i class="fa-solid fa-layer-group text-indigo-500"></i>
+                <span data-i18n="cv_chart_title">5-Fold Stratified Kross-Validatsiya Natijalari</span>
+              </h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400" data-i18n="cv_chart_sub">Har bir qatlam (Fold 1-5) bo'yicha aniqlik barqarorligi</p>
+            </div>
+            <span class="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400 px-2 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950/60">RF CV: 83.7%</span>
+          </div>
+          <div class="h-64 sm:h-72 w-full">
+            <canvas id="cross-validation-chart"></canvas>
           </div>
         </div>
 
       </div>
 
-      <!-- Charts Row 2: 5-Fold CV & K Tuning Curve -->
+      <!-- Charts Row 2: Feature Importance (Gini + Correlation) & K-Tuning -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
-        <!-- 5-Fold Folds -->
+        <!-- Feature Importance -->
         <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
-          <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-2 mb-4">
-            <i class="fa-solid fa-layer-group text-indigo-500"></i>
-            <span>5-Fold Stratified Kross-Validatsiya Natijalari (Har bir Fold)</span>
-          </h3>
-          <div class="h-72">
-            <canvas id="chart-cv-folds"></canvas>
+          <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100 dark:border-slate-800">
+            <div>
+              <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                <i class="fa-solid fa-ranking-star text-amber-500"></i>
+                <span data-i18n="fi_chart_title">Belgilarning Klinik Ahamiyati (Feature Importance)</span>
+              </h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400" data-i18n="fi_chart_sub">Random Forest, Gradient Boosting va Korrelyatsiya integratsiyasi</p>
+            </div>
+          </div>
+          <div class="h-64 sm:h-72 w-full">
+            <canvas id="feature-importance-chart"></canvas>
           </div>
         </div>
 
-        <!-- KNN K Curve -->
+        <!-- KNN k-Tuning Curve -->
         <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
-          <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-2 mb-4">
-            <i class="fa-solid fa-sliders text-blue-500"></i>
-            <span>KNN Giperparametrini Tanlash (k=1 dan k=25 gacha Aniqlik)</span>
-          </h3>
-          <div class="h-72">
-            <canvas id="chart-k-curve"></canvas>
+          <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100 dark:border-slate-800">
+            <div>
+              <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                <i class="fa-solid fa-bezier-curve text-blue-500"></i>
+                <span data-i18n="ktune_chart_title">KNN Giperparametrlarini Sozlash (k=1 dan k=25 gacha)</span>
+              </h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400" data-i18n="ktune_chart_sub">Optimal nuqta: k=7 (Aniqlik: 82.0%, F1: 84.5%)</p>
+            </div>
+            <span class="text-xs font-mono font-bold text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950/60">k=7</span>
+          </div>
+          <div class="h-64 sm:h-72 w-full">
+            <canvas id="k-tuning-chart"></canvas>
           </div>
         </div>
 
       </div>
 
-      <!-- Feature Importance Bar -->
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- TAB 3: EMR - BEMORLAR TARIXI VA DINAMIKA TAHLILI         -->
+    <!-- ======================================================== -->
+    <div id="tab-emr" class="tab-pane hidden space-y-6">
+      
+      <!-- EMR Header / Actions -->
+      <div class="flex flex-wrap items-center justify-between gap-3 p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+            <i class="fa-solid fa-hospital-user text-emerald-500"></i>
+            <span data-i18n="emr_title">Elektron Tibbiy Karta (EMR) va Davolanish Dinamikasi</span>
+          </h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5" data-i18n="emr_subtitle">
+            Bemorlarning tashriflarini saqlang, ularni solishtiring va davolash natijalarini kuzating
+          </p>
+        </div>
+        <div class="flex items-center space-x-2">
+          <button onclick="saveCurrentPatientToEMR()" class="px-3.5 py-2 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white transition flex items-center space-x-1.5 shadow-sm">
+            <i class="fa-solid fa-plus"></i>
+            <span data-i18n="emr_btn_add">Joriy Bemorni Saqlash</span>
+          </button>
+          <button onclick="clearEMRHistory()" class="px-3 py-2 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition">
+            <i class="fa-solid fa-trash-can"></i>
+            <span data-i18n="emr_btn_clear">Tozalash</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- DINAMIKA TAHLILI (VISIT 1 VS VISIT 2 COMPARISON TOOL) -->
       <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
-        <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-2 mb-4">
-          <i class="fa-solid fa-arrow-trend-up text-emerald-500"></i>
-          <span>XAI: Klinik Xususiyatlarning Yurak Kasalligi Bilan Bog'liqligi (Pearson r)</span>
-        </h3>
-        <div class="h-72">
-          <canvas id="chart-feature-importance"></canvas>
+        <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100 dark:border-slate-800">
+          <div>
+            <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+              <i class="fa-solid fa-code-compare text-indigo-500"></i>
+              <span data-i18n="dynamics_title">Dinamika Tahlili (2 ta Tashrifni Qiyoslash)</span>
+            </h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400" data-i18n="dynamics_sub">
+              Bemorning terapiyadan oldingi va keyingi holatini tanlang
+            </p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1" data-i18n="dyn_visit_1">1-Tashrif (Boshlang'ich holat):</label>
+            <select id="dyn-select-visit1" onchange="runDynamicsComparison()" class="w-full text-xs rounded-lg p-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1" data-i18n="dyn_visit_2">2-Tashrif (Qayta ko'rik):</label>
+            <select id="dyn-select-visit2" onchange="runDynamicsComparison()" class="w-full text-xs rounded-lg p-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+        </div>
+
+        <!-- Dynamics Result Card -->
+        <div id="dynamics-result-container" class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+          <!-- Populated dynamically -->
         </div>
       </div>
 
-      <!-- Confusion Matrices Section -->
-      <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
-        <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-2 mb-1">
-          <i class="fa-solid fa-table-cells text-indigo-500"></i>
-          <span>Xatoliklar Matritsasi (Confusion Matrix) Tahlili</span>
+      <!-- Saved Patients List -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
+        <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-2 pb-3 mb-4 border-b border-slate-100 dark:border-slate-800">
+          <i class="fa-solid fa-folder-open text-blue-500"></i>
+          <span data-i18n="emr_records_title">Saqlangan Bemorlar Ro'yxati</span>
         </h3>
-        <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">Test to'plamidagi 61 ta haqiqiy bemor ko'rsatkichlari bo'yicha algoritmlarning tashxis aniqligi</p>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-          
-          <!-- KNN CM -->
-          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/60">
-            <div class="flex items-center justify-between mb-3">
-              <span class="font-bold text-sm text-slate-800 dark:text-slate-200 flex items-center space-x-2">
-                <span class="w-3 h-3 rounded-full bg-blue-500"></span>
-                <span>K-Nearest Neighbors (KNN, k=7)</span>
-              </span>
-              <span class="text-xs font-mono px-2 py-0.5 rounded bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 font-bold">81.97%</span>
-            </div>
-            <div id="cm-knn-grid"></div>
-          </div>
-
-          <!-- SVM CM -->
-          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/60">
-            <div class="flex items-center justify-between mb-3">
-              <span class="font-bold text-sm text-slate-800 dark:text-slate-200 flex items-center space-x-2">
-                <span class="w-3 h-3 rounded-full bg-rose-500"></span>
-                <span>Support Vector Machine (SVM RBF)</span>
-              </span>
-              <span class="text-xs font-mono px-2 py-0.5 rounded bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300 font-bold">83.61%</span>
-            </div>
-            <div id="cm-svm-grid"></div>
-          </div>
-
+        <div id="emr-patient-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Populated dynamically -->
         </div>
       </div>
 
     </div>
 
-    <!-- ========================================== -->
-    <!-- TAB 3: DATASET VA QIDIRUV (302 BEMOR)      -->
-    <!-- ========================================== -->
+    <!-- ======================================================== -->
+    <!-- TAB 4: DATASET VA QIDIRUV (302 BEMOR)                    -->
+    <!-- ======================================================== -->
     <div id="tab-dataset" class="tab-pane hidden space-y-6">
       
-      <!-- Dataset Header -->
-      <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-100 dark:border-slate-800">
+      <!-- Dataset Header & Controls -->
+      <div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center space-x-2">
-              <i class="fa-solid fa-database text-rose-500"></i>
-              <span>UCI Machine Learning Repository: Cleveland Heart Disease Dataset</span>
+              <i class="fa-solid fa-table text-blue-500"></i>
+              <span data-i18n="ds_title">UCI Cleveland Heart Disease Ma'lumotlar To'plami</span>
             </h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              302 nafar bemor bo'yicha to'liq laboratoriya tekshiruvi natijalari
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5" data-i18n="ds_sub">
+              Tozalangan 302 nafar bemorning 14 ta tibbiy parametri va tashxis holati
             </p>
           </div>
-          <a href="dataset.csv" download="heart_disease_dataset.csv" class="inline-flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-semibold bg-rose-600 hover:bg-rose-700 text-white shadow-sm transition">
-            <i class="fa-solid fa-file-arrow-down"></i>
-            <span>dataset.csv Yuklab Olish</span>
-          </a>
+          
+          <div class="flex items-center space-x-2 text-xs">
+            <span class="px-2.5 py-1 rounded-md bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 font-semibold border border-rose-200 dark:border-rose-900">
+              164 Xavf Yuqori (54.3%)
+            </span>
+            <span class="px-2.5 py-1 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-semibold border border-emerald-200 dark:border-emerald-900">
+              138 Sog'lom (45.7%)
+            </span>
+          </div>
         </div>
 
-        <!-- 4 Quick Stats -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-5">
-          <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
-            <span class="text-xs text-slate-400 block">Jami Bemorlar</span>
-            <span class="text-xl font-bold font-mono text-slate-900 dark:text-white mt-1 block">302 nafar</span>
+        <!-- Filter & Search Controls -->
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+          <div class="flex items-center space-x-2">
+            <button onclick="setTableFilter('all')" id="filter-all" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-rose-600 text-white transition" data-i18n="filter_all">Barchasi (302)</button>
+            <button onclick="setTableFilter('diseased')" id="filter-diseased" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition" data-i18n="filter_risk">Xavf Bor (164)</button>
+            <button onclick="setTableFilter('healthy')" id="filter-healthy" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition" data-i18n="filter_healthy">Sog'lom (138)</button>
           </div>
-          <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
-            <span class="text-xs text-slate-400 block">Yurak Kasalligi Bor</span>
-            <span class="text-xl font-bold font-mono text-rose-600 dark:text-rose-400 mt-1 block">164 (54.3%)</span>
-          </div>
-          <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
-            <span class="text-xs text-slate-400 block">Sog'lom Bemorlar</span>
-            <span class="text-xl font-bold font-mono text-emerald-600 dark:text-emerald-400 mt-1 block">138 (45.7%)</span>
-          </div>
-          <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
-            <span class="text-xs text-slate-400 block">O'rtacha Yosh</span>
-            <span class="text-xl font-bold font-mono text-blue-600 dark:text-blue-400 mt-1 block">54.4 yosh</span>
+
+          <div class="relative w-full sm:w-64">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-xs text-slate-400"></i>
+            <input type="text" id="table-search" placeholder="Yosh, jins yoki ko'rsatkich..." oninput="handleTableSearch(this.value)" class="w-full text-xs pl-8 pr-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500">
           </div>
         </div>
       </div>
 
-      <!-- Interactive Table Controls (Search & Filters) -->
-      <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
-        
-        <!-- Filter Buttons -->
-        <div class="flex items-center space-x-2">
-          <span class="text-xs font-bold text-slate-400 uppercase mr-1">Filtr:</span>
-          <button data-filter-btn="all" onclick="filterTable('all')" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-rose-600 text-white">
-            Barchasi (302)
-          </button>
-          <button data-filter-btn="diseased" onclick="filterTable('diseased')" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
-            Xavf Bor (164)
-          </button>
-          <button data-filter-btn="healthy" onclick="filterTable('healthy')" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
-            Sog'lomlar (138)
-          </button>
-        </div>
-
-        <!-- Search Input -->
-        <div class="w-full md:w-72 relative">
-          <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-xs text-slate-400"></i>
-          <input 
-            type="text" 
-            placeholder="Yosh, bosim, xolesterin bo'yicha qidirish..." 
-            oninput="searchTable(this.value)"
-            class="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500"
-          >
-        </div>
-
-      </div>
-
-      <!-- Dataset Table -->
-      <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-sm font-bold text-slate-900 dark:text-white">Bemorlar Klinik Ko'rsatkichlari Jadvali</h3>
-          <span id="dataset-count-badge" class="text-xs text-slate-500 font-mono">302 ta bemor</span>
-        </div>
-        
+      <!-- Table Container -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse">
-            <thead>
-              <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold uppercase tracking-wider text-slate-400 bg-slate-50 dark:bg-slate-800/40">
-                <th class="px-3 py-2.5">#</th>
-                <th class="px-3 py-2.5">age</th>
-                <th class="px-3 py-2.5">sex</th>
-                <th class="px-3 py-2.5">cp</th>
-                <th class="px-3 py-2.5">trestbps</th>
-                <th class="px-3 py-2.5">chol</th>
-                <th class="px-3 py-2.5">fbs</th>
-                <th class="px-3 py-2.5">restecg</th>
-                <th class="px-3 py-2.5">thalach</th>
-                <th class="px-3 py-2.5">exang</th>
-                <th class="px-3 py-2.5">oldpeak</th>
-                <th class="px-3 py-2.5">slope</th>
-                <th class="px-3 py-2.5">ca</th>
-                <th class="px-3 py-2.5">thal</th>
-                <th class="px-3 py-2.5">target</th>
+          <table class="w-full text-xs text-left">
+            <thead class="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 font-semibold border-b border-slate-200 dark:border-slate-800 font-mono">
+              <tr>
+                <th class="py-3 px-3">#</th>
+                <th class="py-3 px-3">Yosh</th>
+                <th class="py-3 px-3">Jins</th>
+                <th class="py-3 px-3">CP</th>
+                <th class="py-3 px-3">Bosim</th>
+                <th class="py-3 px-3">Xolesterin</th>
+                <th class="py-3 px-3">FBS</th>
+                <th class="py-3 px-3">EKG</th>
+                <th class="py-3 px-3">Puls</th>
+                <th class="py-3 px-3">Exang</th>
+                <th class="py-3 px-3">ST Dep</th>
+                <th class="py-3 px-3">Slope</th>
+                <th class="py-3 px-3">CA</th>
+                <th class="py-3 px-3">Thal</th>
+                <th class="py-3 px-3 text-center">Tashxis</th>
+                <th class="py-3 px-3 text-right">Amal</th>
               </tr>
             </thead>
-            <tbody id="dataset-table-body">
-              <!-- Rendered by app.js -->
+            <tbody id="dataset-table-body" class="divide-y divide-slate-100 dark:divide-slate-800/60 font-mono text-[11px]">
+              <!-- Populated dynamically -->
             </tbody>
           </table>
         </div>
 
         <!-- Pagination Controls -->
-        <div class="flex items-center justify-between mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 text-xs">
-          <button onclick="prevTablePage()" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 font-semibold transition">
-            <i class="fa-solid fa-chevron-left mr-1"></i> Oldingi
-          </button>
-          <span id="table-page-display" class="font-mono text-slate-500">1 / 26</span>
-          <button onclick="nextTablePage()" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 font-semibold transition">
-            Keyingi <i class="fa-solid fa-chevron-right ml-1"></i>
-          </button>
+        <div class="p-4 bg-slate-50/50 dark:bg-slate-900/50 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs">
+          <span id="table-page-info" class="text-slate-500">1 - 12 / 302</span>
+          <div class="flex items-center space-x-1" id="pagination-buttons">
+            <!-- Populated dynamically -->
+          </div>
         </div>
       </div>
 
@@ -605,22 +678,28 @@
 
   </main>
 
+  <!-- PRINTABLE DIAGNOSTIC MEDICAL REPORT (Hidden on screen, visible on print) -->
+  <div id="print-report-container" class="hidden print:block p-8 bg-white text-black font-sans">
+    <!-- Populated dynamically on print click -->
+  </div>
+
   <!-- Footer -->
-  <footer class="mt-12 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 py-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
+  <footer class="mt-auto border-t border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 text-xs text-slate-500 py-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center space-x-2">
         <i class="fa-solid fa-heart-pulse text-rose-500"></i>
-        <span><strong>07. Yurak kasalliklari xavfini bashorat qilish</strong> • Heart Disease Risk Prediction Pro Max</span>
+        <span class="font-bold text-slate-700 dark:text-slate-300">CardioRisk AI Pro Max (Enterprise v3.0)</span>
+        <span>• SOTA Machine Learning & MedTech Platformasi</span>
       </div>
-      <div class="flex items-center space-x-4">
-        <a href="https://www.kaggle.com/code/i0nlyaziz/heart-disease-risk-prediction" target="_blank" rel="noopener noreferrer" class="hover:text-rose-600 dark:hover:text-rose-400 transition">
-          <i class="fa-brands fa-kaggle text-sky-500 mr-1"></i> Kaggle Manba Notebook
-        </a>
+      <div class="flex items-center space-x-4 text-slate-400">
+        <span>UCI Machine Learning Repository (Cleveland Clinic)</span>
+        <span>•</span>
+        <span>Stratified 5-Fold Kross-Validatsiya</span>
       </div>
     </div>
   </footer>
 
-  <!-- Scripts -->
+  <!-- Scripts: Fallback data first, then Application Logic -->
   <script src="fallback_data.js"></script>
   <script src="app.js"></script>
 </body>

@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
-07. Yurak kasalliklari xavfini bashorat qilish (Heart Disease Risk Prediction)
+07. Yurak kasalliklari xavfini bashorat qilish (Heart Disease Risk Prediction Pro Max)
 Kengaytirilgan va chuqur optimallashtirilgan Machine Learning Pipeline:
-Pandas, Scikit-learn (KNN va SVM, 5-Fold CV, GridSearch, ROC & PR egri chiziqlari, XAI tahlili)
+Pandas, Scikit-learn (KNN, SVM, Random Forest, Gradient Boosting, Soft-Voting Ensemble,
+5-Fold CV, ROC egri chiziqlari, XAI tahlili va Framingham bazasi)
 """
 
 import sys
@@ -24,6 +25,7 @@ from sklearn.model_selection import train_test_split, StratifiedKFold, cross_val
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, VotingClassifier
 from sklearn.metrics import (
     accuracy_score,
     precision_score,
@@ -32,16 +34,44 @@ from sklearn.metrics import (
     confusion_matrix,
     roc_auc_score,
     roc_curve,
-    precision_recall_curve,
     matthews_corrcoef,
-    balanced_accuracy_score,
-    classification_report
+    balanced_accuracy_score
 )
 
+def evaluate_model(model, X_train, X_test, y_train, y_test, X_all, y_all, cv):
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+    y_prob = model.predict_proba(X_test)[:, 1] if hasattr(model, "predict_proba") else y_pred
+
+    cm = confusion_matrix(y_test, y_pred)
+    tn, fp, fn, tp = cm.ravel()
+    spec = float(tn / (tn + fp)) if (tn + fp) > 0 else 0.0
+
+    cv_scores = cross_val_score(model, X_all, y_all, cv=cv, scoring='accuracy')
+
+    fpr, tpr, _ = roc_curve(y_test, y_prob)
+    roc_points = [{"x": round(float(f), 4), "y": round(float(t), 4)} for f, t in zip(fpr, tpr)]
+
+    metrics = {
+        "accuracy": round(accuracy_score(y_test, y_pred) * 100, 2),
+        "f1_score": round(f1_score(y_test, y_pred) * 100, 2),
+        "recall": round(recall_score(y_test, y_pred) * 100, 2),
+        "precision": round(precision_score(y_test, y_pred) * 100, 2),
+        "specificity": round(spec * 100, 2),
+        "balanced_accuracy": round(balanced_accuracy_score(y_test, y_pred) * 100, 2),
+        "mcc": round(matthews_corrcoef(y_test, y_pred), 4),
+        "roc_auc": round(roc_auc_score(y_test, y_prob) * 100, 2),
+        "confusion_matrix": cm.tolist(),
+        "cv_mean_acc": round(cv_scores.mean() * 100, 2),
+        "cv_std_acc": round(cv_scores.std() * 100, 2),
+        "cv_folds": [round(float(s) * 100, 2) for s in cv_scores]
+    }
+    return metrics, roc_points
+
 def main():
-    print("=" * 70)
-    print(" Yurak kasalliklari xavfini bashorat qilish (Kengaytirilgan ML Pipeline)")
-    print("=" * 70)
+    print("=" * 75)
+    print(" Yurak kasalliklari xavfini bashorat qilish (Kengaytirilgan SOTA ML Pipeline)")
+    print("=" * 75)
 
     base_dir = os.path.dirname(os.path.abspath(__file__))
     dataset_path = os.path.join(base_dir, "dataset.csv")
@@ -80,23 +110,10 @@ def main():
     X_test_scaled = scaler.transform(X_test)
     X_all_scaled = scaler.transform(X)
 
-    # 3. 5-Fold Stratified Cross-Validation (Kross-Validatsiya)
-    print("\n[3] 5-Fold Stratified Cross-Validation o'tkazilmoqda...")
     cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 
-    knn_cv_model = KNeighborsClassifier(n_neighbors=7, weights='distance')
-    svm_cv_model = SVC(kernel='rbf', C=1.0, gamma='scale', probability=True, random_state=42)
-
-    knn_cv_acc = cross_val_score(knn_cv_model, X_all_scaled, y, cv=cv, scoring='accuracy')
-    svm_cv_acc = cross_val_score(svm_cv_model, X_all_scaled, y, cv=cv, scoring='accuracy')
-    knn_cv_f1 = cross_val_score(knn_cv_model, X_all_scaled, y, cv=cv, scoring='f1')
-    svm_cv_f1 = cross_val_score(svm_cv_model, X_all_scaled, y, cv=cv, scoring='f1')
-
-    print(f"  KNN 5-Fold O'rtacha Aniqlik: {knn_cv_acc.mean()*100:.2f}% (±{knn_cv_acc.std()*100:.2f}%)")
-    print(f"  SVM 5-Fold O'rtacha Aniqlik: {svm_cv_acc.mean()*100:.2f}% (±{svm_cv_acc.std()*100:.2f}%)")
-
-    # 4. K Hyperparameter Tuning Curve (k=1 dan k=25 gacha)
-    print("\n[4] KNN uchun k giperparametrining o'zgarishi tahlili...")
+    # 3. K Hyperparameter Tuning Curve (k=1 dan k=25 gacha)
+    print("\n[3] KNN uchun k giperparametrining o'zgarishi tahlili...")
     k_curve = []
     for k in range(1, 26, 2):
         k_clf = KNeighborsClassifier(n_neighbors=k, weights='distance')
@@ -108,67 +125,32 @@ def main():
             "f1_score": round(f1_score(y_test, k_pred) * 100, 2)
         })
 
-    # 5. Asosiy KNN Modelini o'qitish va to'liq metrikalar
-    print("\n[5] K-Nearest Neighbors (k=7) modelini o'qitish va baholash...")
+    # 4. Modellarni o'qitish va baholash
+    print("\n[4] 5 ta modelni o'qitish va baholash (KNN, SVM, RF, GB, Ensemble)...")
     knn = KNeighborsClassifier(n_neighbors=7, weights='distance')
-    knn.fit(X_train_scaled, y_train)
-
-    y_pred_knn = knn.predict(X_test_scaled)
-    y_prob_knn = knn.predict_proba(X_test_scaled)[:, 1]
-
-    cm_knn = confusion_matrix(y_test, y_pred_knn)
-    tn_k, fp_k, fn_k, tp_k = cm_knn.ravel()
-    spec_knn = float(tn_k / (tn_k + fp_k))
-
-    fpr_k, tpr_k, _ = roc_curve(y_test, y_prob_knn)
-    roc_knn_points = [{"x": round(float(fp), 4), "y": round(float(tp), 4)} for fp, tp in zip(fpr_k, tpr_k)]
-
-    knn_metrics = {
-        "accuracy": round(accuracy_score(y_test, y_pred_knn) * 100, 2),
-        "f1_score": round(f1_score(y_test, y_pred_knn) * 100, 2),
-        "recall": round(recall_score(y_test, y_pred_knn) * 100, 2),
-        "precision": round(precision_score(y_test, y_pred_knn) * 100, 2),
-        "specificity": round(spec_knn * 100, 2),
-        "balanced_accuracy": round(balanced_accuracy_score(y_test, y_pred_knn) * 100, 2),
-        "mcc": round(matthews_corrcoef(y_test, y_pred_knn), 4),
-        "roc_auc": round(roc_auc_score(y_test, y_prob_knn) * 100, 2),
-        "confusion_matrix": cm_knn.tolist(),
-        "cv_mean_acc": round(knn_cv_acc.mean() * 100, 2),
-        "cv_std_acc": round(knn_cv_acc.std() * 100, 2),
-        "cv_folds": [round(float(s) * 100, 2) for s in knn_cv_acc]
-    }
-
-    # 6. Asosiy SVM Modelini o'qitish va to'liq metrikalar
-    print("\n[6] Support Vector Machine (RBF) modelini o'qitish va baholash...")
     svm = SVC(kernel='rbf', C=1.0, gamma='scale', probability=True, random_state=42)
-    svm.fit(X_train_scaled, y_train)
+    rf = RandomForestClassifier(n_estimators=100, max_depth=5, random_state=42)
+    gb = GradientBoostingClassifier(n_estimators=100, learning_rate=0.08, max_depth=3, random_state=42)
 
-    y_pred_svm = svm.predict(X_test_scaled)
-    y_prob_svm = svm.predict_proba(X_test_scaled)[:, 1]
+    ensemble = VotingClassifier(
+        estimators=[('knn', knn), ('svm', svm), ('rf', rf), ('gb', gb)],
+        voting='soft',
+        weights=[1.0, 1.2, 1.3, 1.2]
+    )
 
-    cm_svm = confusion_matrix(y_test, y_pred_svm)
-    tn_s, fp_s, fn_s, tp_s = cm_svm.ravel()
-    spec_svm = float(tn_s / (tn_s + fp_s))
+    knn_metrics, roc_knn = evaluate_model(knn, X_train_scaled, X_test_scaled, y_train, y_test, X_all_scaled, y, cv)
+    svm_metrics, roc_svm = evaluate_model(svm, X_train_scaled, X_test_scaled, y_train, y_test, X_all_scaled, y, cv)
+    rf_metrics, roc_rf = evaluate_model(rf, X_train_scaled, X_test_scaled, y_train, y_test, X_all_scaled, y, cv)
+    gb_metrics, roc_gb = evaluate_model(gb, X_train_scaled, X_test_scaled, y_train, y_test, X_all_scaled, y, cv)
+    ens_metrics, roc_ens = evaluate_model(ensemble, X_train_scaled, X_test_scaled, y_train, y_test, X_all_scaled, y, cv)
 
-    fpr_s, tpr_s, _ = roc_curve(y_test, y_prob_svm)
-    roc_svm_points = [{"x": round(float(fp), 4), "y": round(float(tp), 4)} for fp, tp in zip(fpr_s, tpr_s)]
+    print(f"  KNN (k=7)              : Aniqlik={knn_metrics['accuracy']}%, F1={knn_metrics['f1_score']}%, Recall={knn_metrics['recall']}%, AUC={knn_metrics['roc_auc']}%")
+    print(f"  SVM (RBF)              : Aniqlik={svm_metrics['accuracy']}%, F1={svm_metrics['f1_score']}%, Recall={svm_metrics['recall']}%, AUC={svm_metrics['roc_auc']}%")
+    print(f"  Random Forest          : Aniqlik={rf_metrics['accuracy']}%, F1={rf_metrics['f1_score']}%, Recall={rf_metrics['recall']}%, AUC={rf_metrics['roc_auc']}%")
+    print(f"  Gradient Boosting      : Aniqlik={gb_metrics['accuracy']}%, F1={gb_metrics['f1_score']}%, Recall={gb_metrics['recall']}%, AUC={gb_metrics['roc_auc']}%")
+    print(f"  Ensemble (Soft-Voting) : Aniqlik={ens_metrics['accuracy']}%, F1={ens_metrics['f1_score']}%, Recall={ens_metrics['recall']}%, AUC={ens_metrics['roc_auc']}%")
 
-    svm_metrics = {
-        "accuracy": round(accuracy_score(y_test, y_pred_svm) * 100, 2),
-        "f1_score": round(f1_score(y_test, y_pred_svm) * 100, 2),
-        "recall": round(recall_score(y_test, y_pred_svm) * 100, 2),
-        "precision": round(precision_score(y_test, y_pred_svm) * 100, 2),
-        "specificity": round(spec_svm * 100, 2),
-        "balanced_accuracy": round(balanced_accuracy_score(y_test, y_pred_svm) * 100, 2),
-        "mcc": round(matthews_corrcoef(y_test, y_pred_svm), 4),
-        "roc_auc": round(roc_auc_score(y_test, y_prob_svm) * 100, 2),
-        "confusion_matrix": cm_svm.tolist(),
-        "cv_mean_acc": round(svm_cv_acc.mean() * 100, 2),
-        "cv_std_acc": round(svm_cv_acc.std() * 100, 2),
-        "cv_folds": [round(float(s) * 100, 2) for s in svm_cv_acc]
-    }
-
-    # 7. Radar Chart uchun sog'lom vs kasallangan populyatsiya o'rtachalari
+    # 5. Radar Chart uchun sog'lom vs kasallangan populyatsiya o'rtachalari
     healthy_df = df[df['target'] == 0]
     diseased_df = df[df['target'] == 1]
     radar_features = ['age', 'trestbps', 'chol', 'thalach', 'oldpeak', 'ca']
@@ -176,69 +158,130 @@ def main():
     healthy_baseline = healthy_df[radar_features].mean().round(2).to_dict()
     diseased_baseline = diseased_df[radar_features].mean().round(2).to_dict()
 
-    # 8. XAI (Xususiyatlar Korrelyatsiyasi va Klinik Og'irliklar)
+    # 6. XAI va Xususiyatlar Ta'siri (Feature Importances & Clinical Weights)
     correlations = df.corr()['target'].drop('target').to_dict()
+    rf_importances = dict(zip(feature_cols, rf.feature_importances_))
+    gb_importances = dict(zip(feature_cols, gb.feature_importances_))
 
     feature_meta = [
-        {"id": "age", "name_uz": "Yosh", "name_en": "Age", "desc": "Bemorning yoshi (yillar)", "min": 25, "max": 80, "default": 55, "step": 1, "unit": "yosh"},
-        {"id": "sex", "name_uz": "Jins", "name_en": "Sex", "desc": "Bemorning jinsi", "type": "select", "options": [{"value": 1, "label": "Erkak (1)"}, {"value": 0, "label": "Ayol (0)"}], "default": 1},
-        {"id": "cp", "name_uz": "Ko'krak og'rig'i turi", "name_en": "Chest Pain Type", "desc": "Ko'krak qafasidagi og'riq xarakteri", "type": "select", "options": [
-            {"value": 0, "label": "0: Tipik stenokardiya (Typical Angina)"},
-            {"value": 1, "label": "1: Atipik stenokardiya (Atypical Angina)"},
-            {"value": 2, "label": "2: Stenokardik bo'lmagan og'riq (Non-anginal)"},
-            {"value": 3, "label": "3: Asimptomatik (Asymptomatic)"}
+        {"id": "age", "name_uz": "Yosh", "name_en": "Age", "name_ru": "Возраст", "desc_uz": "Bemorning yoshi (yillar)", "desc_en": "Patient age (years)", "desc_ru": "Возраст пациента (лет)", "min": 25, "max": 80, "default": 55, "step": 1, "unit": "yosh"},
+        {"id": "sex", "name_uz": "Jins", "name_en": "Sex", "name_ru": "Пол", "desc_uz": "Bemorning jinsi", "desc_en": "Biological sex", "desc_ru": "Биологический пол", "type": "select", "options": [{"value": 1, "label_uz": "Erkak (1)", "label_en": "Male (1)", "label_ru": "Мужчина (1)"}, {"value": 0, "label_uz": "Ayol (0)", "label_en": "Female (0)", "label_ru": "Женщина (0)"}], "default": 1},
+        {"id": "cp", "name_uz": "Ko'krak og'rig'i turi", "name_en": "Chest Pain Type", "name_ru": "Тип боли в груди", "desc_uz": "Ko'krak qafasidagi og'riq xarakteri", "desc_en": "Nature of chest pain", "desc_ru": "Характер загрудинной боли", "type": "select", "options": [
+            {"value": 0, "label_uz": "0: Tipik stenokardiya (Typical)", "label_en": "0: Typical Angina", "label_ru": "0: Типичная стенокардия"},
+            {"value": 1, "label_uz": "1: Atipik stenokardiya (Atypical)", "label_en": "1: Atypical Angina", "label_ru": "1: Атипичная стенокардия"},
+            {"value": 2, "label_uz": "2: Stenokardik bo'lmagan (Non-anginal)", "label_en": "2: Non-anginal Pain", "label_ru": "2: Неангинозная боль"},
+            {"value": 3, "label_uz": "3: Asimptomatik (Asymptomatic)", "label_en": "3: Asymptomatic", "label_ru": "3: Бессимптомная"}
         ], "default": 0},
-        {"id": "trestbps", "name_uz": "Qon bosimi (Resting BP)", "name_en": "Resting Blood Pressure", "desc": "Tinch holatdagi sistolik qon bosimi", "min": 90, "max": 200, "default": 130, "step": 1, "unit": "mm Hg"},
-        {"id": "chol", "name_uz": "Xolesterin miqdori", "name_en": "Serum Cholesterol", "desc": "Qondagi umumiy zardob xolesterini darajasi", "min": 120, "max": 570, "default": 240, "step": 1, "unit": "mg/dl"},
-        {"id": "fbs", "name_uz": "Qand miqdori (Och qoringa)", "name_en": "Fasting Blood Sugar", "desc": "Och qoringa qon qandi > 120 mg/dl bo'lishi", "type": "select", "options": [{"value": 1, "label": "Ha (> 120 mg/dl)"}, {"value": 0, "label": "Yo'q (<= 120 mg/dl)"}], "default": 0},
-        {"id": "restecg", "name_uz": "Tinch EKG natijasi", "name_en": "Resting ECG Results", "desc": "Elektrokardiografiya ko'rsatkichlari", "type": "select", "options": [{"value": 0, "label": "0: Normal"}, {"value": 1, "label": "1: ST-T to'lqini anomaliyasi"}, {"value": 2, "label": "2: Chap qorincha gipertrofiyasi"}], "default": 1},
-        {"id": "thalach", "name_uz": "Maksimal yurak urishi", "name_en": "Max Heart Rate Achieved", "desc": "Mashq paytida erishilgan maksimal puls", "min": 70, "max": 210, "default": 150, "step": 1, "unit": "bpm"},
-        {"id": "exang", "name_uz": "Mashqdan keyingi angina", "name_en": "Exercise Induced Angina", "desc": "Jismoniy yuklama vaqtida stenokardiya paydo bo'lishi", "type": "select", "options": [{"value": 1, "label": "Ha (1)"}, {"value": 0, "label": "Yo'q (0)"}], "default": 0},
-        {"id": "oldpeak", "name_uz": "ST depressiyasi", "name_en": "ST Depression", "desc": "Mashq orqali keltirib chiqarilgan ST segment depressiyasi", "min": 0.0, "max": 6.5, "default": 1.0, "step": 0.1, "unit": "mm"},
-        {"id": "slope", "name_uz": "ST segmentining qiyaligi", "name_en": "Slope of Peak Exercise ST", "desc": "Maksimal mashq ST segmentining ko'tarilish qiyaligi", "type": "select", "options": [{"value": 0, "label": "0: Pastga qarab (Upsloping)"}, {"value": 1, "label": "1: Gorizontal (Flat)"}, {"value": 2, "label": "2: Yuqoriga qarab (Downsloping)"}], "default": 1},
-        {"id": "ca", "name_uz": "Bo'yalgan yirik tomirlar soni", "name_en": "Major Vessels (ca)", "desc": "Flyuroskopiya ostida ko'ringan yirik tomirlar (0-3)", "type": "select", "options": [{"value": 0, "label": "0 ta tomir"}, {"value": 1, "label": "1 ta tomir"}, {"value": 2, "label": "2 ta tomir"}, {"value": 3, "label": "3 ta tomir"}], "default": 0},
-        {"id": "thal", "name_uz": "Talassemiya turi (thal)", "name_en": "Thalassemia Type", "desc": "Talassemiya qon tahlili holati", "type": "select", "options": [{"value": 1, "label": "1: Oddiy / Normal"}, {"value": 2, "label": "2: Ruxsat etilgan nuqson (Fixed)"}, {"value": 3, "label": "3: Qaytariluvchi nuqson (Reversable)"}], "default": 2}
+        {"id": "trestbps", "name_uz": "Qon bosimi (Resting BP)", "name_en": "Resting Blood Pressure", "name_ru": "Давление в покое", "desc_uz": "Tinch holatdagi sistolik qon bosimi", "desc_en": "Resting systolic blood pressure", "desc_ru": "Систолическое АД в состоянии покоя", "min": 90, "max": 200, "default": 130, "step": 1, "unit": "mm Hg"},
+        {"id": "chol", "name_uz": "Xolesterin miqdori", "name_en": "Serum Cholesterol", "name_ru": "Холестерин сыворотки", "desc_uz": "Qondagi umumiy zardob xolesterini darajasi", "desc_en": "Total serum cholesterol level", "desc_ru": "Уровень общего холестерина сыворотки", "min": 120, "max": 570, "default": 240, "step": 1, "unit": "mg/dl"},
+        {"id": "fbs", "name_uz": "Qand miqdori (Och qoringa)", "name_en": "Fasting Blood Sugar", "name_ru": "Сахар натощак", "desc_uz": "Och qoringa qon qandi > 120 mg/dl bo'lishi", "desc_en": "Fasting blood sugar > 120 mg/dl", "desc_ru": "Уровень глюкозы натощак > 120 мг/дл", "type": "select", "options": [{"value": 1, "label_uz": "Ha (> 120 mg/dl)", "label_en": "Yes (> 120 mg/dl)", "label_ru": "Да (> 120 мг/дл)"}, {"value": 0, "label_uz": "Yo'q (<= 120 mg/dl)", "label_en": "No (<= 120 mg/dl)", "label_ru": "Нет (<= 120 мг/дл)"}], "default": 0},
+        {"id": "restecg", "name_uz": "Tinch EKG natijasi", "name_en": "Resting ECG Results", "name_ru": "ЭКГ в покое", "desc_uz": "Elektrokardiografiya ko'rsatkichlari", "desc_en": "Resting electrocardiographic results", "desc_ru": "Результаты ЭКГ в покое", "type": "select", "options": [
+            {"value": 0, "label_uz": "0: Normal", "label_en": "0: Normal", "label_ru": "0: В норме"},
+            {"value": 1, "label_uz": "1: ST-T to'lqini anomaliyasi", "label_en": "1: ST-T Wave Abnormality", "label_ru": "1: Аномалия зубца ST-T"},
+            {"value": 2, "label_uz": "2: Chap qorincha gipertrofiyasi", "label_en": "2: Left Ventricular Hypertrophy", "label_ru": "2: Гипертрофия левого желудочка"}
+        ], "default": 1},
+        {"id": "thalach", "name_uz": "Maksimal yurak urishi", "name_en": "Max Heart Rate Achieved", "name_ru": "Максимальный пульс", "desc_uz": "Mashq paytida erishilgan maksimal puls", "desc_en": "Maximum heart rate achieved in exercise", "desc_ru": "Максимальная ЧСС при нагрузке", "min": 70, "max": 210, "default": 150, "step": 1, "unit": "bpm"},
+        {"id": "exang", "name_uz": "Mashqdan keyingi angina", "name_en": "Exercise Induced Angina", "name_ru": "Стенокардия напряжения", "desc_uz": "Jismoniy yuklama vaqtida stenokardiya paydo bo'lishi", "desc_en": "Exercise induced angina symptom", "desc_ru": "Возникновение стенокардии при нагрузке", "type": "select", "options": [{"value": 1, "label_uz": "Ha (1)", "label_en": "Yes (1)", "label_ru": "Да (1)"}, {"value": 0, "label_uz": "Yo'q (0)", "label_en": "No (0)", "label_ru": "Нет (0)"}], "default": 0},
+        {"id": "oldpeak", "name_uz": "ST depressiyasi", "name_en": "ST Depression", "name_ru": "Депрессия ST", "desc_uz": "Mashq orqali keltirib chiqarilgan ST segment depressiyasi", "desc_en": "ST depression induced by exercise", "desc_ru": "Депрессия сегмента ST при нагрузке", "min": 0.0, "max": 6.5, "default": 1.0, "step": 0.1, "unit": "mm"},
+        {"id": "slope", "name_uz": "ST segmentining qiyaligi", "name_en": "Slope of Peak Exercise ST", "name_ru": "Наклон сегмента ST", "desc_uz": "Maksimal mashq ST segmentining ko'tarilish qiyaligi", "desc_en": "Slope of the peak exercise ST segment", "desc_ru": "Наклон сегмента ST на пике нагрузки", "type": "select", "options": [
+            {"value": 0, "label_uz": "0: Pastga qarab (Upsloping)", "label_en": "0: Upsloping", "label_ru": "0: Восходящий"},
+            {"value": 1, "label_uz": "1: Gorizontal (Flat)", "label_en": "1: Flat", "label_ru": "1: Горизонтальный"},
+            {"value": 2, "label_uz": "2: Yuqoriga qarab (Downsloping)", "label_en": "2: Downsloping", "label_ru": "2: Нисходящий"}
+        ], "default": 1},
+        {"id": "ca", "name_uz": "Bo'yalgan yirik tomirlar soni", "name_en": "Major Vessels (ca)", "name_ru": "Количество сосудов (ca)", "desc_uz": "Flyuroskopiya ostida ko'ringan yirik tomirlar (0-3)", "desc_en": "Number of major vessels colored by flourosopy", "desc_ru": "Число крупных сосудов, окрашенных флюороскопией", "type": "select", "options": [{"value": 0, "label_uz": "0 ta tomir", "label_en": "0 vessels", "label_ru": "0 сосудов"}, {"value": 1, "label_uz": "1 ta tomir", "label_en": "1 vessel", "label_ru": "1 сосуд"}, {"value": 2, "label_uz": "2 ta tomir", "label_en": "2 vessels", "label_ru": "2 сосуда"}, {"value": 3, "label_uz": "3 ta tomir", "label_en": "3 vessels", "label_ru": "3 сосуда"}], "default": 0},
+        {"id": "thal", "name_uz": "Talassemiya turi (thal)", "name_en": "Thalassemia Type", "name_ru": "Тип талассемии", "desc_uz": "Talassemiya qon tahlili holati", "desc_en": "Thalassemia blood disorder status", "desc_ru": "Статус талассемии", "type": "select", "options": [
+            {"value": 1, "label_uz": "1: Oddiy / Normal", "label_en": "1: Normal", "label_ru": "1: Норма"},
+            {"value": 2, "label_uz": "2: Ruxsat etilgan (Fixed)", "label_en": "2: Fixed Defect", "label_ru": "2: Фиксированный дефект"},
+            {"value": 3, "label_uz": "3: Qaytariluvchi (Reversable)", "label_en": "3: Reversable Defect", "label_ru": "3: Обратимый дефект"}
+        ], "default": 2}
     ]
 
     feature_importance = []
     for f in feature_meta:
         f_id = f["id"]
         corr = correlations.get(f_id, 0.0)
+        rf_imp = rf_importances.get(f_id, 0.0)
+        gb_imp = gb_importances.get(f_id, 0.0)
+        ensemble_imp = (abs(corr) * 0.3) + (rf_imp * 0.35) + (gb_imp * 0.35)
+
         feature_importance.append({
             "id": f_id,
             "name_uz": f["name_uz"],
+            "name_en": f["name_en"],
+            "name_ru": f["name_ru"],
             "correlation": round(float(corr), 4),
-            "abs_correlation": round(abs(float(corr)), 4),
-            "impact": "Xavfni oshiradi" if corr > 0 else "Xavfni kamaytiradi"
+            "rf_importance": round(float(rf_imp) * 100, 2),
+            "gb_importance": round(float(gb_imp) * 100, 2),
+            "ensemble_weight": round(float(ensemble_imp) * 100, 2),
+            "impact_direction": "positive" if corr > 0 else "negative"
         })
-    feature_importance.sort(key=lambda x: x["abs_correlation"], reverse=True)
+    feature_importance.sort(key=lambda x: x["ensemble_weight"], reverse=True)
 
-    # 9. Eksport uchun JSON obyektini tuzish
+    # 7. Eksport uchun JSON obyektini tuzish
     export_data = {
         "project": {
-            "title_uz": "Yurak kasalliklari xavfini bashorat qilish",
-            "title_en": "Heart Disease Risk Prediction",
-            "dataset_name": "UCI Machine Learning Repository - Heart Disease Dataset",
+            "title_uz": "Yurak kasalliklari xavfini bashorat qilish Pro Max",
+            "title_en": "Heart Disease Risk Prediction Pro Max",
+            "title_ru": "Прогнозирование риска сердечно-сосудистых заболеваний Pro Max",
+            "dataset_name": "UCI Machine Learning Repository - Cleveland Heart Disease",
             "total_samples": int(len(df)),
             "train_samples": int(len(X_train)),
             "test_samples": int(len(X_test)),
             "features_count": len(feature_cols),
-            "algorithms": ["Support Vector Machine (SVM RBF)", "K-Nearest Neighbors (KNN)", "Ensemble Soft-Voting"],
-            "date": "2026-11-11",
-            "optimization_level": "Deep & Broad (5-Fold CV + Hyperparameter Tuning + XAI + What-If Simulator)"
+            "algorithms": [
+                "Ensemble Soft-Voting (SOTA)",
+                "Gradient Boosting",
+                "Support Vector Machine (SVM RBF)",
+                "Random Forest",
+                "K-Nearest Neighbors (KNN)"
+            ],
+            "date": "2026-11-12",
+            "version": "3.0.0-enterprise"
         },
         "features": feature_meta,
         "feature_importance": feature_importance,
         "radar_baselines": {
             "features": radar_features,
             "labels_uz": ["Yosh", "Qon bosimi", "Xolesterin", "Maksimal Puls", "ST Depressiya", "Tomirlar (ca)"],
+            "labels_en": ["Age", "Resting BP", "Cholesterol", "Max HR", "ST Depr", "Vessels (ca)"],
+            "labels_ru": ["Возраст", "Давление", "Холестерин", "Макс Пульс", "Депрессия ST", "Сосуды (ca)"],
             "healthy": [healthy_baseline[f] for f in radar_features],
             "diseased": [diseased_baseline[f] for f in radar_features]
         },
         "k_tuning_curve": k_curve,
         "roc_curves": {
-            "knn": roc_knn_points,
-            "svm": roc_svm_points
+            "knn": roc_knn,
+            "svm": roc_svm,
+            "rf": roc_rf,
+            "gb": roc_gb,
+            "ensemble": roc_ens
+        },
+        "models": {
+            "knn": {
+                "name": "K-Nearest Neighbors (KNN)",
+                "params": {"k": 7, "weights": "distance", "metric": "euclidean"},
+                "metrics": knn_metrics
+            },
+            "svm": {
+                "name": "Support Vector Machine (SVM)",
+                "params": {"kernel": "rbf", "C": 1.0, "gamma": round(float(svm._gamma), 5)},
+                "metrics": svm_metrics
+            },
+            "rf": {
+                "name": "Random Forest",
+                "params": {"n_estimators": 100, "max_depth": 5, "criterion": "gini"},
+                "metrics": rf_metrics
+            },
+            "gb": {
+                "name": "Gradient Boosting",
+                "params": {"n_estimators": 100, "learning_rate": 0.08, "max_depth": 3},
+                "metrics": gb_metrics
+            },
+            "ensemble": {
+                "name": "Ensemble Soft-Voting (SOTA)",
+                "params": {"voting": "soft", "weights": [1.0, 1.2, 1.3, 1.2]},
+                "metrics": ens_metrics
+            }
         },
         "scaler": {
             "feature_names": feature_cols,
@@ -246,23 +289,15 @@ def main():
             "scale": scaler.scale_.tolist(),
             "var": scaler.var_.tolist()
         },
-        "knn": {
-            "name": "K-Nearest Neighbors (KNN)",
-            "params": {"k": 7, "weights": "distance", "metric": "euclidean"},
-            "metrics": knn_metrics,
-            "train_points": X_train_scaled.round(4).tolist(),
-            "train_labels": y_train.tolist()
-        },
-        "svm": {
-            "name": "Support Vector Machine (SVM)",
-            "params": {"kernel": "rbf", "C": 1.0, "gamma": round(float(svm._gamma), 5)},
-            "metrics": svm_metrics,
-            "gamma": float(svm._gamma),
-            "intercept": float(svm.intercept_[0]),
-            "dual_coef": [round(c, 5) for c in svm.dual_coef_[0].tolist()],
-            "support_vectors": [[round(v, 4) for v in sv] for sv in svm.support_vectors_.tolist()],
-            "prob_a": float(svm.probA_[0]) if hasattr(svm, 'probA_') else -1.0,
-            "prob_b": float(svm.probB_[0]) if hasattr(svm, 'probB_') else 0.0
+        "inference_engine": {
+            "knn_train_points": X_train_scaled.round(4).tolist(),
+            "knn_train_labels": y_train.tolist(),
+            "svm_gamma": float(svm._gamma),
+            "svm_intercept": float(svm.intercept_[0]),
+            "svm_dual_coef": [round(c, 5) for c in svm.dual_coef_[0].tolist()],
+            "svm_support_vectors": [[round(v, 4) for v in sv] for sv in svm.support_vectors_.tolist()],
+            "svm_prob_a": float(svm.probA_[0]) if hasattr(svm, 'probA_') else -1.0,
+            "svm_prob_b": float(svm.probB_[0]) if hasattr(svm, 'probB_') else 0.0
         },
         "dataset_preview": df.to_dict(orient="records"),
         "eda_stats": {
@@ -278,12 +313,23 @@ def main():
         }
     }
 
+    # model_data.json
     out_json = os.path.join(base_dir, "model_data.json")
     with open(out_json, "w", encoding="utf-8") as f:
         json.dump(export_data, f, indent=2, ensure_ascii=False)
 
-    print(f"\n[7] Optimallashtirilgan model parametrlari saqlandi: {out_json}")
-    print(f"Fayl hajmi: {os.path.getsize(out_json) / 1024:.2f} KB")
+    # fallback_data.js (brauzer yoki offline rejimda to'g'ridan-to'g'ri ishlashi uchun)
+    out_js = os.path.join(base_dir, "fallback_data.js")
+    with open(out_js, "w", encoding="utf-8") as f:
+        f.write("/* Avtomatik yaratilgan fallback model ma'lumotlari */\n")
+        f.write("window.FALLBACK_MODEL_DATA = ")
+        json.dump(export_data, f, ensure_ascii=False)
+        f.write(";\n")
+
+    print(f"\n[5] Model parametrlari saqlandi: {out_json}")
+    print(f"    Fayl hajmi (JSON): {os.path.getsize(out_json) / 1024:.2f} KB")
+    print(f"    Fayl hajmi (JS):   {os.path.getsize(out_js) / 1024:.2f} KB")
+    print("=" * 75)
 
 if __name__ == "__main__":
     main()

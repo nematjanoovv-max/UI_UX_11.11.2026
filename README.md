@@ -1,45 +1,54 @@
-# 07. Yurak kasalliklari xavfini bashorat qilish (Heart Disease Risk Prediction Pro Max)
+# 07. Yurak kasalliklari xavfini bashorat qilish (CardioRisk AI Pro Max Enterprise)
 
 [![Live on Vercel](https://img.shields.io/badge/Vercel-Live_Demo-black?logo=vercel&style=for-the-badge)](https://heart-disease-risk-prediction-eosin.vercel.app)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&style=for-the-badge)](https://www.python.org/)
-[![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-KNN_%26_SVM_5--Fold_CV-orange?logo=scikit-learn&style=for-the-badge)](https://scikit-learn.org/)
+[![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-SOTA_Ensemble_%26_5_Models-orange?logo=scikit-learn&style=for-the-badge)](https://scikit-learn.org/)
 [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-3.x-38bdf8?logo=tailwind-css&style=for-the-badge)](https://tailwindcss.com/)
 
-Ushbu loyiha bemorlarning 13 ta klinik ko'rsatkichlari (yosh, qon bosimi, xolesterin, yurak urishi, EKG anomaliyalari, ST depressiyasi va b.) asosida yurak kasalligi xavfini aniqlash va bashorat qilish uchun mo'ljallangan chuqur optimallashtirilgan Machine Learning tizimi va zamonaviy tibbiy Web ilovasidir.
+Ushbu platforma bemorlarning 13 ta klinik ko'rsatkichlari asosida yurak kasalligi xavfini aniqlash, real vaqtda **jonli EKG monitoringi**, **Explainable AI (SHAP) tahlili**, an'anaviy **Framingham ATP III** bilan qiyoslash hamda **EMR (Elektron Tibbiy Karta) orqali davolanish dinamikasi**ni kuzatish imkonini beruvchi xalqaro darajadagi zamonaviy MedTech platformasidir.
 
 ---
 
-## 📌 Chuqur va Keng Qamrovli Optimallashtirish
+## ⚡ Tubdan Kiritilgan Yangi Imkoniyatlar (Enterprise v3.0)
 
-1. **Machine Learning & Validatsiya**:
-   - **5-Fold Stratified Kross-Validatsiya**: Modellar umumiy barqarorligi sinovdan o'tkazildi (SVM: **81.09%**, KNN: **81.07%**).
-   - **Giperparametrlarni sozlash (GridSearch)**: KNN uchun $k=1$ dan $k=25$ gacha egri chiziq, distance-weighting; SVM uchun RBF yadrosi, $\gamma=\text{scale}$, $C=1.0$.
-   - **Kengaytirilgan Metrikalar**: Accuracy, Recall (Sezuvchanlik), Specificity (O'ziga xoslik), Balanced Accuracy, F1-Score, ROC-AUC, MCC (Matthews Correlation Coefficient).
+1. **Jonli EKG Kardiomonitori (Real-Time Bedside ECG Strip)**:
+   - HTML5 Canvas asosidagi yuqori aniqlikdagi tibbiy grid kardiomonitori.
+   - P-Q-R-S-T to'lqinlari bemorning `thalach` (puls), `oldpeak` (ST segment depressiyasi), `restecg` (chap qorincha gipertrofiyasi) parametrlariga to'g'ridan-to'g'ri bog'liq holda real vaqtda o'zgaradi.
+   - Web Audio API orqali har bir R-pikda real kardiomonitor audio signali (puls ovozi) yoqish/o'chirish imkoniyati.
 
-2. **Web UI/UX & XAI (Explainable AI)**:
-   - **4-Darajali Xavf Stratifikatsiyasi**: Past (<25%), O'rtacha (25-50%), Yuqori (50-75%), Kritik (>75%).
-   - **"What-If" Profilaktika Simulyatori**: Bemor ko'rsatkichlarini (masalan, qon bosimini 120 ga, xolesterinni 190 ga) me'yorlashtirish orqali xavfni necha foizga kamaytirish mumkinligini real-vaqtda ko'rsatuvchi interaktiv vosita.
-   - **360° Radar Tahlil**: Bemorning 6 ta asosiy parametrini sog'lom odamlar populyatsiyasi standarti bilan taqqoslovchi Radar chart.
-   - **Rasmiy Kardiologik Hisobot (PDF / Print)**: Bemor natijalari, xavf foizi, model xulosalari va vrach tavsiyalarini o'z ichiga olgan rasmiy klinik xulosani chop etish.
-   - **Interaktiv Qidiruv va Filtr**: 302 ta bemorlik ma'lumotlar to'plami bo'yicha parametrlar qidiruvi va "Xavf bor / Sog'lom" filtrlari.
+2. **Explainable AI (SHAP-Style Feature Attribution Waterfall)**:
+   - "Qora quti" (black box) muammosini hal qiluvchi individual omillar taqsimoti.
+   - Har bir bemor uchun qaysi ko'rsatkich kasallik xavfini necha foizga oshirgani (+%) yoki himoya qilganini (-%) ko'rsatuvchi vizual tahlil.
+
+3. **Klassik Kardiologiya vs AI (Framingham ATP III integratsiyasi)**:
+   - Amerika Kardiologiya Assotsiatsiyasining 10-yillik Framingham xavf indeksi bilan Sun'iy Intellektning (Ensemble) bevosita xavfi yonma-yon solishtiriladi.
+   - AI aniqlagan yashirin xavflar (ST depressiyasi, tomirlar kalsinozi) tushuntirib beriladi.
+
+4. **SOTA Machine Learning Ensemble (5 xil arxitektura)**:
+   - **Ensemble Soft-Voting (SOTA)**: **90.69% ROC-AUC**, **96.97% Recall**.
+   - **Gradient Boosting**: **86.89% Aniqlik**, **96.97% Recall**, **88.89% F1-Score**.
+   - **Support Vector Machine (SVM RBF)**: **83.61% Aniqlik**, **93.94% Recall**.
+   - **Random Forest**: **83.74% 5-Fold CV Aniqligi**, **89.83% ROC-AUC**.
+   - **K-Nearest Neighbors (KNN, k=7)**: **81.97% Aniqlik**, **84.51% F1-Score**.
+
+5. **EMR: Bemorlar Tarixi va Dinamika Tahlili (Longitudinal Visit Dynamics)**:
+   - Bemorlarni saqlash, tahrirlash va kalkulyatorga 1 bosish bilan yuklash.
+   - "Dinamika Tahlili" (Visit 1 vs Visit 2): terapiyadan oldingi va keyingi ko'rsatkichlarni (qon bosimi, xolesterin, ST depressiyasi) solishtirib, sog'ayish dinamikasini avtomatik hisoblash.
+
+6. **Ko'p Tilli Platforma (i18n)**:
+   - 🇺🇿 O'zbekcha, 🇬🇧 English, 🇷🇺 Русский tillarida 1 tugma orqali to'liq interfeys, tushuntirishlar va tibbiy hisobotlar.
 
 ---
 
-## 📊 Modellar Natijalari va Taqqoslash
+## 📊 5 Ta Modelning Sinov Natijalari (UCI Cleveland 302 Bemor)
 
-Test to'plamidagi 61 ta haqiqiy bemor ko'rsatkichlari bo'yicha erishilgan natijalar:
-
-| Metrika | K-Nearest Neighbors (KNN, k=7) | Support Vector Machine (SVM RBF) | Eng Yaxshi Model |
-| :--- | :---: | :---: | :---: |
-| **Aniqlik (Accuracy)** | **81.97%** | **83.61%** | 🏆 **SVM** |
-| **Recall (Sezuvchanlik)** | **90.91%** | **93.94%** | 🏆 **SVM (31/33 to'g'ri)** |
-| **Specificity (O'ziga xoslik)** | **71.43%** | **71.43%** | 🤝 **Teng** |
-| **F1-Score** | **84.51%** | **86.11%** | 🏆 **SVM** |
-| **Precision** | **78.95%** | **79.49%** | 🏆 **SVM** |
-| **ROC-AUC** | **88.20%** | **88.10%** | 🏆 **KNN** |
-| **5-Fold Kross-Validatsiya** | **81.07% (±7.86%)** | **81.09% (±6.09%)** | 🏆 **SVM** |
-
-> 💡 **Tibbiy xulosa:** Kardiologiya amaliyotida bemor kasalligini o'tkazib yubormaslik (False Negative ko'rsatkichini minimal darajaga tushirish) eng muhim omildir. SVM modeli **93.94% Recall** bilan kasallangan 33 ta bemordan 31 tasini aniq aniqladi.
+| Model Arxitekturasi | Aniqlik (Accuracy) | Recall (Sezuvchanlik) | F1-Score | ROC-AUC | 5-Fold CV Barqarorlik |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| 🏆 **Ensemble Soft-Voting (SOTA)** | **83.61%** | **96.97%** | **86.49%** | **90.69%** | **81.42% (±5.97%)** |
+| 🚀 **Gradient Boosting** | **86.89%** | **96.97%** | **88.89%** | **87.99%** | **80.44% (±5.04%)** |
+| 🎯 **Support Vector Machine (SVM RBF)** | **83.61%** | **93.94%** | **86.11%** | **88.10%** | **81.09% (±6.09%)** |
+| 🌲 **Random Forest (100 Trees)** | **80.33%** | **93.94%** | **83.78%** | **89.83%** | **83.74% (±5.96%)** |
+| 🔍 **K-Nearest Neighbors (k=7)** | **81.97%** | **90.91%** | **84.51%** | **88.20%** | **81.07% (±7.86%)** |
 
 ---
 
@@ -48,46 +57,23 @@ Test to'plamidagi 61 ta haqiqiy bemor ko'rsatkichlari bo'yicha erishilgan natija
 ```text
 UI_UX_11.11.2026/
 ├── dataset.csv                          # UCI Cleveland Heart Disease to'liq ma'lumotlar to'plami (302 bemor)
-├── main.py                              # Python ML pipeline (Train, 5-Fold CV, Export)
-├── heart_disease_prediction.ipynb       # Jupyter Notebook (To'liq tahlil, ROC va vizualizatsiyalar)
+├── main.py                              # Python ML pipeline (Train, 5 Model, 5-Fold CV, Export)
+├── heart_disease_prediction.ipynb       # Jupyter Notebook (SOTA tahlil, Multi-ROC va vizualizatsiyalar)
 ├── heart-disease-risk-prediction.ipynb  # Kaggle manba daftari
-├── model_data.json                      # O'qitilgan modellar parametrlari, ROC va 5-Fold ma'lumotlari
-├── fallback_data.js                     # Offline brauzer ishlashi uchun ma'lumotlar
-├── index.html                           # Pro Max Tibbiy Dashboard (HTML5 + Tailwind CSS)
-├── app.js                               # Brauzer ichidagi ML inferensiyasi, What-If va Radar logikasi
-├── style.css                            # Maxsus animatsiyalar va dizayn elementlari
-├── vercel.json                          # Vercel deployment sozlamalari
-├── havolalar.txt                        # GitHub, Vercel va Kaggle havolalari
-└── README.md                            # To'liq hujjatlar
+├── model_data.json                      # 5 ta model parametrlari, ROC va 5-Fold ma'lumotlari (196 KB)
+├── fallback_data.js                     # Brauzer offline inferensiyasi uchun avtomatik JSON export
+├── index.html                           # Enterprise MedTech Platformasi (HTML5, Tailwind, Canvas EKG)
+├── app.js                               # Inference Engine, EKG Audio, SHAP XAI, Framingham, EMR Dinamika
+├── style.css                            # EKG ekran filtri, tibbiy animatsiyalar va bosma PDF uslublari
+├── vercel.json                          # Vercel deployment va kesh sozlamalari
+├── havolalar.txt                        # Rasmiy havolalar va metrikalar
+└── README.md                            # Loyiha to'liq hujjati
 ```
 
 ---
 
-## 🚀 Mahalliy Kompyuterda Ishga Tushirish
+## 🔗 Rasmiy Havolalar
 
-1. **Repozitoriyni klonlash:**
-   ```bash
-   git clone https://github.com/nematjanoovv-max/UI_UX_11.11.2026.git
-   cd UI_UX_11.11.2026
-   ```
-
-2. **Kutubxonalarni o'rnatish va modelni o'qitish:**
-   ```bash
-   pip install pandas numpy scikit-learn
-   python3 main.py
-   ```
-
-3. **Veb-interfeysni ochish:**
-   ```bash
-   python3 -m http.server 3000
-   ```
-   Brauzerda `http://localhost:3000` manziliga kiring.
-
----
-
-## 🔗 Havolalar va Manbalar
-
-- **GitHub Repozitoriy:** [github.com/nematjanoovv-max/UI_UX_11.11.2026](https://github.com/nematjanoovv-max/UI_UX_11.11.2026)
-- **Vercel Jonli Veb-sayt:** [heart-disease-risk-prediction-eosin.vercel.app](https://heart-disease-risk-prediction-eosin.vercel.app)
-- **Kaggle Manba Notebook:** [i0nlyaziz/heart-disease-risk-prediction](https://www.kaggle.com/code/i0nlyaziz/heart-disease-risk-prediction)
-- **Dataset:** UCI Machine Learning Repository - Heart Disease Dataset
+- **Vercel Jonli Web App:** [https://heart-disease-risk-prediction-eosin.vercel.app](https://heart-disease-risk-prediction-eosin.vercel.app)
+- **GitHub Repozitoriy:** [https://github.com/nematjanoovv-max/UI_UX_11.11.2026](https://github.com/nematjanoovv-max/UI_UX_11.11.2026)
+- **Kaggle Manba Kerneli:** [https://www.kaggle.com/code/i0nlyaziz/heart-disease-risk-prediction](https://www.kaggle.com/code/i0nlyaziz/heart-disease-risk-prediction)
