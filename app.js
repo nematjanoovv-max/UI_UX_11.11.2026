@@ -400,36 +400,58 @@ let previousMousePosition = { x: 0, y: 0 };
 let raycaster, mouseVector;
 let targetCameraPos = null;
 
-// Procedural Myocardial Muscle Striations Texture
+// Procedural High-Definition Myocardial Striated Muscle Texture
 function generateMyocardiumTexture() {
   const canvas = document.createElement('canvas');
-  canvas.width = 512;
-  canvas.height = 512;
+  canvas.width = 1024;
+  canvas.height = 1024;
   const ctx = canvas.getContext('2d');
 
-  // Deep rich crimson-maroon base
-  ctx.fillStyle = '#881337';
-  ctx.fillRect(0, 0, 512, 512);
+  // Rich layered biological cardiac crimson background
+  const grad = ctx.createLinearGradient(0, 0, 1024, 1024);
+  grad.addColorStop(0, '#5b0d1e');
+  grad.addColorStop(0.5, '#7f1d1d');
+  grad.addColorStop(1, '#991b1b');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 1024, 1024);
 
-  // Myocardial muscle fiber striations (anisotropic directional grain)
-  for (let y = 0; y < 512; y += 2) {
-    const alpha = 0.12 + Math.random() * 0.25;
-    ctx.strokeStyle = Math.random() > 0.5 ? `rgba(159, 18, 57, ${alpha})` : `rgba(225, 29, 72, ${alpha})`;
-    ctx.lineWidth = 1 + Math.random() * 2.5;
+  // Myocardial helical muscle fiber tracks (anisotropic spiraling grain)
+  for (let y = 0; y < 1024; y += 3) {
+    const alpha = 0.15 + Math.random() * 0.28;
+    ctx.strokeStyle = Math.random() > 0.45 
+      ? `rgba(159, 18, 57, ${alpha})` 
+      : (Math.random() > 0.5 ? `rgba(225, 29, 72, ${alpha})` : `rgba(76, 5, 25, ${alpha * 1.2})`);
+    ctx.lineWidth = 1.2 + Math.random() * 2.2;
     ctx.beginPath();
     ctx.moveTo(0, y);
-    for (let x = 0; x <= 512; x += 32) {
-      const ny = y + Math.sin(x * 0.035) * 5 + (Math.random() * 3 - 1.5);
+    for (let x = 0; x <= 1024; x += 32) {
+      const ny = y + Math.sin(x * 0.025 + y * 0.01) * 7 + (Math.random() * 2.5 - 1.25);
       ctx.lineTo(x, ny);
     }
     ctx.stroke();
   }
 
-  // Microvascular capillary noise & endocardial texture
-  for (let i = 0; i < 500; i++) {
-    const cx = Math.random() * 512;
-    const cy = Math.random() * 512;
-    ctx.fillStyle = 'rgba(254, 205, 211, 0.07)';
+  // Branching microvascular capillary network
+  ctx.lineWidth = 0.8;
+  for (let i = 0; i < 40; i++) {
+    let cx = Math.random() * 1024;
+    let cy = Math.random() * 1024;
+    ctx.strokeStyle = Math.random() > 0.3 ? 'rgba(254, 205, 211, 0.22)' : 'rgba(56, 189, 248, 0.15)';
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    for (let step = 0; step < 8; step++) {
+      cx += (Math.random() * 30 - 15);
+      cy += (Math.random() * 30 - 10);
+      ctx.lineTo(cx, cy);
+    }
+    ctx.stroke();
+  }
+
+  // Fine cellular endocardial noise
+  for (let i = 0; i < 900; i++) {
+    const cx = Math.random() * 1024;
+    const cy = Math.random() * 1024;
+    ctx.fillStyle = 'rgba(255, 228, 230, 0.08)';
     ctx.beginPath();
     ctx.arc(cx, cy, 1 + Math.random() * 2.5, 0, Math.PI * 2);
     ctx.fill();
@@ -438,33 +460,136 @@ function generateMyocardiumTexture() {
   const texture = new THREE.CanvasTexture(canvas);
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
-  texture.repeat.set(2, 2);
+  texture.repeat.set(1.5, 1.5);
   return texture;
 }
 
-// Procedural Subepicardial Adipose (Fat) Texture
-function generateAdiposeTexture() {
+// Dedicated High-Contrast Myocardial Bump Map
+function generateMyocardiumBumpTexture() {
   const canvas = document.createElement('canvas');
-  canvas.width = 256;
-  canvas.height = 256;
+  canvas.width = 512;
+  canvas.height = 512;
   const ctx = canvas.getContext('2d');
 
-  ctx.fillStyle = '#fef08a'; // Creamy tan-yellow adipose
-  ctx.fillRect(0, 0, 256, 256);
+  ctx.fillStyle = '#808080';
+  ctx.fillRect(0, 0, 512, 512);
 
-  for (let i = 0; i < 350; i++) {
-    const x = Math.random() * 256;
-    const y = Math.random() * 256;
-    ctx.fillStyle = 'rgba(234, 179, 8, 0.18)';
+  for (let y = 0; y < 512; y += 4) {
+    const v = Math.random() > 0.5 ? 255 : 0;
+    ctx.strokeStyle = `rgba(${v}, ${v}, ${v}, 0.25)`;
+    ctx.lineWidth = 1.5 + Math.random() * 2.0;
     ctx.beginPath();
-    ctx.arc(x, y, 2 + Math.random() * 4, 0, Math.PI * 2);
+    ctx.moveTo(0, y);
+    for (let x = 0; x <= 512; x += 32) {
+      const ny = y + Math.sin(x * 0.035) * 5 + (Math.random() * 2 - 1);
+      ctx.lineTo(x, ny);
+    }
+    ctx.stroke();
+  }
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(1.5, 1.5);
+  return texture;
+}
+
+// Procedural Subepicardial Adipose (Creamy Yellow Fat) Texture
+function generateAdiposeTexture() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 512;
+  canvas.height = 512;
+  const ctx = canvas.getContext('2d');
+
+  ctx.fillStyle = '#fef08a';
+  ctx.fillRect(0, 0, 512, 512);
+
+  // Adipocyte fat lobules
+  for (let i = 0; i < 450; i++) {
+    const x = Math.random() * 512;
+    const y = Math.random() * 512;
+    const r = 3 + Math.random() * 6;
+    ctx.fillStyle = Math.random() > 0.5 ? 'rgba(234, 179, 8, 0.22)' : 'rgba(202, 138, 4, 0.16)';
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.fill();
+    ctx.strokeStyle = 'rgba(254, 240, 138, 0.4)';
+    ctx.stroke();
   }
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
   return texture;
+}
+
+// Seamless Unified Anatomical Cardiac Geometry (Single-Body Organic Myocardium)
+function createUnifiedCardiacGeometry() {
+  const uSteps = 48;
+  const vSteps = 48;
+  const positions = [];
+  const uvs = [];
+  const indices = [];
+
+  for (let j = 0; j <= vSteps; j++) {
+    const v = j / vSteps; // 0 (base/top) to 1 (apex/bottom)
+    const phi = v * Math.PI;
+    const sinPhi = Math.sin(phi);
+    const y = 0.95 - (v * 2.85); // from +0.95 down to -1.90 (apex)
+
+    // Baseline cardiac profile radius
+    const rProfile = 1.62 * Math.pow(Math.max(0, sinPhi), 0.78);
+
+    for (let i = 0; i <= uSteps; i++) {
+      const u = i / uSteps;
+      const theta = u * 2 * Math.PI;
+      const cosT = Math.cos(theta);
+      const sinT = Math.sin(theta);
+
+      // Anatomical sculpting:
+      // 1. Anterior interventricular sulcus (groove where LAD artery rests) at theta ~ 1.25 rad
+      const sulcusAnt = 0.24 * Math.exp(-Math.pow(theta - 1.25, 2) / 0.18) * sinPhi;
+
+      // 2. Posterior interventricular sulcus at theta ~ 4.3 rad
+      const sulcusPost = 0.18 * Math.exp(-Math.pow(theta - 4.3, 2) / 0.22) * sinPhi;
+
+      // 3. Left Ventricle muscular prominence (anatomical left wall = +X)
+      const lvProm = 0.32 * Math.pow(Math.cos(theta - 0.15), 2) * sinPhi;
+
+      // 4. Right Ventricle anterior crescent bulge
+      const rvBulge = 0.26 * Math.pow(Math.sin(theta * 0.75), 2) * (theta >= 1.0 && theta <= 3.8 ? 1.0 : 0.0) * sinPhi;
+
+      const r = Math.max(0.02, rProfile - sulcusAnt - sulcusPost + lvProm + rvBulge);
+      let x = r * cosT;
+      let z = r * sinT;
+
+      // 5. Anatomical Apex Tilt: points inferiorly, forward (+Z), and to the left (+X)
+      const apexTilt = Math.pow(v, 1.55);
+      x += 0.55 * apexTilt;
+      z += 0.36 * apexTilt;
+
+      positions.push(x, y, z);
+      uvs.push(u, v);
+    }
+  }
+
+  for (let j = 0; j < vSteps; j++) {
+    for (let i = 0; i < uSteps; i++) {
+      const a = j * (uSteps + 1) + i;
+      const b = (j + 1) * (uSteps + 1) + i;
+      const c = (j + 1) * (uSteps + 1) + (i + 1);
+      const d = j * (uSteps + 1) + (i + 1);
+      indices.push(a, b, d);
+      indices.push(b, c, d);
+    }
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geo.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+  geo.setIndex(indices);
+  geo.computeVertexNormals();
+  return geo;
 }
 
 function initThreeHeart() {
@@ -476,281 +601,264 @@ function initThreeHeart() {
 
   threeScene = new THREE.Scene();
 
-  threeCamera = new THREE.PerspectiveCamera(45, w / h, 0.1, 1000);
-  threeCamera.position.set(0, 0.2, 7.8);
+  threeCamera = new THREE.PerspectiveCamera(42, w / h, 0.1, 1000);
+  threeCamera.position.set(0, 0.25, 7.5);
 
   threeRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
   threeRenderer.setSize(w, h);
   threeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   threeRenderer.toneMapping = THREE.ACESFilmicToneMapping;
-  threeRenderer.toneMappingExposure = 1.15;
+  threeRenderer.toneMappingExposure = 1.2;
 
   const spinner = document.getElementById('three-loading-spinner');
   if (spinner) spinner.style.display = 'none';
 
   container.appendChild(threeRenderer.domElement);
 
-  // High-Grade Medical Studio 3-Point Lighting
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
+  // High-Grade Medical Studio 4-Point Surgical Lighting
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.88);
   threeScene.add(ambientLight);
 
-  const mainSurgicalLight = new THREE.DirectionalLight(0xffffff, 1.4);
+  const mainSurgicalLight = new THREE.DirectionalLight(0xffffff, 1.5);
   mainSurgicalLight.position.set(5, 8, 6);
   threeScene.add(mainSurgicalLight);
 
-  const warmTissueRimLight = new THREE.DirectionalLight(0xf43f5e, 1.0);
-  warmTissueRimLight.position.set(-6, -3, -2);
+  const warmTissueRimLight = new THREE.DirectionalLight(0xf43f5e, 1.1);
+  warmTissueRimLight.position.set(-6, -2, -1);
   threeScene.add(warmTissueRimLight);
 
-  const coolBlueBackLight = new THREE.DirectionalLight(0x38bdf8, 0.7);
+  const coolBlueBackLight = new THREE.DirectionalLight(0x38bdf8, 0.8);
   coolBlueBackLight.position.set(0, -6, -5);
   threeScene.add(coolBlueBackLight);
 
-  // Group
+  // Master Group
   threeHeartGroup = new THREE.Group();
   heartMaterials = [];
 
   const myoTex = generateMyocardiumTexture();
+  const myoBumpTex = generateMyocardiumBumpTexture();
   const adiposeTex = generateAdiposeTexture();
 
-  // PBR Physical Materials (Living biological tissue with wet clearcoat)
-  const leftVentMaterial = new THREE.MeshPhysicalMaterial({
+  // PBR Myocardium Physical Material (Living wet biological muscle)
+  const myocardiumMaterial = new THREE.MeshPhysicalMaterial({
     color: 0x9f1239,
     map: myoTex,
-    bumpMap: myoTex,
-    bumpScale: 0.05,
-    roughness: 0.32,
-    metalness: 0.08,
-    clearcoat: 0.92,
-    clearcoatRoughness: 0.18,
-    sheen: 0.8,
+    bumpMap: myoBumpTex,
+    bumpScale: 0.06,
+    roughness: 0.28,
+    metalness: 0.05,
+    clearcoat: 0.98,
+    clearcoatRoughness: 0.1,
+    sheen: 0.9,
     sheenColor: 0xf43f5e
   });
-  heartMaterials.push(leftVentMaterial);
-
-  const rightVentMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0x881337,
-    map: myoTex,
-    bumpMap: myoTex,
-    bumpScale: 0.04,
-    roughness: 0.36,
-    metalness: 0.06,
-    clearcoat: 0.85,
-    clearcoatRoughness: 0.2
-  });
-  heartMaterials.push(rightVentMaterial);
+  heartMaterials.push(myocardiumMaterial);
 
   const atriaMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0x701a75,
-    roughness: 0.45,
+    color: 0x7c1d37,
+    map: myoTex,
+    roughness: 0.38,
     metalness: 0.05,
-    clearcoat: 0.6
+    clearcoat: 0.75,
+    clearcoatRoughness: 0.18
   });
   heartMaterials.push(atriaMaterial);
 
   const fatPadMaterial = new THREE.MeshPhysicalMaterial({
     color: 0xfef08a,
     map: adiposeTex,
-    roughness: 0.7,
+    roughness: 0.65,
     metalness: 0.02,
-    clearcoat: 0.25
+    clearcoat: 0.35,
+    clearcoatRoughness: 0.25
   });
   heartMaterials.push(fatPadMaterial);
 
   const aortaMaterial = new THREE.MeshPhysicalMaterial({
     color: 0xe11d48,
-    roughness: 0.28,
-    metalness: 0.12,
-    clearcoat: 0.85,
-    clearcoatRoughness: 0.15
+    roughness: 0.25,
+    metalness: 0.1,
+    clearcoat: 0.92,
+    clearcoatRoughness: 0.12
   });
   heartMaterials.push(aortaMaterial);
 
   const pulmonaryMaterial = new THREE.MeshPhysicalMaterial({
     color: 0x0284c7,
-    roughness: 0.3,
-    metalness: 0.1,
-    clearcoat: 0.8
+    roughness: 0.28,
+    metalness: 0.08,
+    clearcoat: 0.88
   });
   heartMaterials.push(pulmonaryMaterial);
 
   const venaCavaMaterial = new THREE.MeshPhysicalMaterial({
     color: 0x1d4ed8,
-    roughness: 0.35,
-    metalness: 0.08,
-    clearcoat: 0.75
+    roughness: 0.32,
+    metalness: 0.06,
+    clearcoat: 0.82
   });
   heartMaterials.push(venaCavaMaterial);
 
   const arteryMaterial = new THREE.MeshStandardMaterial({
     color: 0xff1744,
-    roughness: 0.18,
-    metalness: 0.1,
+    roughness: 0.16,
+    metalness: 0.12,
     emissive: 0xbe123c,
-    emissiveIntensity: 0.45
+    emissiveIntensity: 0.5
   });
 
   const veinMaterial = new THREE.MeshStandardMaterial({
-    color: 0x0ea5e9,
-    roughness: 0.25,
+    color: 0x0284c7,
+    roughness: 0.22,
     metalness: 0.1,
     emissive: 0x0369a1,
-    emissiveIntensity: 0.3
+    emissiveIntensity: 0.35
   });
 
-  // 1. LEFT VENTRICLE & ANATOMICAL APEX (Conical myocardium pointing down and left)
-  const lvGeo = new THREE.SphereGeometry(1.42, 36, 36);
-  // Deform sphere to match anatomical conical shape
-  const lvPos = lvGeo.attributes.position;
-  for (let i = 0; i < lvPos.count; i++) {
-    const y = lvPos.getY(i);
-    const x = lvPos.getX(i);
-    const z = lvPos.getZ(i);
-    // Taper toward apex at bottom
-    if (y < 0) {
-      const taper = 1.0 + (y / 1.42) * 0.45;
-      lvPos.setX(i, x * taper - 0.15 * Math.abs(y));
-      lvPos.setZ(i, z * taper);
-    }
-  }
-  lvGeo.computeVertexNormals();
-  lvGeo.scale(0.9, 1.45, 0.82);
+  // 1. UNIFIED CONTINUOUS MYOCARDIUM (Ventricular Muscle Mass & Apex)
+  const unifiedMyoGeo = createUnifiedCardiacGeometry();
+  const myocardiumMesh = new THREE.Mesh(unifiedMyoGeo, myocardiumMaterial);
+  myocardiumMesh.name = "Miokard: Qorinchalar Massasi (Ventriculus sinister & dexter)";
+  threeHeartGroup.add(myocardiumMesh);
 
-  const leftVent = new THREE.Mesh(lvGeo, leftVentMaterial);
-  leftVent.position.set(0.35, -0.3, 0.05);
-  leftVent.rotation.set(0.1, -0.15, -0.22);
-  leftVent.name = "Chap Qorincha (Ventriculus sinister)";
-  threeHeartGroup.add(leftVent);
-
-  // 2. RIGHT VENTRICLE (Crescent-shaped anatomical anterolateral wall)
-  const rvGeo = new THREE.SphereGeometry(1.22, 32, 32);
-  const rvPos = rvGeo.attributes.position;
-  for (let i = 0; i < rvPos.count; i++) {
-    const y = rvPos.getY(i);
-    const x = rvPos.getX(i);
-    if (y < 0) {
-      const taper = 1.0 + (y / 1.22) * 0.4;
-      rvPos.setX(i, x * taper);
-    }
-  }
-  rvGeo.computeVertexNormals();
-  rvGeo.scale(0.85, 1.28, 0.75);
-
-  const rightVent = new THREE.Mesh(rvGeo, rightVentMaterial);
-  rightVent.position.set(-0.52, -0.22, 0.18);
-  rightVent.rotation.set(0.08, 0.18, 0.18);
-  rightVent.name = "O'ng Qorincha (Ventriculus dexter)";
-  threeHeartGroup.add(rightVent);
-
-  // 3. ATRIA & AURICLES (Left & Right Atrial Appendages)
-  const laGeo = new THREE.SphereGeometry(0.85, 24, 24);
-  laGeo.scale(0.95, 0.8, 0.9);
+  // 2. ATRIA & SCALLOPED AURICLES (Left & Right Atrial Chambers)
+  // Left Atrium (Atrium sinistrum - posterosuperior aspect)
+  const laGeo = new THREE.SphereGeometry(0.9, 28, 28);
+  laGeo.scale(1.02, 0.85, 0.9);
   const leftAtrium = new THREE.Mesh(laGeo, atriaMaterial);
-  leftAtrium.position.set(0.55, 0.85, -0.35);
+  leftAtrium.position.set(0.45, 0.95, -0.42);
   leftAtrium.name = "Chap Bo'lmacha (Atrium sinistrum)";
   threeHeartGroup.add(leftAtrium);
 
-  const raGeo = new THREE.SphereGeometry(0.95, 24, 24);
-  raGeo.scale(1.0, 0.85, 0.85);
+  // Right Atrium (Atrium dextrum)
+  const raGeo = new THREE.SphereGeometry(0.96, 28, 28);
+  raGeo.scale(0.92, 0.9, 0.9);
   const rightAtrium = new THREE.Mesh(raGeo, atriaMaterial);
-  rightAtrium.position.set(-0.75, 0.75, -0.1);
+  rightAtrium.position.set(-0.72, 0.85, -0.15);
   rightAtrium.name = "O'ng Bo'lmacha (Atrium dextrum)";
   threeHeartGroup.add(rightAtrium);
 
-  // Left & Right Auricular flaps (scalloped appendages)
-  const auricleGeo = new THREE.ConeGeometry(0.45, 0.75, 16);
-  auricleGeo.rotateZ(-Math.PI / 3);
-  const leftAuricle = new THREE.Mesh(auricleGeo, atriaMaterial);
-  leftAuricle.position.set(0.85, 0.55, 0.3);
+  // Left Auricle (Auricula sinistra - ruffled flap wrapping forward)
+  const leftAuricleGeo = new THREE.ConeGeometry(0.48, 0.85, 18);
+  leftAuricleGeo.rotateZ(-Math.PI / 3);
+  const leftAuricle = new THREE.Mesh(leftAuricleGeo, atriaMaterial);
+  leftAuricle.position.set(0.85, 0.65, 0.32);
   leftAuricle.name = "Chap Quloqcha (Auricula sinistra)";
   threeHeartGroup.add(leftAuricle);
 
-  const rightAuricleGeo = new THREE.ConeGeometry(0.48, 0.8, 16);
+  // Right Auricle (Auricula dextra - triangular flap overlapping aorta root)
+  const rightAuricleGeo = new THREE.ConeGeometry(0.52, 0.88, 18);
   rightAuricleGeo.rotateZ(Math.PI / 3);
   const rightAuricle = new THREE.Mesh(rightAuricleGeo, atriaMaterial);
-  rightAuricle.position.set(-0.85, 0.5, 0.35);
+  rightAuricle.position.set(-0.85, 0.58, 0.35);
   rightAuricle.name = "O'ng Quloqcha (Auricula dextra)";
   threeHeartGroup.add(rightAuricle);
 
-  // 4. SUBEPICARDIAL ADIPOSE FAT PADS (Sulcus fat pads)
+  // 4 Pulmonary Veins (Entering Left Atrium posterior wall)
+  const pvCurves = [
+    [new THREE.Vector3(0.85, 1.15, -0.65), new THREE.Vector3(0.55, 1.05, -0.48)],
+    [new THREE.Vector3(0.85, 0.78, -0.65), new THREE.Vector3(0.55, 0.82, -0.48)],
+    [new THREE.Vector3(0.08, 1.15, -0.65), new THREE.Vector3(0.32, 1.05, -0.48)],
+    [new THREE.Vector3(0.08, 0.78, -0.65), new THREE.Vector3(0.32, 0.82, -0.48)]
+  ];
+  pvCurves.forEach(pts => {
+    const pvMesh = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 12, 0.12, 10, false), pulmonaryMaterial);
+    pvMesh.name = "O'pka Venalari (Venae pulmonales)";
+    threeHeartGroup.add(pvMesh);
+  });
+
+  // 3. SUBEPICARDIAL ADIPOSE FAT PADS (Sulcus cushioning)
+  // Anterior sulcus fat pad under LAD
   const sulcusFatCurve = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(-0.08, 0.65, 0.68),
-    new THREE.Vector3(-0.12, 0.1, 0.82),
-    new THREE.Vector3(-0.02, -0.65, 0.72),
-    new THREE.Vector3(0.08, -1.3, 0.42)
+    new THREE.Vector3(0.05, 0.75, 0.68),
+    new THREE.Vector3(0.02, 0.28, 0.84),
+    new THREE.Vector3(0.14, -0.32, 0.78),
+    new THREE.Vector3(0.32, -0.98, 0.60),
+    new THREE.Vector3(0.50, -1.68, 0.36)
   ]);
-  const sulcusFatGeo = new THREE.TubeGeometry(sulcusFatCurve, 24, 0.18, 12, false);
-  const sulcusFatMesh = new THREE.Mesh(sulcusFatGeo, fatPadMaterial);
-  sulcusFatMesh.name = "Yog' to'qimasi (Sulcus interventricularis fat pad)";
+  const sulcusFatMesh = new THREE.Mesh(new THREE.TubeGeometry(sulcusFatCurve, 28, 0.18, 12, false), fatPadMaterial);
+  sulcusFatMesh.name = "Epikardial yog' to'qimasi (Sulcus fat pad)";
   threeHeartGroup.add(sulcusFatMesh);
 
-  // 5. GREAT VESSELS (Aorta Arch + 3 Branching Arteries)
-  const aortaCurve = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(0.12, 0.7, 0.1),
-    new THREE.Vector3(0.18, 1.5, 0.2),
-    new THREE.Vector3(-0.25, 2.15, 0.1),
-    new THREE.Vector3(-0.85, 1.85, -0.25),
-    new THREE.Vector3(-0.8, 0.5, -0.55)
+  // Atrioventricular crown fat pad
+  const avFatCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(-0.85, 0.68, 0.25),
+    new THREE.Vector3(-0.35, 0.75, 0.62),
+    new THREE.Vector3(0.35, 0.72, 0.62),
+    new THREE.Vector3(0.85, 0.68, 0.25)
   ]);
-  const aortaGeo = new THREE.TubeGeometry(aortaCurve, 36, 0.35, 20, false);
+  const avFatMesh = new THREE.Mesh(new THREE.TubeGeometry(avFatCurve, 24, 0.16, 12, false), fatPadMaterial);
+  avFatMesh.name = "Toj egati yog' qatlami (Sulcus coronarius fat pad)";
+  threeHeartGroup.add(avFatMesh);
+
+  // 4. GREAT VESSELS (Ascending Aorta, Arch & 3 Branches)
+  const aortaCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0.06, 0.75, 0.12),
+    new THREE.Vector3(0.12, 1.45, 0.18),
+    new THREE.Vector3(-0.18, 2.22, 0.1),
+    new THREE.Vector3(-0.82, 1.95, -0.22),
+    new THREE.Vector3(-0.78, 0.55, -0.58)
+  ]);
+  const aortaGeo = new THREE.TubeGeometry(aortaCurve, 36, 0.36, 20, false);
   const aortaMesh = new THREE.Mesh(aortaGeo, aortaMaterial);
   aortaMesh.name = "Aorta Ravog'i (Arcus aortae)";
   threeHeartGroup.add(aortaMesh);
 
-  // 3 Aortic Arch Arterial Branches
+  // 3 Aortic Arch Branches
   // 1. Truncus brachiocephalicus
-  const b1Curve = new THREE.CatmullRomCurve3([new THREE.Vector3(0.05, 1.95, 0.18), new THREE.Vector3(0.2, 2.65, 0.12)]);
-  const b1Mesh = new THREE.Mesh(new THREE.TubeGeometry(b1Curve, 12, 0.11, 10, false), aortaMaterial);
+  const b1Curve = new THREE.CatmullRomCurve3([new THREE.Vector3(0.06, 2.02, 0.18), new THREE.Vector3(0.22, 2.75, 0.14)]);
+  const b1Mesh = new THREE.Mesh(new THREE.TubeGeometry(b1Curve, 12, 0.12, 10, false), aortaMaterial);
   b1Mesh.name = "Truncus brachiocephalicus";
   threeHeartGroup.add(b1Mesh);
 
   // 2. A. carotis communis sinistra
-  const b2Curve = new THREE.CatmullRomCurve3([new THREE.Vector3(-0.25, 2.12, 0.12), new THREE.Vector3(-0.2, 2.72, 0.05)]);
-  const b2Mesh = new THREE.Mesh(new THREE.TubeGeometry(b2Curve, 12, 0.09, 10, false), aortaMaterial);
+  const b2Curve = new THREE.CatmullRomCurve3([new THREE.Vector3(-0.25, 2.18, 0.12), new THREE.Vector3(-0.2, 2.82, 0.05)]);
+  const b2Mesh = new THREE.Mesh(new THREE.TubeGeometry(b2Curve, 12, 0.10, 10, false), aortaMaterial);
   b2Mesh.name = "A. carotis communis sinistra";
   threeHeartGroup.add(b2Mesh);
 
   // 3. A. subclavia sinistra
-  const b3Curve = new THREE.CatmullRomCurve3([new THREE.Vector3(-0.55, 2.05, 0.0), new THREE.Vector3(-0.6, 2.65, -0.1)]);
+  const b3Curve = new THREE.CatmullRomCurve3([new THREE.Vector3(-0.55, 2.12, 0.0), new THREE.Vector3(-0.62, 2.75, -0.12)]);
   const b3Mesh = new THREE.Mesh(new THREE.TubeGeometry(b3Curve, 12, 0.09, 10, false), aortaMaterial);
   b3Mesh.name = "A. subclavia sinistra";
   threeHeartGroup.add(b3Mesh);
 
-  // 6. PULMONARY TRUNK & BIFURCATION (Truncus pulmonalis)
+  // 5. PULMONARY TRUNK & BIFURCATION (Crossing obliquely in front of aorta)
   const pulmTrunkCurve = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(-0.35, 0.55, 0.38),
-    new THREE.Vector3(-0.25, 1.35, 0.42),
-    new THREE.Vector3(0.25, 1.55, 0.15)
+    new THREE.Vector3(-0.28, 0.65, 0.42),
+    new THREE.Vector3(-0.18, 1.42, 0.45),
+    new THREE.Vector3(0.24, 1.62, 0.18)
   ]);
-  const pulmTrunkMesh = new THREE.Mesh(new THREE.TubeGeometry(pulmTrunkCurve, 24, 0.3, 16, false), pulmonaryMaterial);
+  const pulmTrunkMesh = new THREE.Mesh(new THREE.TubeGeometry(pulmTrunkCurve, 24, 0.31, 16, false), pulmonaryMaterial);
   pulmTrunkMesh.name = "O'pka o'zagi (Truncus pulmonalis)";
   threeHeartGroup.add(pulmTrunkMesh);
 
   // Left & Right Pulmonary Arteries
-  const leftPulmCurve = new THREE.CatmullRomCurve3([new THREE.Vector3(0.25, 1.55, 0.15), new THREE.Vector3(0.95, 1.45, -0.35)]);
-  const rightPulmCurve = new THREE.CatmullRomCurve3([new THREE.Vector3(0.25, 1.55, 0.15), new THREE.Vector3(-0.85, 1.4, -0.45)]);
-  threeHeartGroup.add(new THREE.Mesh(new THREE.TubeGeometry(leftPulmCurve, 16, 0.18, 12, false), pulmonaryMaterial));
-  threeHeartGroup.add(new THREE.Mesh(new THREE.TubeGeometry(rightPulmCurve, 16, 0.18, 12, false), pulmonaryMaterial));
+  const leftPulmCurve = new THREE.CatmullRomCurve3([new THREE.Vector3(0.24, 1.62, 0.18), new THREE.Vector3(0.95, 1.52, -0.32)]);
+  const rightPulmCurve = new THREE.CatmullRomCurve3([new THREE.Vector3(0.24, 1.62, 0.18), new THREE.Vector3(-0.88, 1.48, -0.42)]);
+  threeHeartGroup.add(new THREE.Mesh(new THREE.TubeGeometry(leftPulmCurve, 16, 0.19, 12, false), pulmonaryMaterial));
+  threeHeartGroup.add(new THREE.Mesh(new THREE.TubeGeometry(rightPulmCurve, 16, 0.19, 12, false), pulmonaryMaterial));
 
-  // 7. SUPERIOR & INFERIOR VENA CAVA (SVC & IVC)
-  const svcCurve = new THREE.CatmullRomCurve3([new THREE.Vector3(-0.95, 0.8, -0.2), new THREE.Vector3(-1.0, 1.85, -0.15)]);
-  const svcMesh = new THREE.Mesh(new THREE.TubeGeometry(svcCurve, 16, 0.22, 12, false), venaCavaMaterial);
+  // 6. SUPERIOR & INFERIOR VENA CAVA (SVC & IVC)
+  const svcCurve = new THREE.CatmullRomCurve3([new THREE.Vector3(-0.95, 0.85, -0.18), new THREE.Vector3(-0.98, 1.95, -0.12)]);
+  const svcMesh = new THREE.Mesh(new THREE.TubeGeometry(svcCurve, 16, 0.24, 12, false), venaCavaMaterial);
   svcMesh.name = "Yuqori Kovak Vena (Vena cava superior)";
   threeHeartGroup.add(svcMesh);
 
-  const ivcCurve = new THREE.CatmullRomCurve3([new THREE.Vector3(-0.75, -0.35, -0.5), new THREE.Vector3(-0.8, -1.2, -0.55)]);
-  const ivcMesh = new THREE.Mesh(new THREE.TubeGeometry(ivcCurve, 12, 0.2, 12, false), venaCavaMaterial);
+  const ivcCurve = new THREE.CatmullRomCurve3([new THREE.Vector3(-0.72, 0.1, -0.42), new THREE.Vector3(-0.76, -1.05, -0.48)]);
+  const ivcMesh = new THREE.Mesh(new THREE.TubeGeometry(ivcCurve, 12, 0.22, 12, false), venaCavaMaterial);
   ivcMesh.name = "Pastki Kovak Vena (Vena cava inferior)";
   threeHeartGroup.add(ivcMesh);
 
-  // 8. HIGH-PRECISION CORONARY ARTERIAL & VENOUS TREE
-  // LAD (Left Anterior Descending Artery)
+  // 7. ANATOMICAL CORONARY ARTERY & VEIN NETWORK
+  // LAD (Left Anterior Descending Artery along the anterior groove)
   const ladCurve = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(0.05, 0.65, 0.72),
-    new THREE.Vector3(-0.04, 0.2, 0.86),
-    new THREE.Vector3(0.04, -0.45, 0.78),
-    new THREE.Vector3(0.12, -1.15, 0.52),
-    new THREE.Vector3(0.08, -1.48, 0.28)
+    new THREE.Vector3(0.06, 0.72, 0.72),
+    new THREE.Vector3(0.04, 0.32, 0.86),
+    new THREE.Vector3(0.12, -0.28, 0.82),
+    new THREE.Vector3(0.28, -0.92, 0.65),
+    new THREE.Vector3(0.44, -1.48, 0.48),
+    new THREE.Vector3(0.52, -1.82, 0.35)
   ]);
   const ladGeo = new THREE.TubeGeometry(ladCurve, 36, 0.08, 12, false);
   const ladMesh = new THREE.Mesh(ladGeo, arteryMaterial);
@@ -759,87 +867,98 @@ function initThreeHeart() {
 
   // LAD Diagonal Branch (D1)
   const d1Curve = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(-0.02, 0.1, 0.85),
-    new THREE.Vector3(0.45, -0.2, 0.78),
-    new THREE.Vector3(0.75, -0.55, 0.55)
+    new THREE.Vector3(0.04, 0.32, 0.86),
+    new THREE.Vector3(0.42, 0.02, 0.82),
+    new THREE.Vector3(0.78, -0.38, 0.58),
+    new THREE.Vector3(0.95, -0.82, 0.32)
   ]);
   const d1Mesh = new THREE.Mesh(new THREE.TubeGeometry(d1Curve, 18, 0.05, 10, false), arteryMaterial);
   d1Mesh.name = "LAD Diagonal shoxi (D1)";
   threeHeartGroup.add(d1Mesh);
 
-  // RCA (Right Coronary Artery)
+  // LAD Diagonal Branch (D2)
+  const d2Curve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0.28, -0.92, 0.65),
+    new THREE.Vector3(0.62, -1.15, 0.45)
+  ]);
+  const d2Mesh = new THREE.Mesh(new THREE.TubeGeometry(d2Curve, 12, 0.045, 10, false), arteryMaterial);
+  d2Mesh.name = "LAD Diagonal shoxi (D2)";
+  threeHeartGroup.add(d2Mesh);
+
+  // RCA (Right Coronary Artery in the right sulcus)
   const rcaCurve = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(-0.4, 0.65, 0.45),
-    new THREE.Vector3(-0.95, 0.12, 0.55),
-    new THREE.Vector3(-0.88, -0.55, 0.35),
-    new THREE.Vector3(-0.52, -1.15, -0.05)
+    new THREE.Vector3(-0.35, 0.68, 0.48),
+    new THREE.Vector3(-0.85, 0.28, 0.55),
+    new THREE.Vector3(-0.95, -0.22, 0.38),
+    new THREE.Vector3(-0.78, -0.78, 0.12),
+    new THREE.Vector3(-0.42, -1.25, -0.15)
   ]);
   const rcaMesh = new THREE.Mesh(new THREE.TubeGeometry(rcaCurve, 32, 0.075, 12, false), arteryMaterial);
   rcaMesh.name = "RCA: O'ng koronar arteriya";
   threeHeartGroup.add(rcaMesh);
 
-  // LCx (Left Circumflex Artery)
+  // LCx (Left Circumflex Artery around coronary sulcus)
   const lcxCurve = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(0.15, 0.62, 0.65),
-    new THREE.Vector3(0.72, 0.42, 0.45),
-    new THREE.Vector3(0.92, -0.05, 0.05),
-    new THREE.Vector3(0.75, -0.65, -0.42)
+    new THREE.Vector3(0.12, 0.68, 0.65),
+    new THREE.Vector3(0.68, 0.52, 0.45),
+    new THREE.Vector3(0.92, 0.12, 0.08),
+    new THREE.Vector3(0.78, -0.35, -0.38),
+    new THREE.Vector3(0.45, -0.82, -0.55)
   ]);
   const lcxMesh = new THREE.Mesh(new THREE.TubeGeometry(lcxCurve, 30, 0.065, 10, false), arteryMaterial);
   lcxMesh.name = "LCx: O'rovchi koronar arteriya";
   threeHeartGroup.add(lcxMesh);
 
-  // Great Cardiac Vein (Vena cordis magna - Cyan/Blue running along LAD)
+  // Great Cardiac Vein (Vena cordis magna - paired alongside LAD)
   const gcvCurve = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(0.18, -1.35, 0.38),
-    new THREE.Vector3(0.14, -0.55, 0.72),
-    new THREE.Vector3(0.06, 0.15, 0.82),
-    new THREE.Vector3(0.25, 0.65, 0.62)
+    new THREE.Vector3(0.54, -1.72, 0.38),
+    new THREE.Vector3(0.32, -0.88, 0.68),
+    new THREE.Vector3(0.16, -0.22, 0.84),
+    new THREE.Vector3(0.08, 0.38, 0.88),
+    new THREE.Vector3(0.18, 0.72, 0.68)
   ]);
   const gcvMesh = new THREE.Mesh(new THREE.TubeGeometry(gcvCurve, 28, 0.065, 10, false), veinMaterial);
   gcvMesh.name = "Buyuk Yurak Venasi (Vena cordis magna)";
   threeHeartGroup.add(gcvMesh);
 
-  // 9. HIGH-FIDELITY ATHEROSCLEROTIC PLAQUE (STENOSIS BEACONS)
-  // LAD Stenosis Plaque
+  // 8. HIGH-FIDELITY ATHEROSCLEROTIC PLAQUE & STENOSIS BEACONS
   const plaqueGeo = new THREE.SphereGeometry(0.18, 16, 16);
   const plaqueMat = new THREE.MeshStandardMaterial({
     color: 0xffffff,
     emissive: 0xef4444,
-    emissiveIntensity: 0.9,
+    emissiveIntensity: 0.95,
     roughness: 0.2
   });
 
   ladStenosisMesh = new THREE.Mesh(plaqueGeo, plaqueMat);
-  ladStenosisMesh.position.set(-0.04, 0.2, 0.88);
+  ladStenosisMesh.position.set(0.04, 0.32, 0.88);
   ladStenosisMesh.name = "LAD Stenoz Plakasi (Ateroskleroz ~75%)";
   threeHeartGroup.add(ladStenosisMesh);
 
-  // Warning beacon ring
   const ringGeo = new THREE.RingGeometry(0.24, 0.32, 24);
   const ringMat = new THREE.MeshBasicMaterial({ color: 0xff0055, side: THREE.DoubleSide, transparent: true, opacity: 0.85 });
   ladWarningRing = new THREE.Mesh(ringGeo, ringMat);
-  ladWarningRing.position.set(-0.04, 0.2, 0.92);
+  ladWarningRing.position.set(0.04, 0.32, 0.92);
   threeHeartGroup.add(ladWarningRing);
 
   // RCA Stenosis Plaque
-  rcaStenosisMesh = new THREE.Mesh(plaqueGeo, new THREE.MeshStandardMaterial({ color: 0xffedd5, emissive: 0xf59e0b, emissiveIntensity: 0.9 }));
-  rcaStenosisMesh.position.set(-0.95, 0.12, 0.58);
+  rcaStenosisMesh = new THREE.Mesh(plaqueGeo, new THREE.MeshStandardMaterial({ color: 0xffedd5, emissive: 0xf59e0b, emissiveIntensity: 0.95 }));
+  rcaStenosisMesh.position.set(-0.92, 0.15, 0.52);
   rcaStenosisMesh.name = "RCA Stenoz Plakasi (~65% Stenoz)";
   threeHeartGroup.add(rcaStenosisMesh);
 
   rcaWarningRing = new THREE.Mesh(ringGeo, new THREE.MeshBasicMaterial({ color: 0xf59e0b, side: THREE.DoubleSide, transparent: true, opacity: 0.85 }));
-  rcaWarningRing.position.set(-0.95, 0.12, 0.62);
+  rcaWarningRing.position.set(-0.92, 0.15, 0.56);
   threeHeartGroup.add(rcaWarningRing);
 
   // LCx Stenosis Plaque
-  lcxStenosisMesh = new THREE.Mesh(plaqueGeo, new THREE.MeshStandardMaterial({ color: 0xfae8ff, emissive: 0xd946ef, emissiveIntensity: 0.9 }));
-  lcxStenosisMesh.position.set(0.85, 0.25, 0.32);
+  lcxStenosisMesh = new THREE.Mesh(plaqueGeo, new THREE.MeshStandardMaterial({ color: 0xfae8ff, emissive: 0xd946ef, emissiveIntensity: 0.95 }));
+  lcxStenosisMesh.position.set(0.82, 0.35, 0.32);
   lcxStenosisMesh.name = "LCx Stenoz Plakasi (~60% Stenoz)";
   threeHeartGroup.add(lcxStenosisMesh);
 
   lcxWarningRing = new THREE.Mesh(ringGeo, new THREE.MeshBasicMaterial({ color: 0xd946ef, side: THREE.DoubleSide, transparent: true, opacity: 0.85 }));
-  lcxWarningRing.position.set(0.85, 0.25, 0.36);
+  lcxWarningRing.position.set(0.82, 0.35, 0.36);
   threeHeartGroup.add(lcxWarningRing);
 
   threeScene.add(threeHeartGroup);
@@ -1014,21 +1133,41 @@ function animateThreeHeart() {
       threeHeartGroup.rotation.y += 0.0055;
     }
 
-    // Physiological Wringing Dual-Phase Cardiac Cycle:
-    // Ventricular systole twists longitudinally like a wringing towel
-    const cycleTime = (threeClock * freq) % (Math.PI * 2);
-    const systolicKick = Math.pow(Math.max(0, Math.sin(cycleTime)), 2.8);
-    const atrialKick = Math.sin(cycleTime * 2) * 0.02;
+    // Real Echocardiographic 4-Phase Cardiac Cycle (Wiggers Physiology)
+    // t in [0, 1] normalized over the cardiac cycle duration
+    const t = ((threeClock * freq) % (Math.PI * 2)) / (Math.PI * 2);
+    let systolic = 0;
+    let atrial = 0;
+    let twist = 0;
 
-    const scaleX = 1.0 - (systolicKick * 0.09) + atrialKick;
-    const scaleY = 1.0 - (systolicKick * 0.12);
-    const scaleZ = 1.0 + (systolicKick * 0.06);
+    if (t < 0.12) {
+      // Phase 1: Atrial Systole (P-wave on ECG, presystolic atrial kick)
+      atrial = Math.sin((t / 0.12) * Math.PI) * 0.025;
+    } else if (t < 0.44) {
+      // Phase 2: Isovolumetric Contraction & Ventricular Ejection (QRS-T complex)
+      const s = (t - 0.12) / 0.32;
+      systolic = Math.pow(Math.sin(s * Math.PI), 1.7);
+      twist = systolic * 0.065; // Torsional wringing of apex
+    } else if (t < 0.58) {
+      // Phase 3: Isovolumetric Relaxation & Elastic Recoil Rebound
+      const r = (t - 0.44) / 0.14;
+      systolic = -0.03 * Math.sin(r * Math.PI);
+      twist = -0.015 * Math.sin(r * Math.PI);
+    } else {
+      // Phase 4: Diastolic Resting Pause (Heart resting & filling)
+      systolic = 0;
+      atrial = 0;
+      twist = 0;
+    }
+
+    const scaleX = 1.0 - (systolic * 0.09) + atrial;
+    const scaleY = 1.0 - (systolic * 0.13);
+    const scaleZ = 1.0 + (systolic * 0.06);
 
     threeHeartGroup.scale.set(scaleX, scaleY, scaleZ);
 
-    // Torsional wringing twist around Y axis during peak ejection
     if (!isThreeDragging) {
-      threeHeartGroup.rotation.z = Math.sin(cycleTime) * 0.035;
+      threeHeartGroup.rotation.z = twist;
     }
 
     // Stenosis Warning Beacon Animation
