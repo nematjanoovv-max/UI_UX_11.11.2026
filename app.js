@@ -76,11 +76,21 @@ const I18N = {
     dyn_visit_1: "1-Tashrif (Boshlang'ich holat):",
     dyn_visit_2: "2-Tashrif (Qayta ko'rik):",
     emr_records_title: "Saqlangan Bemorlar Ro'yxati",
-    ds_title: "UCI Cleveland Heart Disease Ma'lumotlar To'plami",
-    ds_sub: "Tozalangan 302 nafar bemorning 14 ta tibbiy parametri va tashxis holati",
+    ds_title: "UCI Cleveland Heart Disease — Kengaytirilgan Tahlil Markazi",
+    ds_sub: "Tozalangan 302 nafar bemorning 14 ta tibbiy parametri + 5 ta kardiologik indeks",
     filter_all: "Barchasi (302)",
     filter_risk: "Xavf Bor (164)",
     filter_healthy: "Sog'lom (138)",
+    btn_export_csv: "Boyitilgan CSV Yuklab Olish",
+    btn_synth_patient: "Sintetik Bemor Yaratish",
+    chart_age_gender_title: "Yosh Guruhlari va Kasallanish Nisbati",
+    chart_cp_risk_title: "Ko'krak Og'rig'i Turlari (CP 0-3) Bo'yicha Xavf",
+    chart_scatter_chol_bp_title: "Xolesterin va Qon Bosimi Tarqoqligi (302 Bemor)",
+    chart_ca_stenosis_title: "Zararlangan Tomirlar (ca) Bo'yicha Xavf",
+    cohort_query_title: "Aqlli Kohorta va Subgroup So'rov Tizimi",
+    correlations_title: "Biomarkerlar Korrelyatsiyasi va Klinik Ahamiyati (Pearson Matrix)",
+    biomarkers_title: "Klinik Biomarkerlar va Indekslar",
+    twins_title: "Datasetdagi Eng Yaqin 3 Bemor (CBR Twins)",
     risk_cat_1: "Past Xavf",
     risk_cat_2: "O'rtacha Xavf",
     risk_cat_3: "Yuqori Xavf",
@@ -147,11 +157,21 @@ const I18N = {
     dyn_visit_1: "Visit 1 (Baseline Assessment):",
     dyn_visit_2: "Visit 2 (Post-Therapy Follow-up):",
     emr_records_title: "Saved Patient Profiles",
-    ds_title: "UCI Cleveland Heart Disease Dataset",
-    ds_sub: "Cleaned 302 patient records with 14 clinical features and diagnostic labels",
+    ds_title: "UCI Cleveland Heart Disease — Advanced Analytics Studio",
+    ds_sub: "Cleaned 302 patient records with 14 clinical features + 5 engineered cardiac indices",
     filter_all: "All Records (302)",
     filter_risk: "Diseased (164)",
     filter_healthy: "Healthy (138)",
+    btn_export_csv: "Download Enriched CSV",
+    btn_synth_patient: "Generate Synthetic Case",
+    chart_age_gender_title: "Age Cohorts & Gender Disparity Breakdown",
+    chart_cp_risk_title: "Chest Pain Types (CP 0-3) Risk Disparity",
+    chart_scatter_chol_bp_title: "Cholesterol vs Resting Blood Pressure Scatter (302 Patients)",
+    chart_ca_stenosis_title: "Major Fluoroscopy Vessels (ca) Risk Association",
+    cohort_query_title: "Intelligent Subgroup & Cohort Query Engine",
+    correlations_title: "Biomarker Correlations & Clinical Risk Drivers (Pearson Matrix)",
+    biomarkers_title: "Calculated Clinical Biomarkers & Indices",
+    twins_title: "Nearest Patient Digital Twins (CBR Matcher)",
     risk_cat_1: "Low Risk",
     risk_cat_2: "Moderate Risk",
     risk_cat_3: "High Risk",
@@ -218,11 +238,21 @@ const I18N = {
     dyn_visit_1: "Визит 1 (Базовый осмотр):",
     dyn_visit_2: "Визит 2 (После терапии):",
     emr_records_title: "Список Сохранённых Пациентов",
-    ds_title: "Датасет UCI Cleveland Heart Disease",
-    ds_sub: "302 очищенные записи пациентов с 14 клиническими параметрами",
+    ds_title: "Датасет UCI Cleveland Heart Disease — Центр Углубленного Анализа",
+    ds_sub: "302 очищенные записи пациентов: 14 клинических признаков + 5 кардиологических индексов",
     filter_all: "Все (302)",
     filter_risk: "Есть риск (164)",
     filter_healthy: "Здоровые (138)",
+    btn_export_csv: "Скачать обогащенный CSV",
+    btn_synth_patient: "Синтетический Пациент",
+    chart_age_gender_title: "Возрастные Когорты и Гендерное Распределение",
+    chart_cp_risk_title: "Типы Загрудинной Боли (CP 0-3) и Вероятность Ишемии",
+    chart_scatter_chol_bp_title: "Диаграмма Рассеяния Холестерина и Давления (302 Пациента)",
+    chart_ca_stenosis_title: "Поражение Сосудов (ca) и Тяжесть Стеноза",
+    cohort_query_title: "Интеллектуальный Когортный Анализатор Подгрупп",
+    correlations_title: "Корреляция Биомаркеров и Клиническая Значимость (Пирсон)",
+    biomarkers_title: "Расчётные Клинические Биомаркеры и Индексы",
+    twins_title: "3 Ближайших Цифровых Двойника (CBR Twins)",
     risk_cat_1: "Низкий Риск",
     risk_cat_2: "Умеренный Риск",
     risk_cat_3: "Высокий Риск",
@@ -280,6 +310,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initEnhancedCharts();
   initDefaultEMRData();
   renderEMRRecords();
+  initDatasetIntelligence();
   runPrediction();
 });
 
@@ -338,6 +369,8 @@ function initTabs() {
         renderEMRRecords();
       } else if (targetId === 'tab-calculator') {
         setTimeout(resizeThreeCanvas, 50);
+      } else if (targetId === 'tab-dataset') {
+        setTimeout(initDatasetIntelligence, 50);
       }
     });
   });
@@ -1987,6 +2020,8 @@ function runPrediction() {
   updateClinicalAdvice(raw, effectiveRiskPct);
   updatePatientRadar(raw);
   updatePCAPatientPosition(scaled, raw);
+  updateClinicalBiomarkers(raw);
+  updateNearestPatientTwins(raw);
 }
 
 function updateEcgReadout(raw, riskPct) {
@@ -2800,16 +2835,507 @@ function runDynamicsComparison() {
   `;
 }
 
-// 19. UCI Cleveland Dataset Jadvali
+// 19. Klinik Biomarkerlar, CBR Egizaklar va UCI Cleveland Dataset Intelligence
+let activeCohortFilter = {
+  sex: 'all',
+  age: 'all',
+  bp: 'all',
+  chol: 'all',
+  st: 'all'
+};
+
+function updateClinicalBiomarkers(raw) {
+  // 1. Duke Treadmill Score (DTS = Exercise Time(min) - 5*ST_dep - 4*Angina)
+  // Time estimated from thalach: (thalach - 60) / 12
+  const estTime = (raw.thalach - 60) / 12.0;
+  const dts = Number((estTime - (5.0 * raw.oldpeak) - (4.0 * raw.exang)).toFixed(1));
+  const dtsEl = document.getElementById('bm-duke-score');
+  const dtsBadge = document.getElementById('bm-duke-badge');
+  if (dtsEl) {
+    dtsEl.textContent = `${dts > 0 ? '+' : ''}${dts}`;
+  }
+  if (dtsBadge) {
+    if (dts >= 5) {
+      dtsBadge.className = 'px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300';
+      dtsBadge.textContent = currentLang === 'ru' ? 'Низкий риск (≥5)' : (currentLang === 'en' ? 'Low Risk (≥5)' : "Past xavf (≥5)");
+    } else if (dts >= -10) {
+      dtsBadge.className = 'px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300';
+      dtsBadge.textContent = currentLang === 'ru' ? 'Умеренный (-10..4)' : (currentLang === 'en' ? 'Moderate (-10..4)' : "O'rta xavf (-10..4)");
+    } else {
+      dtsBadge.className = 'px-1.5 py-0.5 rounded text-[9px] font-bold bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 animate-pulse';
+      dtsBadge.textContent = currentLang === 'ru' ? 'Высокий риск (<-10)' : (currentLang === 'en' ? 'High Risk (<-10)' : "Yuqori xavf (<-10)");
+    }
+  }
+
+  // 2. Rate Pressure Product (RPP = SBP * HR / 100)
+  const rpp = Math.round((raw.trestbps * raw.thalach) / 100);
+  const rppEl = document.getElementById('bm-rpp-val');
+  const rppBadge = document.getElementById('bm-rpp-badge');
+  if (rppEl) rppEl.textContent = rpp.toString();
+  if (rppBadge) {
+    if (rpp > 250) {
+      rppBadge.className = 'px-1.5 py-0.5 rounded text-[9px] font-bold bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300';
+      rppBadge.textContent = currentLang === 'ru' ? 'Высокая MVO2' : (currentLang === 'en' ? 'High MVO2' : "Yuqori MVO2");
+    } else if (rpp >= 180) {
+      rppBadge.className = 'px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300';
+      rppBadge.textContent = currentLang === 'ru' ? 'Норма MVO2' : (currentLang === 'en' ? 'Normal MVO2' : "O'rta MVO2");
+    } else {
+      rppBadge.className = 'px-1.5 py-0.5 rounded text-[9px] font-bold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300';
+      rppBadge.textContent = currentLang === 'ru' ? 'Низкая MVO2' : (currentLang === 'en' ? 'Low MVO2' : "Past MVO2");
+    }
+  }
+
+  // 3. Mean Arterial Pressure (MAP = SBP * 0.7 + 25)
+  const mapVal = Math.round(raw.trestbps * 0.7 + 25);
+  const mapEl = document.getElementById('bm-map-val');
+  if (mapEl) mapEl.textContent = `${mapVal}`;
+
+  // 4. Chronotropic Reserve (% of age predicted max HR = thalach / (220 - age) * 100)
+  const maxPred = Math.max(1, 220 - raw.age);
+  const chronoPct = Math.round((raw.thalach / maxPred) * 100);
+  const chronoEl = document.getElementById('bm-chrono-val');
+  const chronoBadge = document.getElementById('bm-chrono-badge');
+  if (chronoEl) chronoEl.textContent = `${chronoPct}%`;
+  if (chronoBadge) {
+    if (chronoPct >= 85) {
+      chronoBadge.className = 'px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300';
+      chronoBadge.textContent = currentLang === 'ru' ? 'Достаточный' : (currentLang === 'en' ? 'Competent' : "Yetarli");
+    } else {
+      chronoBadge.className = 'px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300';
+      chronoBadge.textContent = currentLang === 'ru' ? 'Дефицит (<85%)' : (currentLang === 'en' ? 'Deficit (<85%)' : "Yetishmovchi");
+    }
+  }
+}
+
+function updateNearestPatientTwins(raw) {
+  const container = document.getElementById('cbr-twins-container');
+  if (!container || !MODEL_DATA || !MODEL_DATA.dataset_preview) return;
+
+  const dataset = MODEL_DATA.dataset_preview;
+  const currentVector = MODEL_DATA.features.map(f => raw[f.id] ?? f.default);
+  const scaledCurrent = scaleVector(currentVector);
+
+  const distances = dataset.map((patient, index) => {
+    const pVector = MODEL_DATA.features.map(f => patient[f.id] ?? f.default);
+    const scaledP = scaleVector(pVector);
+    let sumSq = 0;
+    for (let i = 0; i < scaledCurrent.length; i++) {
+      const diff = scaledCurrent[i] - scaledP[i];
+      sumSq += diff * diff;
+    }
+    const dist = Math.sqrt(sumSq);
+    const simPct = Math.max(15, Math.min(99, Math.round(100 / (1 + dist * 0.22))));
+    return { patient, index: index + 1, dist, simPct };
+  });
+
+  distances.sort((a, b) => a.dist - b.dist);
+  const top3 = distances.slice(0, 3);
+
+  container.innerHTML = top3.map((item) => {
+    const p = item.patient;
+    const isDiseased = p.target === 1;
+    return `
+      <div class="p-2 rounded-xl bg-slate-50/80 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-800 flex items-center justify-between text-[11px] gap-2">
+        <div class="flex items-center space-x-2">
+          <div class="w-6 h-6 rounded-full bg-purple-100 dark:bg-purple-950/80 text-purple-700 dark:text-purple-300 font-bold flex items-center justify-center font-mono text-[10px]">
+            #${item.index}
+          </div>
+          <div>
+            <div class="font-bold text-slate-800 dark:text-slate-200 flex items-center space-x-1.5">
+              <span>${p.age} yosh, ${p.sex === 1 ? (currentLang === 'ru' ? 'Муж' : (currentLang === 'en' ? 'Male' : 'Erkak')) : (currentLang === 'ru' ? 'Жен' : (currentLang === 'en' ? 'Female' : 'Ayol'))}</span>
+              <span class="font-mono text-purple-600 dark:text-purple-400 font-black">${item.simPct}% o'xshash</span>
+            </div>
+            <div class="text-[10px] text-slate-500 font-mono">
+              BP: ${p.trestbps} • Chol: ${p.chol} • Puls: ${p.thalach} • CA: ${p.ca}
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="px-2 py-0.5 rounded text-[9px] font-bold ${isDiseased ? 'bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300'}">
+            ${isDiseased ? (currentLang === 'ru' ? 'Ишемия' : (currentLang === 'en' ? 'Diseased' : 'Xavf Bor')) : (currentLang === 'ru' ? 'Здоров' : (currentLang === 'en' ? 'Healthy' : 'Sog\'lom'))}
+          </span>
+          <button onclick='loadDatasetRowToForm(${JSON.stringify(p)})' class="px-2 py-1 rounded text-[10px] font-bold bg-slate-200/80 hover:bg-purple-600 hover:text-white dark:bg-slate-700 dark:hover:bg-purple-600 transition" title="Kalkulyatorga yuklash">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function initDatasetIntelligence() {
+  if (!MODEL_DATA || !MODEL_DATA.dataset_intelligence) return;
+  initDatasetCharts();
+  renderCorrelationsList();
+  runCohortQuery();
+  renderDatasetTable();
+}
+
+function initDatasetCharts() {
+  if (!MODEL_DATA || !MODEL_DATA.dataset_intelligence) return;
+  const intel = MODEL_DATA.dataset_intelligence;
+  const isDark = document.documentElement.classList.contains('dark');
+  const textColor = isDark ? '#cbd5e1' : '#475569';
+  const gridColor = isDark ? '#334155' : '#f1f5f9';
+
+  // 1. Age & Gender Disparity Bar Chart
+  const ageCanvas = document.getElementById('chart-ds-age-gender');
+  if (ageCanvas && intel.cohort_distributions?.age_brackets) {
+    if (charts.dsAgeGender) charts.dsAgeGender.destroy();
+    const brackets = intel.cohort_distributions.age_brackets;
+    charts.dsAgeGender = new Chart(ageCanvas, {
+      type: 'bar',
+      data: {
+        labels: brackets.map(b => b.group),
+        datasets: [
+          {
+            label: currentLang === 'ru' ? 'Ишемия / Риск' : (currentLang === 'en' ? 'High Risk' : "Xavf Yuqori"),
+            data: brackets.map(b => b.diseased),
+            backgroundColor: 'rgba(225, 29, 72, 0.85)',
+            borderRadius: 6
+          },
+          {
+            label: currentLang === 'ru' ? 'Здоровые' : (currentLang === 'en' ? 'Healthy' : "Sog'lom"),
+            data: brackets.map(b => b.healthy),
+            backgroundColor: 'rgba(16, 185, 129, 0.85)',
+            borderRadius: 6
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: { color: textColor, font: { size: 10 } } }
+        },
+        scales: {
+          x: { ticks: { color: textColor }, grid: { display: false } },
+          y: { ticks: { color: textColor }, grid: { color: gridColor } }
+        }
+      }
+    });
+  }
+
+  // 2. Chest Pain (CP 0-3) vs Risk Chart
+  const cpCanvas = document.getElementById('chart-ds-cp-risk');
+  if (cpCanvas && intel.cohort_distributions?.cp_breakdown) {
+    if (charts.dsCpRisk) charts.dsCpRisk.destroy();
+    const cpData = intel.cohort_distributions.cp_breakdown;
+    charts.dsCpRisk = new Chart(cpCanvas, {
+      type: 'bar',
+      data: {
+        labels: cpData.map(c => c.label),
+        datasets: [{
+          label: currentLang === 'ru' ? 'Вероятность патологии (%)' : (currentLang === 'en' ? 'Risk Prevalence (%)' : 'Kasallanish ehtimoli (%)'),
+          data: cpData.map(c => c.risk_pct),
+          backgroundColor: [
+            'rgba(59, 130, 246, 0.85)',
+            'rgba(245, 158, 11, 0.85)',
+            'rgba(16, 185, 129, 0.85)',
+            'rgba(239, 68, 68, 0.85)'
+          ],
+          borderRadius: 8
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { ticks: { color: textColor, font: { size: 9 } }, grid: { display: false } },
+          y: { min: 0, max: 100, ticks: { color: textColor, callback: v => `${v}%` }, grid: { color: gridColor } }
+        }
+      }
+    });
+  }
+
+  // 3. Scatter Plot: Trestbps vs Chol
+  const scatterCanvas = document.getElementById('chart-ds-scatter-bp-chol');
+  if (scatterCanvas && intel.scatter_chol_bp) {
+    if (charts.dsScatter) charts.dsScatter.destroy();
+    const points = intel.scatter_chol_bp;
+    charts.dsScatter = new Chart(scatterCanvas, {
+      type: 'scatter',
+      data: {
+        datasets: [
+          {
+            label: currentLang === 'ru' ? 'Ишемия (Патология)' : (currentLang === 'en' ? 'Diseased' : 'Xavfli'),
+            data: points.filter(p => p.target === 1).map(p => ({ x: p.x, y: p.y })),
+            backgroundColor: 'rgba(225, 29, 72, 0.75)',
+            pointRadius: 4
+          },
+          {
+            label: currentLang === 'ru' ? 'Здоровые' : (currentLang === 'en' ? 'Healthy' : 'Sog\'lom'),
+            data: points.filter(p => p.target === 0).map(p => ({ x: p.x, y: p.y })),
+            backgroundColor: 'rgba(16, 185, 129, 0.75)',
+            pointRadius: 4
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: { color: textColor, font: { size: 10 } } }
+        },
+        scales: {
+          x: {
+            title: { display: true, text: 'Qon Bosimi (mm Hg)', color: textColor, font: { size: 10 } },
+            ticks: { color: textColor },
+            grid: { color: gridColor }
+          },
+          y: {
+            title: { display: true, text: 'Xolesterin (mg/dl)', color: textColor, font: { size: 10 } },
+            ticks: { color: textColor },
+            grid: { color: gridColor }
+          }
+        }
+      }
+    });
+  }
+
+  // 4. Vessel Stenosis (ca) vs Risk
+  const caCanvas = document.getElementById('chart-ds-ca-stenosis');
+  if (caCanvas && intel.cohort_distributions?.ca_breakdown) {
+    if (charts.dsCaStenosis) charts.dsCaStenosis.destroy();
+    const caData = intel.cohort_distributions.ca_breakdown;
+    charts.dsCaStenosis = new Chart(caCanvas, {
+      type: 'bar',
+      data: {
+        labels: caData.map(c => c.label),
+        datasets: [{
+          label: currentLang === 'ru' ? 'Доля ишемии (%)' : (currentLang === 'en' ? 'Prevalence (%)' : 'Xavf ulushi (%)'),
+          data: caData.map(c => c.risk_pct),
+          backgroundColor: [
+            'rgba(244, 63, 94, 0.85)',
+            'rgba(251, 146, 60, 0.85)',
+            'rgba(234, 179, 8, 0.85)',
+            'rgba(34, 197, 94, 0.85)'
+          ],
+          borderRadius: 8
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { ticks: { color: textColor }, grid: { display: false } },
+          y: { min: 0, max: 100, ticks: { color: textColor, callback: v => `${v}%` }, grid: { color: gridColor } }
+        }
+      }
+    });
+  }
+}
+
+function renderCorrelationsList() {
+  const container = document.getElementById('dataset-correlations-container');
+  if (!container || !MODEL_DATA || !MODEL_DATA.dataset_intelligence?.feature_correlations) return;
+
+  const correlations = MODEL_DATA.dataset_intelligence.feature_correlations;
+  container.innerHTML = correlations.map(item => {
+    const isPos = item.impact_direction === 'positive';
+    const barWidth = Math.round(item.abs_corr * 100);
+    const insight = currentLang === 'ru' ? item.insight_ru : (currentLang === 'en' ? item.insight_en : item.insight_uz);
+
+    return `
+      <div class="p-3 rounded-xl bg-slate-50/80 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 space-y-2">
+        <div class="flex items-center justify-between text-xs">
+          <span class="font-bold text-slate-800 dark:text-slate-200 font-mono">${item.id.toUpperCase()}</span>
+          <span class="font-mono font-bold ${isPos ? 'text-rose-600 dark:text-rose-400' : 'text-indigo-600 dark:text-indigo-400'}">
+            r = ${item.correlation > 0 ? '+' : ''}${item.correlation}
+          </span>
+        </div>
+        <div class="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+          <div class="h-full rounded-full ${isPos ? 'bg-rose-500' : 'bg-indigo-500'}" style="width: ${barWidth}%"></div>
+        </div>
+        <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-tight">
+          ${insight}
+        </p>
+      </div>
+    `;
+  }).join('');
+}
+
+function matchesCohortFilter(p) {
+  if (activeCohortFilter.sex === 'male' && p.sex !== 1) return false;
+  if (activeCohortFilter.sex === 'female' && p.sex !== 0) return false;
+
+  if (activeCohortFilter.age === 'under50' && p.age >= 50) return false;
+  if (activeCohortFilter.age === '50to60' && (p.age < 50 || p.age > 60)) return false;
+  if (activeCohortFilter.age === 'over60' && p.age <= 60) return false;
+
+  if (activeCohortFilter.bp === 'normal' && p.trestbps >= 130) return false;
+  if (activeCohortFilter.bp === 'high' && p.trestbps < 130) return false;
+
+  if (activeCohortFilter.chol === 'normal' && p.chol >= 200) return false;
+  if (activeCohortFilter.chol === 'high' && p.chol < 200) return false;
+
+  if (activeCohortFilter.st === 'none' && p.oldpeak >= 1.0) return false;
+  if (activeCohortFilter.st === 'ischemic' && p.oldpeak < 1.0) return false;
+
+  return true;
+}
+
+function runCohortQuery() {
+  if (!MODEL_DATA || !MODEL_DATA.dataset_preview) return;
+  const sex = document.getElementById('cohort-sel-sex')?.value || 'all';
+  const age = document.getElementById('cohort-sel-age')?.value || 'all';
+  const bp = document.getElementById('cohort-sel-bp')?.value || 'all';
+  const chol = document.getElementById('cohort-sel-chol')?.value || 'all';
+  const st = document.getElementById('cohort-sel-st')?.value || 'all';
+
+  activeCohortFilter = { sex, age, bp, chol, st };
+
+  let cohort = MODEL_DATA.dataset_preview.filter(matchesCohortFilter);
+  const n = cohort.length;
+  const k = cohort.filter(p => p.target === 1).length;
+
+  const totalN = MODEL_DATA.dataset_preview.length;
+  const totalK = MODEL_DATA.dataset_preview.filter(p => p.target === 1).length;
+
+  const otherN = totalN - n;
+  const otherK = totalK - k;
+
+  const prevCohort = n > 0 ? (k / n) * 100 : 0;
+  const prevOther = otherN > 0 ? (otherK / otherN) * 100 : 0;
+
+  const rr = prevOther > 0 ? (prevCohort / prevOther) : 1.0;
+  const a = k, b = n - k, c = otherK, d = otherN - otherK;
+  const or = (b > 0 && c > 0) ? ((a * d) / (b * c)) : 1.0;
+
+  const sizeBadge = document.getElementById('cohort-size-badge');
+  const prevBadge = document.getElementById('cohort-prevalence-badge');
+  const rrBadge = document.getElementById('cohort-rr-badge');
+  const orBadge = document.getElementById('cohort-or-badge');
+  const insightText = document.getElementById('cohort-insight-text');
+
+  if (sizeBadge) sizeBadge.textContent = `${n} bemor (${((n / totalN) * 100).toFixed(1)}%)`;
+  if (prevBadge) prevBadge.textContent = `${prevCohort.toFixed(1)}%`;
+  if (rrBadge) {
+    rrBadge.textContent = `${rr.toFixed(2)}x`;
+    rrBadge.className = rr >= 1.2 ? "font-mono text-rose-600 dark:text-rose-400 font-bold" : "font-mono text-slate-800 dark:text-slate-200 font-bold";
+  }
+  if (orBadge) orBadge.textContent = or.toFixed(2);
+
+  if (insightText) {
+    if (n === 0) {
+      insightText.textContent = "Ushbu parametrlar bo'yicha bazada bemor topilmadi.";
+    } else if (rr >= 1.3) {
+      insightText.innerHTML = `⚠️ Ushbu kohortada yurak kasalligi xavfi qolgan populyatsiyaga nisbatan <b class="text-rose-600 dark:text-rose-400">${rr.toFixed(2)} barobar</b> yuqori (Prevalensiya: ${prevCohort.toFixed(1)}%). Agresiv profilaktika va statsionar tekshiruv tavsiya etiladi.`;
+    } else if (rr <= 0.7) {
+      insightText.innerHTML = `✅ Ushbu kohortada kardiak xavf populyatsiya o'rtachasidan ancha past (RR: ${rr.toFixed(2)}x, ${prevCohort.toFixed(1)}%). Xavf darajasi past deb baholanadi.`;
+    } else {
+      insightText.innerHTML = `ℹ️ Ushbu kohortaning kasallanish ko'rsatkichi (${prevCohort.toFixed(1)}%) umumiy populyatsiya (${((totalK / totalN) * 100).toFixed(1)}%) ga yaqin (RR: ${rr.toFixed(2)}x).`;
+    }
+  }
+
+  const cohortFilterBtn = document.getElementById('filter-cohort');
+  if (cohortFilterBtn) {
+    cohortFilterBtn.classList.remove('hidden');
+    cohortFilterBtn.textContent = `Faol Kohorta (${n})`;
+  }
+}
+
+function filterTableByCohort() {
+  currentTableFilter = 'cohort';
+  currentTablePage = 1;
+  ['all', 'diseased', 'healthy', 'cohort'].forEach(f => {
+    const btn = document.getElementById(`filter-${f}`);
+    if (btn) {
+      if (f === 'cohort') {
+        btn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-purple-600 text-white transition";
+      } else {
+        btn.className = "px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition";
+      }
+    }
+  });
+  renderDatasetTable();
+  const tableEl = document.getElementById('dataset-table-body');
+  if (tableEl) tableEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function generateSyntheticPatient() {
+  if (!MODEL_DATA || !MODEL_DATA.dataset_preview) return;
+  const randomBase = MODEL_DATA.dataset_preview[Math.floor(Math.random() * MODEL_DATA.dataset_preview.length)];
+  const syntheticCase = {
+    age: Math.min(77, Math.max(32, randomBase.age + Math.floor(Math.random() * 9 - 4))),
+    sex: Math.random() > 0.32 ? 1 : 0,
+    cp: Math.floor(Math.random() * 4),
+    trestbps: Math.min(190, Math.max(95, randomBase.trestbps + Math.floor(Math.random() * 15 - 7))),
+    chol: Math.min(450, Math.max(140, randomBase.chol + Math.floor(Math.random() * 30 - 15))),
+    fbs: Math.random() > 0.85 ? 1 : 0,
+    restecg: Math.random() > 0.5 ? 1 : 0,
+    thalach: Math.min(200, Math.max(85, randomBase.thalach + Math.floor(Math.random() * 16 - 8))),
+    exang: Math.random() > 0.65 ? 1 : 0,
+    oldpeak: Number(Math.max(0, (randomBase.oldpeak + (Math.random() * 1.2 - 0.6))).toFixed(1)),
+    slope: Math.floor(Math.random() * 3),
+    ca: Math.random() > 0.6 ? (Math.random() > 0.5 ? 2 : 1) : 0,
+    thal: Math.random() > 0.5 ? 2 : (Math.random() > 0.5 ? 3 : 1)
+  };
+
+  loadDatasetRowToForm(syntheticCase);
+  alert(currentLang === 'ru' 
+    ? `Сгенерирован новый виртуальный клинический случай: ${syntheticCase.age} лет, АД ${syntheticCase.trestbps}, Холестерин ${syntheticCase.chol} мг/дл. Профиль загружен в калькулятор!` 
+    : (currentLang === 'en'
+      ? `Generated realistic synthetic clinical case: Age ${syntheticCase.age}, BP ${syntheticCase.trestbps}, Chol ${syntheticCase.chol} mg/dl. Loaded into diagnostic calculator!`
+      : `Yangi sintetik klinik holat generatsiya qilindi: Yoshi ${syntheticCase.age}, Bosimi ${syntheticCase.trestbps}, Xolesterin ${syntheticCase.chol} mg/dl. Diagnostika kalkulyatoriga yuklandi!`));
+}
+
+function exportEnrichedDatasetCSV() {
+  if (!MODEL_DATA || !MODEL_DATA.dataset_preview) return;
+  const list = MODEL_DATA.dataset_preview;
+  const headers = ["id", "age", "sex", "cp", "trestbps", "chol", "fbs", "restecg", "thalach", "exang", "oldpeak", "slope", "ca", "thal", "target", "duke_score", "duke_risk", "rpp", "map", "chronotropic_reserve"];
+  
+  let csvContent = headers.join(",") + "\n";
+  list.forEach((row, idx) => {
+    const line = [
+      idx + 1,
+      row.age,
+      row.sex,
+      row.cp,
+      row.trestbps,
+      row.chol,
+      row.fbs,
+      row.restecg,
+      row.thalach,
+      row.exang,
+      row.oldpeak,
+      row.slope,
+      row.ca,
+      row.thal,
+      row.target,
+      row.duke_score ?? '',
+      `"${row.duke_risk ?? ''}"`,
+      row.rpp ?? '',
+      row.map ?? '',
+      row.chronotropic_reserve ?? ''
+    ].join(",");
+    csvContent += line + "\n";
+  });
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.setAttribute("href", url);
+  link.setAttribute("download", `UCI_Cleveland_Enriched_302_Patients_${new Date().toISOString().split('T')[0]}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+// 20. UCI Cleveland Dataset Jadvali
 function setTableFilter(filter) {
   currentTableFilter = filter;
   currentTablePage = 1;
 
-  ['all', 'diseased', 'healthy'].forEach(f => {
+  ['all', 'diseased', 'healthy', 'cohort'].forEach(f => {
     const btn = document.getElementById(`filter-${f}`);
     if (btn) {
       if (f === filter) {
-        btn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-rose-600 text-white transition";
+        btn.className = (filter === 'cohort')
+          ? "px-3 py-1.5 rounded-lg text-xs font-semibold bg-purple-600 text-white transition"
+          : "px-3 py-1.5 rounded-lg text-xs font-semibold bg-rose-600 text-white transition";
       } else {
         btn.className = "px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition";
       }
@@ -2838,6 +3364,8 @@ function renderDatasetTable() {
     records = records.filter(r => r.target === 1);
   } else if (currentTableFilter === 'healthy') {
     records = records.filter(r => r.target === 0);
+  } else if (currentTableFilter === 'cohort') {
+    records = records.filter(matchesCohortFilter);
   }
 
   if (currentTableSearch) {
@@ -2847,7 +3375,8 @@ function renderDatasetTable() {
         r.trestbps.toString().includes(currentTableSearch) ||
         r.chol.toString().includes(currentTableSearch) ||
         r.thalach.toString().includes(currentTableSearch) ||
-        r.oldpeak.toString().includes(currentTableSearch)
+        r.oldpeak.toString().includes(currentTableSearch) ||
+        (r.duke_score && r.duke_score.toString().includes(currentTableSearch))
       );
     });
   }
@@ -2860,11 +3389,28 @@ function renderDatasetTable() {
   const pageRows = records.slice(start, start + rowsPerPage);
 
   if (pageInfo) {
-    pageInfo.textContent = `${start + 1} - ${Math.min(start + rowsPerPage, total)} / ${total}`;
+    pageInfo.textContent = `${total === 0 ? 0 : start + 1} - ${Math.min(start + rowsPerPage, total)} / ${total}`;
+  }
+
+  if (total === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="15" class="py-8 text-center text-slate-400">
+          Ushbu qidiruv yoki filtr bo'yicha ma'lumot topilmadi
+        </td>
+      </tr>
+    `;
+    if (paginationContainer) paginationContainer.innerHTML = '';
+    return;
   }
 
   tbody.innerHTML = pageRows.map((row, idx) => {
     const isDiseased = row.target === 1;
+    const dScore = row.duke_score ?? 0;
+    const dColor = dScore >= 5 
+      ? 'text-emerald-600 dark:text-emerald-400 font-bold' 
+      : (dScore >= -10 ? 'text-amber-600 dark:text-amber-400 font-bold' : 'text-rose-600 dark:text-rose-400 font-bold');
+
     return `
       <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition">
         <td class="py-2.5 px-3 text-slate-400">${start + idx + 1}</td>
@@ -2873,21 +3419,20 @@ function renderDatasetTable() {
         <td class="py-2.5 px-3">${row.cp}</td>
         <td class="py-2.5 px-3">${row.trestbps}</td>
         <td class="py-2.5 px-3">${row.chol}</td>
-        <td class="py-2.5 px-3">${row.fbs}</td>
-        <td class="py-2.5 px-3">${row.restecg}</td>
         <td class="py-2.5 px-3">${row.thalach}</td>
-        <td class="py-2.5 px-3">${row.exang}</td>
         <td class="py-2.5 px-3">${row.oldpeak}</td>
-        <td class="py-2.5 px-3">${row.slope}</td>
-        <td class="py-2.5 px-3">${row.ca}</td>
-        <td class="py-2.5 px-3">${row.thal}</td>
+        <td class="py-2.5 px-3 font-bold text-rose-500">${row.ca}</td>
+        <td class="py-2.5 px-3 font-mono ${dColor}">${dScore > 0 ? '+' : ''}${dScore}</td>
+        <td class="py-2.5 px-3 font-mono font-bold text-amber-600 dark:text-amber-400">${row.rpp ?? '-'}</td>
+        <td class="py-2.5 px-3 font-mono font-bold text-indigo-600 dark:text-indigo-400">${row.map ?? '-'}</td>
+        <td class="py-2.5 px-3 font-mono font-bold text-purple-600 dark:text-purple-400">${row.chronotropic_reserve ?? '-'}%</td>
         <td class="py-2.5 px-3 text-center">
           <span class="px-2 py-0.5 rounded text-[10px] font-bold ${isDiseased ? 'bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300'}">
             ${isDiseased ? 'Xavf Bor' : 'Sog\'lom'}
           </span>
         </td>
         <td class="py-2.5 px-3 text-right">
-          <button onclick='loadDatasetRowToForm(${JSON.stringify(row)})' class="px-2 py-1 rounded text-[10px] font-bold bg-slate-100 dark:bg-slate-800 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40 transition" title="Kalkulyatorga nusxalash">
+          <button onclick='loadDatasetRowToForm(${JSON.stringify(row)})' class="px-2 py-1 rounded text-[10px] font-bold bg-slate-100 dark:bg-slate-800 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40 transition" title="Kalkulyatorga yuklash">
             Yuklash
           </button>
         </td>
@@ -2911,7 +3456,7 @@ function goToTablePage(page) {
 
 function loadDatasetRowToForm(row) {
   Object.entries(row).forEach(([key, val]) => {
-    if (key === 'target') return;
+    if (key === 'target' || key === 'duke_score' || key === 'duke_risk' || key === 'rpp' || key === 'map' || key === 'chronotropic_reserve' || key === 'atherogenic_idx' || key === 'age_group') return;
     const slider = document.getElementById(`slider-${key}`);
     const display = document.getElementById(`val-${key}`);
     const select = document.getElementById(`input-${key}`);

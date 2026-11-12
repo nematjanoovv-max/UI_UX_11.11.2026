@@ -244,7 +244,144 @@ def main():
         })
     feature_importance.sort(key=lambda x: x["ensemble_weight"], reverse=True)
 
-    # 8. Eksport uchun JSON obyektini tuzish
+    # 8. Feature Engineering va Kengaytirilgan Klinik Biomarkerlar
+    print("\n[8] Klinik Feature Engineering va Kohorta Tahlili...")
+    df['rpp'] = (df['trestbps'] * df['thalach'] / 100.0).round(1)
+    df['map'] = (df['trestbps'] * 0.7 + 25.0).round(1)
+    df['chronotropic_reserve'] = ((df['thalach'] / (220.0 - df['age'])) * 100.0).round(1)
+    est_time = (df['thalach'] - 60.0) / 12.0
+    df['duke_score'] = (est_time - (5.0 * df['oldpeak']) - (4.0 * df['exang'])).round(2)
+    df['atherogenic_idx'] = (df['chol'] / (df['age'] * 3.5)).round(2)
+
+    def get_duke_risk(score):
+        if score >= 5:
+            return 'Low'
+        elif score >= -10:
+            return 'Moderate'
+        else:
+            return 'High'
+
+    df['duke_risk'] = df['duke_score'].apply(get_duke_risk)
+
+    medical_insights = {
+        "cp": {"uz": "Ko'krak og'rig'i tipi (angina xarakteri) kasallikning eng kuchli prediktorlaridan biridir.", "en": "Chest pain type is a primary hallmark of coronary perfusion insufficiency.", "ru": "Тип загрудинной боли является ведущим клиническим маркером ишемии."},
+        "thalach": {"uz": "Maksimal pulsga erishish qobiliyati yurak funksional rezervi bilan bevosita bog'liq.", "en": "Max heart rate reflects chronotropic competence and cardiac reserve.", "ru": "Максимальная ЧСС отражает хронотропный резерв миокарда."},
+        "slope": {"uz": "ST segmentining ko'tarilish burchagi mashqdan keyingi repolyarizatsiyani ifodalaydi.", "en": "ST slope indicates the nature of myocardial repolarization during exercise.", "ru": "Наклон сегмента ST отражает динамику реполяризации при нагрузке."},
+        "restecg": {"uz": "Tinch holatdagi EKGda ST-T o'zgarishlari yoki qorincha gipertrofiyasi.", "en": "Resting ECG shows baseline repolarization abnormalities or hypertrophy.", "ru": "ЭКГ покоя выявляет гипертрофию желудочка или диффузную ишемию."},
+        "fbs": {"uz": "Qand miqdori qon tomir endoteliysi holati va metabolik sindrom ko'rsatkichi.", "en": "Fasting blood sugar reflects endothelial dysfunction and metabolic syndrome.", "ru": "Глюкоза натощак указывает на метаболический синдром и повреждение сосудов."},
+        "chol": {"uz": "Zardob xolesterini aterosklerotik blyashkalar shakllanishiga zamin yaratadi.", "en": "Serum cholesterol directly drives coronary atherosclerotic plaque growth.", "ru": "Холестерин сыворотки ускоряет атеросклеротическое поражение артерий."},
+        "trestbps": {"uz": "Sistolik qon bosimi tomir devorlariga tushadigan gidravlik yuklamani belgilaydi.", "en": "Resting systolic blood pressure determines arterial afterload.", "ru": "Систолическое АД определяет сосудистое сопротивление и постнагрузку."},
+        "age": {"uz": "Yosh ulg'aygan sari tomirlar elastikligi kamayib, kalsifikatsiya darajasi oshadi.", "en": "Advanced age increases arterial stiffness and calcification burden.", "ru": "Возраст обуславливает жесткость сосудистой стенки и кальциноз."},
+        "sex": {"uz": "Erkaklarda erta yoshdanoq koronar kasalliklar xavfi statistik yuqoriroq.", "en": "Males exhibit earlier onset of coronary artery disease.", "ru": "Мужской пол статистически чаще подвержен ранней ишемической болезни."},
+        "thal": {"uz": "Qon perfuziyasi defekti yoki gemoglobin yetishmovchiligi kardiak ishemiyani kuchaytiradi.", "en": "Thalassemia perfusion defect aggravates regional ischemia.", "ru": "Дефекты перфузии миокарда напрямую вызывают тканевую гипоксию."},
+        "ca": {"uz": "Floroskopiyada ko'ringan kalsiylangan yirik koronar tomirlar soni.", "en": "Number of fluoroscopy-calcified major coronary vessels.", "ru": "Число кальцинированных коронарных артерий по данным флюороскопии."},
+        "oldpeak": {"uz": "Mashq orqali keltirib chiqarilgan ST depressiyasi - to'g'ridan-to'g'ri ishemiya nishoni.", "en": "Exercise-induced ST depression is a direct hallmark of subendocardial ischemia.", "ru": "Депрессия ST при нагрузке — прямой маркер субэндокардиальной ишемии."},
+        "exang": {"uz": "Jismoniy harakat vaqtida stenokardik ko'krak qisishi paydo bo'lishi.", "en": "Exercise-induced angina demonstrates clinical coronary steal syndrome.", "ru": "Стенокардия напряжения указывает на критическое несоответствие перфузии."}
+    }
+
+    feature_correlations = []
+    for f_id in feature_cols:
+        r_val = float(correlations.get(f_id, 0.0))
+        insight = medical_insights.get(f_id, {"uz": "Klinik parametr", "en": "Clinical parameter", "ru": "Клинический параметр"})
+        feature_correlations.append({
+            "id": f_id,
+            "correlation": round(r_val, 4),
+            "abs_corr": round(abs(r_val), 4),
+            "impact_direction": "positive" if r_val > 0 else "negative",
+            "insight_uz": insight["uz"],
+            "insight_en": insight["en"],
+            "insight_ru": insight["ru"]
+        })
+    feature_correlations.sort(key=lambda x: x["abs_corr"], reverse=True)
+
+    bins = [0, 39, 49, 59, 69, 120]
+    labels = ['<40', '40-49', '50-59', '60-69', '70+']
+    df['age_group'] = pd.cut(df['age'], bins=bins, labels=labels)
+    age_summary = df.groupby('age_group', observed=False).agg(
+        total=('target', 'count'),
+        diseased=('target', 'sum')
+    ).reset_index()
+
+    age_brackets = []
+    for _, row in age_summary.iterrows():
+        tot = int(row['total'])
+        dis = int(row['diseased'])
+        pct = round((dis / tot * 100), 1) if tot > 0 else 0
+        age_brackets.append({
+            'group': str(row['age_group']),
+            'total': tot,
+            'diseased': dis,
+            'healthy': tot - dis,
+            'risk_pct': pct
+        })
+
+    male_df = df[df['sex'] == 1]
+    female_df = df[df['sex'] == 0]
+    gender_breakdown = {
+        'male_total': len(male_df),
+        'male_diseased': int(male_df['target'].sum()),
+        'male_risk_pct': round(float(male_df['target'].mean() * 100), 1),
+        'female_total': len(female_df),
+        'female_diseased': int(female_df['target'].sum()),
+        'female_risk_pct': round(float(female_df['target'].mean() * 100), 1)
+    }
+
+    cp_labels_uz = ['0: Tipik stenokardiya', '1: Atipik stenokardiya', '2: Nosteno og\'riq', '3: Asimptomatik']
+    cp_breakdown = []
+    for cp_val in [0, 1, 2, 3]:
+        sub = df[df['cp'] == cp_val]
+        tot = len(sub)
+        dis = int(sub['target'].sum())
+        cp_breakdown.append({
+            'cp': cp_val,
+            'label': cp_labels_uz[cp_val],
+            'total': tot,
+            'diseased': dis,
+            'risk_pct': round((dis / tot * 100), 1) if tot > 0 else 0
+        })
+
+    ca_labels_uz = ['0 ta tomir', '1 ta tomir', '2 ta tomir', '3 ta tomir']
+    ca_breakdown = []
+    for ca_val in [0, 1, 2, 3]:
+        sub = df[df['ca'] == ca_val]
+        tot = len(sub)
+        dis = int(sub['target'].sum())
+        ca_breakdown.append({
+            'ca': ca_val,
+            'label': ca_labels_uz[ca_val],
+            'total': tot,
+            'diseased': dis,
+            'risk_pct': round((dis / tot * 100), 1) if tot > 0 else 0
+        })
+
+    scatter_points = []
+    for _, row in df.iterrows():
+        scatter_points.append({
+            'x': int(row['trestbps']),
+            'y': int(row['chol']),
+            'target': int(row['target']),
+            'age': int(row['age']),
+            'sex': int(row['sex'])
+        })
+
+    dataset_intelligence = {
+        "cohort_distributions": {
+            "age_brackets": age_brackets,
+            "gender_breakdown": gender_breakdown,
+            "cp_breakdown": cp_breakdown,
+            "ca_breakdown": ca_breakdown
+        },
+        "scatter_chol_bp": scatter_points,
+        "feature_correlations": feature_correlations,
+        "biomarkers_summary": {
+            "dts_mean": round(float(df['duke_score'].mean()), 2),
+            "rpp_mean": round(float(df['rpp'].mean()), 1),
+            "map_mean": round(float(df['map'].mean()), 1),
+            "chronotropic_mean": round(float(df['chronotropic_reserve'].mean()), 1)
+        }
+    }
+
+    # 9. Eksport uchun JSON obyektini tuzish
     export_data = {
         "project": {
             "title_uz": "Yurak kasalliklari xavfini bashorat qilish Pro Max Enterprise",
@@ -327,6 +464,7 @@ def main():
             "svm_prob_a": float(svm.probA_[0]) if hasattr(svm, 'probA_') else -1.0,
             "svm_prob_b": float(svm.probB_[0]) if hasattr(svm, 'probB_') else 0.0
         },
+        "dataset_intelligence": dataset_intelligence,
         "dataset_preview": df.to_dict(orient="records"),
         "eda_stats": {
             "total_patients": int(len(df)),

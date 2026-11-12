@@ -49,4 +49,15 @@ TUBDAN KENGAYTIRILGAN VA AMALGA OSHIRILGAN YANGI IMKONIYATLAR:
 8. Explainable AI (SHAP Waterfall tahlili).
 9. EMR: Bemorlar tarixi va Dinamika Tahlili (Visit 1 vs Visit 2).
 10. Ko'p tilli platforma (UZ / EN / RU).
+11. Dataset Orqali Chuqur Boyitish (UCI Cleveland Clinical Intelligence):
+    - Klinik Feature Engineering: Duke Treadmill Score (DTS), Rate Pressure Product (RPP),
+      Mean Arterial Pressure (MAP), va Xronotrop Zaxira (%) hisob-kitoblari.
+    - Case-Based Reasoning (CBR Twins): Joriy bemorga butun datasetdan eng o'xshash 3 ta
+      haqiqiy bemor profilini topish, o'xshashlik foizi va klinik natijalarini ko'rsatish.
+    - 4 ta Interaktiv Analitik Grafik (Yosh/Jins piramidasi, CP xavf taqsimoti,
+      Xolesterin va Bosim scatter xaritasi, Tomir stenozi va ST tahlili).
+    - Aqlli Kohorta So'rov Tizimi: Nisbiy Xavf (Relative Risk - RR) va Imkoniyatlar
+      Nisbati (Odds Ratio - OR) ni real vaqtda hisoblab, jadvalni kohortaga filtrlash.
+    - Sintetik Bemor Generatori: Dataset kovariatsiyasiga asoslangan realistik klinik holat yaratish.
+    - Boyitilgan CSV Eksport: 302 bemor + yangi 5 ta indeks bilan to'liq CSV yuklab olish.
 ================================================================================

@@ -52,6 +52,14 @@ CardioRisk AI Pro Max — bemorlarning 13 ta klinik ko'rsatkichlari asosida yura
 10. **Ko'p Tilli Platforma (i18n)**:
     - 🇺🇿 O'zbekcha, 🇬🇧 English, 🇷🇺 Русский tillarida 1 bosish bilan to'liq interfeys.
 
+11. **Dataset Orqali Chuqur Boyitish (UCI Cleveland Clinical Intelligence)**:
+    - **Klinik Feature Engineering**: Duke Treadmill Score (DTS), Rate Pressure Product (RPP), Mean Arterial Pressure (MAP) va Xronotrop Zaxira (%) ko'rsatkichlarini hisoblash.
+    - **Case-Based Reasoning (CBR Twins)**: Joriy bemorga butun 302 talik bazadan eng o'xshash 3 ta haqiqiy bemor profilini topish, o'xshashlik foizi va kasalxonadagi yakuniy tashxisini solishtirish.
+    - **4 ta Interaktiv Analitik Grafik**: Yosh kohortalari va jinsiy tafovut, Ko'krak og'rig'i (CP 0-3) xavf ulushi, Xolesterin va Qon bosimi tarqoqlik grafigi hamda Koronar tomir stenozi tahlili.
+    - **Aqlli Kohorta So'rov Tizimi (Cohort Query Engine)**: Muayyan yosh, jins, gipertoniya va xolesterin guruhlari uchun Nisbiy Xavf (Relative Risk - RR) va Imkoniyatlar Nisbatini (Odds Ratio - OR) real vaqtda hisoblash.
+    - **Sintetik Bemor Generatori**: Bitta tugma bilan dataset kovariatsiyasiga asoslangan yangi klinik profil yaratish va sinovdan o'tkazish.
+    - **Boyitilgan CSV Yuklab Olish**: 302 nafar bemorning barcha birlamchi va hisoblangan kardiologik indekslari bilan to'liq CSV faylini eksport qilish.
+
 ---
 
 ## 📊 5 Ta Modelning Sinov Natijalari (UCI Cleveland 302 Bemor)
