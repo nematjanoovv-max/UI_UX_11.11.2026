@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yurak — realistik 3D / 4D model (v3)</title>
+<style>
+  :root{color-scheme:dark}
+  html,body{margin:0;height:100%;overflow:hidden;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#e8ecf5;
+    background:radial-gradient(ellipse at 50% 42%,#1d2438 0%,#0d111c 55%,#06080f 100%)}
+  #stage{position:fixed;inset:0}
+  canvas{display:block}
+  #panel{position:fixed;top:12px;left:12px;width:262px;max-width:calc(100vw - 24px);max-height:calc(100vh - 24px);overflow:auto;
+    background:rgba(14,20,36,.78);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:14px;font-size:13px;z-index:5}
+  #panel h1{font-size:15px;margin:0 0 10px;font-weight:600;display:flex;justify-content:space-between;align-items:center}
+  #panel.min .body{display:none}
+  #panel label{display:flex;align-items:center;gap:8px;margin:6px 0;cursor:pointer}
+  #panel .row{display:flex;align-items:center;gap:8px;margin:8px 0;flex-wrap:wrap}
+  #panel .row span{min-width:70px}
+  #panel input[type=range]{flex:1;min-width:80px}
+  #panel hr{border:0;border-top:1px solid rgba(255,255,255,.1);margin:10px 0}
+  button{background:#b8322a;border:0;color:#fff;border-radius:8px;padding:7px 11px;font-size:13px;cursor:pointer}
+  button.ghost{background:rgba(255,255,255,.12)}
+  #status{margin-top:6px;font-size:12px;opacity:.85}
+  #ecg{display:block;width:100%;height:60px;margin-top:8px;background:#050810;border-radius:8px}
+  .lbl{position:fixed;left:0;top:0;pointer-events:none;font-size:12px;padding:3px 7px;border-radius:6px;
+    background:rgba(10,14,26,.82);border:1px solid rgba(255,255,255,.2);white-space:nowrap;display:none;z-index:4;transform:translate(-50%,-130%)}
+  #hint{position:fixed;bottom:10px;right:12px;font-size:11px;opacity:.5}
+  #creditView{position:fixed;bottom:10px;left:12px;font-size:11px;opacity:.65;max-width:60vw;pointer-events:none}
+  #murl{flex:1;min-width:0;width:auto;margin-top:0}
+  #drop{position:fixed;inset:0;display:none;align-items:center;justify-content:center;font-size:20px;z-index:25;
+    background:rgba(10,14,26,.78);border:3px dashed #b8322a;pointer-events:none}
+  #credit,#murl{width:100%;box-sizing:border-box;margin-top:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
+    color:inherit;border-radius:6px;padding:6px 8px;font-size:12px}
+  #loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;font-size:15px;z-index:20;
+    background:#06080f;transition:opacity .4s}
+  #err{position:fixed;left:12px;right:12px;bottom:12px;background:#4a1212;border:1px solid #c0392b;border-radius:10px;
+    padding:10px 12px;font:12px/1.4 ui-monospace,monospace;white-space:pre-wrap;display:none;z-index:30}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<div id="loading">Yurak modeli yaratilmoqda…</div>
+<div id="err"></div>
+
+<div id="panel">
+  <h1>Yurak — 4D model <button class="ghost" id="min" style="padding:2px 8px">–</button></h1>
+  <div class="body">
+    <div class="row">
+      <button id="play">⏸ To'xtatish</button>
+      <button id="reset" class="ghost">Kamera</button>
+      <button id="shot" class="ghost">📷</button>
+    </div>
+    <div class="row"><span>Puls (BPM)</span><input id="bpm" type="range" min="40" max="180" value="72"><b id="bpmv">72</b></div>
+    <div class="row"><span>Tekstura</span><input id="bump" type="range" min="0" max="3" step="0.05" value="1.1"></div>
+    <hr>
+    <label><input type="checkbox" id="l-myo" checked> Qorinchalar (miokard + yog')</label>
+    <label><input type="checkbox" id="l-atria" checked> Bo'lmachalar va quloqchalar</label>
+    <label><input type="checkbox" id="l-ves" checked> Yirik qon tomirlar</label>
+    <label><input type="checkbox" id="l-cor" checked> Koronar arteriya va venalar</label>
+    <hr>
+    <label><input type="checkbox" id="l-atlas"> Atlas ranglari (qizil / ko'k)</label>
+    <label><input type="checkbox" id="l-flow"> Qon oqimi (tomirlar shaffof)</label>
+    <label><input type="checkbox" id="l-lbl"> Nomlar</label>
+    <label><input type="checkbox" id="l-snd"> Yurak tovushi</label>
+    <label><input type="checkbox" id="l-rot"> Avto-aylantirish</label>
+    <hr>
+    <div style="font-weight:600;margin-bottom:4px">Haqiqiy model (KT/MRT)</div>
+    <div class="row">
+      <button class="ghost" id="loadModel">Model yuklash</button>
+      <button class="ghost" id="backProc" style="display:none">Protsedurali</button>
+    </div>
+    <input type="file" id="modelFile" multiple accept=".glb,.gltf,.obj,.stl,.ply" style="display:none">
+    <div id="modelTools" style="display:none">
+      <label><input type="checkbox" id="m-skin" checked> Realistik material</label>
+      <div class="row"><button class="ghost" id="rx">X ↻</button><button class="ghost" id="ry">Y ↻</button><button class="ghost" id="rz">Z ↻</button><button class="ghost" id="rm">Ko'zgu</button></div>
+      <div class="row"><span>Hajm</span><input id="msz" type="range" min="0.5" max="1.6" step="0.01" value="1"></div>
+    </div>
+    <div id="noModel" style="font-size:12px;opacity:.9;margin:6px 0">Hozir protsedurali yurak. Haqiqiy model: <a href="https://3d.nih.gov/entries/3DPX-022787" target="_blank" rel="noopener" style="color:#ff8a80">NIH 3D</a> dan <b>heart.glb</b> ni yuklab, shu oynaga tashlang.</div>
+    <div class="row"><input id="murl" type="text" placeholder="yoki GLB/OBJ/STL havolasi (https://…)"><button class="ghost" id="murlGo">OK</button></div>
+    <input id="credit" type="text" placeholder="Manba / litsenziya (ekranda ko'rinadi)">
+    <div id="status"></div>
+    <canvas id="ecg" width="240" height="60"></canvas>
+  </div>
+</div>
+<div id="hint">Sichqoncha / barmoq: aylantirish, masshtab. Model fayllarini shu oynaga tashlang.</div>
+<div id="creditView"></div>
+<div id="drop">Faylni shu yerga tashlang (GLB, OBJ, STL, PLY)</div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+import { STLLoader } from 'three/addons/loaders/STLLoader.js';
+import { PLYLoader } from 'three/addons/loaders/PLYLoader.js';
+import { mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+/* ============================================================
+   SOZLAMALAR
+   Tibbiy aniqlik uchun KT/MRT asosidagi tayyor .glb modelni
+   MODEL_URL ga yozing (yoki panelda "Haqiqiy .glb yuklash").
+   ============================================================ */
+const DEFAULT_MODEL = 'models/heart.glb';
+const DEFAULT_CREDIT = '';   // manba haqiqatan aniq bo'lgach shu yerga yozing (yoki paneldagi maydonga)
+const CONFIG = {
+  MODEL_URL: new URLSearchParams(location.search).get('model') || '',
+  MODEL_TARGET_HEIGHT: 4.4
+};
+
+const errBox = document.getElementById('err');
+function showError(e){ errBox.style.display = 'block'; errBox.textContent = 'Xatolik: ' + (e && e.stack || e); document.getElementById('loading').style.display = 'none'; }
+addEventListener('error', ev => showError(ev.error || ev.message));
+addEventListener('unhandledrejection', ev => showError(ev.reason));
+
+/*PURE_START*/
+/* ------------------------------------------------------------------
+   TOZA MATEMATIKA QISMI (THREE ga bog'liq emas): yurak sirti,
+   bo'lmachalar, tomirlar va koronar arteriyalar geometriyasi.
+   Koordinatalar: x — bemorning chap tomoni, y — yuqori, z — old.
+   ------------------------------------------------------------------ */
+const clamp = (x, a, b) => x < a ? a : x > b ? b : x;
+const lerp = (a, b, t) => a + (b - a) * t;
+const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+const hsh = (x, y, z) => {
+  let h = Math.imul(x, 374761393) ^ Math.imul(y, 668265263) ^ Math.imul(z, 1274126177);
+  h = Math.imul(h ^ (h >>> 13), 1274126177);
+  return ((h ^ (h >>> 16)) >>> 0) / 4294967295;
+};
+const sm = t => t * t * (3 - 2 * t);
+function vnoise(x, y, z) {
+  const xi = Math.floor(x), yi = Math.floor(y), zi = Math.floor(z);
+  const xf = sm(x - xi), yf = sm(y - yi), zf = sm(z - zi);
+  return lerp(
+    lerp(lerp(hsh(xi, yi, zi), hsh(xi + 1, yi, zi), xf), lerp(hsh(xi, yi + 1, zi), hsh(xi + 1, yi + 1, zi), xf), yf),
+    lerp(lerp(hsh(xi, yi, zi + 1), hsh(xi + 1, yi, zi + 1), xf), lerp(hsh(xi, yi + 1, zi + 1), hsh(xi + 1, yi + 1, zi + 1), xf), yf),
+    zf);
+}
+const fbm = (x, y, z) => vnoise(x, y, z) * 0.5 + vnoise(x * 2, y * 2, z * 2) * 0.3 + vnoise(x * 4, y * 4, z * 4) * 0.2;
+const angDiff = (a, b) => { let d = a - b; while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI; return d; };
+const mixc = (a, b, t) => [lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t)];
+const hex = h => [((h >> 16) & 255) / 255, ((h >> 8) & 255) / 255, (h & 255) / 255];
+
+// Yurak o'lchamlari va muhim anatomik burchaklar
+const HC = { cy: -0.4, rx: 1.35, ry: 1.95, rz: 1.10,
+  azG: 1.48,   // qorinchalararo egat (LAD) azimuti
+  azRV: 2.35,  // o'ng qorincha bo'rtig'i markazi
+  yAV: 0.62 }; // bo'lmacha-qorincha (koronar) egati balandligi
+const COL = { lv: hex(0x8a2822), rv: hex(0xa8453c), fatA: hex(0xe6c874), fatB: hex(0xc89b48) };
+
+/* Qorinchalar sirti: birlik vektor q (qx,qy,qz) -> nuqta, rang, yog' miqdori */
+function ventSurface(qx, qy, qz) {
+  const rr0 = Math.hypot(qx, qz);
+  let x = qx, y = qy, z = qz;
+  if (y > 0 && rr0 > 1e-6) { const k = Math.pow(rr0, 0.62) / rr0; x *= k; z *= k; }      // yassi asos
+  if (y < 0.15) { const tp = clamp((0.15 - y) / 1.15, 0, 1); const f = 1 - 0.62 * Math.pow(tp, 1.25); x *= f; z *= f; } // uchiga torayish
+  if (z < 0) z *= 0.82;                                                                  // orqa yuza yassiroq
+  const az = Math.atan2(qz, qx);
+  const dRV = angDiff(az, HC.azRV);
+  const apexFade = smooth(-0.85, -0.2, qy);
+  const topFade = 1 - 0.5 * smooth(0.75, 1.0, qy);
+  const rvW = Math.exp(-Math.pow(dRV / 0.85, 2)) * apexFade;
+  const bulge = 0.26 * rvW * topFade;                                                     // o'ng qorincha bo'rtig'i
+  x *= 1 + bulge; z *= 1 + bulge;
+  const sd = Math.sin(az - HC.azG);
+  const groove = Math.exp(-Math.pow(sd / 0.13, 2)) * smooth(0.12, 0.45, rr0);                 // old va orqa qorinchalararo egat
+  const avg = Math.exp(-Math.pow((qy - HC.yAV) / 0.07, 2));                                   // koronar egat
+  const s = 1 - 0.075 * groove - 0.05 * avg;
+  x *= s; z *= s;
+  let X = x * HC.rx, Y = qy * HC.ry + HC.cy, Z = z * HC.rz;
+
+  // epikard yog'i (egatlar bo'ylab va asosda, notekis bo'laklar bilan)
+  const base = smooth(0.38, 0.80, qy) * 0.72;
+  const gf = groove * smooth(-0.9, 0.1, qy);
+    let f = Math.max(base, gf, avg);
+  f += (fbm(X * 2.6, Y * 2.6, Z * 2.6) - 0.5) * 0.6;
+  const fat = smooth(0.40, 0.62, f);
+
+  // organik g'ijimlik + yog' bo'laklari
+  const n1 = (fbm(X * 1.1 + 3, Y * 1.1, Z * 1.1) - 0.5) * 0.07;
+  const n2 = (fbm(X * 5, Y * 5, Z * 5) - 0.5) * 0.012;
+  const lump = fat * 0.04 * (0.5 + vnoise(X * 8, Y * 8, Z * 8));
+  const d = n1 + n2 + lump;
+  X += qx * d; Y += qy * d; Z += qz * d;
+
+  // chap tomonga va oldinga og'ish (uch chapga-oldinga qaragan)
+  const t = clamp((0.9 - Y) / 3.25, 0, 1), sh = Math.pow(t, 1.2);
+  X += 1.1 * sh; Z += 0.5 * sh;
+
+  // rang
+  let col = mixc(COL.lv, COL.rv, clamp(rvW * 0.9, 0, 1));
+  const vv = (fbm(X * 3, Y * 3, Z * 3) - 0.5) * 0.35;
+  col = col.map(c => clamp(c * (1 + vv), 0, 1));
+  const fatCol = mixc(COL.fatB, COL.fatA, fbm(X * 7 + 2, Y * 7, Z * 7));
+  col = mixc(col, fatCol, fat);
+  const ao = 1 - 0.32 * groove * (1 - fat) - 0.25 * avg * (1 - fat);
+  col = col.map(c => c * ao);
+  return { p: [X, Y, Z], col, fat, groove };
+}
+
+/* Sirtdagi (azimut, balandlik) nuqtani 3D ga o'tkazish — koronar tomirlar uchun */
+function surfPt(az, yq, off) {
+  const s = Math.sqrt(Math.max(0, 1 - yq * yq));
+  const qx = Math.cos(az) * s, qz = Math.sin(az) * s;
+  const r = ventSurface(qx, yq, qz);
+  return [r.p[0] + qx * off, r.p[1] + yq * off, r.p[2] + qz * off];
+}
+
+/* Bo'lmacha / quloqcha / umumiy "blob" sirti */
+function blobSurface(qx, qy, qz, c) {
+  let x = qx, y = qy, z = qz;
+  if (c.tip) { const t = clamp((x + 0.2) / 1.2, 0, 1); const f = 1 - c.tip * t * t; y *= f; z *= f; }
+  let X = x * c.r[0], Y = y * c.r[1], Z = z * c.r[2];
+  const n = (fbm(X * 1.7 + c.seed, Y * 1.7, Z * 1.7 + c.seed * 2) - 0.5) * c.noise
+          + (fbm(X * 6 + c.seed, Y * 6, Z * 6) - 0.5) * c.noise * 0.25;
+  X += qx * n; Y += qy * n; Z += qz * n;
+  let col = c.col.map(v => clamp(v * (1 + (fbm(X * 3 + c.seed, Y * 3, Z * 3) - 0.5) * 0.3), 0, 1));
+  if (c.fatBot) {
+    let f = smooth(-0.05, -0.8, qy) + (fbm(X * 4.5, Y * 4.5, Z * 4.5) - 0.5) * 0.7;
+    f = smooth(0.4, 0.62, f);
+    col = mixc(col, mixc(COL.fatB, COL.fatA, fbm(X * 7, Y * 7, Z * 7)), f);
+    const k = f * 0.025; X += qx * k; Y += qy * k; Z += qz * k;
+  }
+  return { p: [X, Y, Z], col };
+}
+
+const ATRIA = [
+  { id: 'ra',  c: [-1.0, 1.25, 0.15],  r: [0.70, 0.80, 0.65], noise: 0.05, seed: 3,  col: hex(0x8a3540), fatBot: true },
+  { id: 'la',  c: [0.3, 1.2, -0.75],   r: [1.20, 0.60, 0.55], noise: 0.05, seed: 5,  col: hex(0x8d3a3c), fatBot: true },
+  { id: 'raa', c: [-0.45, 1.7, 0.8],   r: [0.70, 0.40, 0.20], noise: 0.14, seed: 9,  col: hex(0x9a3d44), tip: 0.9, dir: [0.95, 0.25, -0.15] },
+  { id: 'laa', c: [1.1, 1.5, 0.15],    r: [0.55, 0.34, 0.17], noise: 0.14, seed: 11, col: hex(0x95393d), tip: 0.9, dir: [-0.6, 0.15, 0.78] }
+];
+
+/* Yirik tomirlar: kind — rang guruhi, pulse — urish bilan pulsatsiya,
+   flow — oqim yo'nalishi (+1 yurakdan uzoqqa, -1 yurakka)           */
+const VESSELS = [
+  { id: 'aorta', kind: 'artery', pulse: true, flow: 1, bulb: true, r0: 0.44, r1: 0.36,
+    pts: [[-0.05,1.35,-0.05],[-0.05,1.9,-0.1],[0.05,2.5,-0.2],[0.5,3.0,-0.4],[1.1,3.1,-0.65],[1.5,2.6,-0.9],[1.5,1.8,-1.4],[1.5,1.0,-1.5]] },
+  { id: 'brachio', kind: 'artery', flow: 1, r0: 0.21, r1: 0.19, pts: [[0.5,3.0,-0.4],[0.45,3.5,-0.4],[0.3,4.0,-0.4]] },
+  { id: 'rcca', kind: 'artery', flow: 1, r0: 0.12, r1: 0.11, pts: [[0.3,4.0,-0.4],[0.25,4.4,-0.4],[0.2,4.8,-0.4]] },
+  { id: 'rsa', kind: 'artery', flow: 1, r0: 0.14, r1: 0.12, pts: [[0.3,4.0,-0.4],[-0.2,4.2,-0.4],[-0.8,4.3,-0.4],[-1.3,4.2,-0.4]] },
+  { id: 'lcca', kind: 'artery', flow: 1, r0: 0.13, r1: 0.12, pts: [[1.1,3.1,-0.65],[1.1,3.6,-0.65],[1.05,4.2,-0.65]] },
+  { id: 'lsa', kind: 'artery', flow: 1, r0: 0.15, r1: 0.13, pts: [[1.33,2.85,-0.78],[1.6,3.3,-0.8],[2.1,3.7,-0.75]] },
+  { id: 'pt', kind: 'pulmA', pulse: true, flow: 1, r0: 0.42, r1: 0.36, pts: [[0.25,1.5,0.6],[0.4,1.9,0.55],[0.65,2.2,0.4],[0.95,2.35,0.15]] },
+  { id: 'rpa', kind: 'pulmA', flow: 1, r0: 0.28, r1: 0.23, pts: [[0.95,2.35,0.15],[0.7,2.3,-0.35],[0.25,2.25,-0.78],[-0.5,2.3,-0.85],[-1.2,2.2,-0.7],[-1.9,2.05,-0.6]] },
+  { id: 'lpa', kind: 'pulmA', flow: 1, r0: 0.26, r1: 0.21, pts: [[0.95,2.35,0.15],[1.3,2.3,-0.15],[1.7,2.15,-0.45],[2.2,2.0,-0.6]] },
+  { id: 'svc', kind: 'vein', flow: -1, r0: 0.31, r1: 0.29, pts: [[-1.0,1.6,-0.05],[-1.02,2.3,-0.15],[-1.02,3.4,-0.25]] },
+  { id: 'ivc', kind: 'vein', flow: -1, r0: 0.38, r1: 0.36, pts: [[-0.9,0.7,-0.6],[-0.9,0.2,-1.0],[-0.9,-0.35,-1.1]] },
+  { id: 'rspv', kind: 'pulmV', flow: -1, r0: 0.17, r1: 0.15, pts: [[-0.4,1.35,-0.9],[-1.1,1.5,-1.0],[-1.8,1.6,-0.9]] },
+  { id: 'ripv', kind: 'pulmV', flow: -1, r0: 0.17, r1: 0.15, pts: [[-0.4,0.95,-0.95],[-1.1,0.95,-1.05],[-1.8,0.85,-1.0]] },
+  { id: 'lspv', kind: 'pulmV', flow: -1, r0: 0.17, r1: 0.15, pts: [[1.0,1.35,-0.9],[1.7,1.5,-1.0],[2.4,1.6,-0.95]] },
+  { id: 'lipv', kind: 'pulmV', flow: -1, r0: 0.17, r1: 0.15, pts: [[1.0,0.95,-0.95],[1.7,0.95,-1.05],[2.4,0.85,-1.0]] }
+];
+
+/* Koronar arteriyalar va yurak venalari — qorincha sirtiga aniq "yopishgan" */
+function coronaryCurves() {
+  const P = (az, yq, off) => surfPt(az, yq, off === undefined ? 0.03 : off);
+  const L = lerp;
+  const out = [];
+  const add = (id, kind, r0, r1, pts) => out.push({ id, kind, r0, r1, pts });
+  const seq = (n, f) => Array.from({ length: n }, (_, i) => f(i / (n - 1)));
+  const mid = (a, b) => [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2 + 0.03, (a[2] + b[2]) / 2 + 0.06];
+  const azG = HC.azG, yAV = HC.yAV;
+  const rcaY = az => yAV - 0.02 - 0.1 * Math.sin(Math.PI * (az - 1.95) / (4.62 - 1.95));
+  const branch = (id, az0, y0, az1, y1, r0, r1, wob) =>
+    add(id, 'art', r0, r1, seq(14, t => P(L(az0, az1, t) + wob * Math.sin(Math.PI * t), L(y0, y1, t))));
+
+  // chap asosiy tana + LAD + diagonal
+  const lmS = [0.35, 1.5, 0.0], lmE = P(1.25, 0.8);
+  add('lm', 'art', 0.062, 0.052, [lmS, mid(lmS, lmE), lmE]);
+  add('lad', 'art', 0.058, 0.020, seq(30, t => P(azG, L(0.78, -0.93, t))));
+  branch('d1', azG, 0.45, azG - 0.95, 0.02, 0.028, 0.010, 0.10);
+  branch('d2', azG, 0.10, azG - 1.05, -0.38, 0.024, 0.009, 0.08);
+  // sirkumfleks + o'tkir marginal shoxlar
+  add('cx', 'art', 0.050, 0.026, seq(46, t => P(L(1.25, -2.2, t), yAV)));
+  branch('om1', 0.62, yAV, 0.38, -0.25, 0.026, 0.010, 0.05);
+  branch('om2', 0.05, yAV, -0.18, -0.42, 0.024, 0.009, 0.05);
+  // o'ng koronar arteriya + orqa tushuvchi + o'tkir marginal
+  const rmS = [-0.3, 1.5, 0.2], rmE = P(1.95, rcaY(1.95));
+  add('rm', 'art', 0.058, 0.052, [rmS, mid(rmS, rmE), rmE]);
+  add('rca', 'art', 0.058, 0.032, seq(46, t => { const az = L(1.95, 4.62, t); return P(az, rcaY(az)); }));
+  add('pda', 'art', 0.034, 0.014, seq(30, t => P(azG + Math.PI, L(0.58, -0.92, t))));
+  branch('am1', 2.6, rcaY(2.6), 2.95, -0.3, 0.026, 0.010, 0.04);
+  branch('am2', 3.3, rcaY(3.3), 3.42, -0.5, 0.022, 0.009, 0.04);
+  // yurak venalari: katta yurak venasi + koronar sinus + o'rta vena
+  const gcv = seq(18, t => P(azG - 0.13, L(-0.55, 0.58, t), 0.02))
+    .concat(seq(34, t => P(L(1.35, -2.15, t), yAV - 0.075, 0.02)))
+    .concat(seq(10, t => P(L(4.13, 4.62, t), yAV - 0.075, 0.02)));
+  add('gcv', 'cvein', 0.036, 0.07, gcv);
+  add('mcv', 'cvein', 0.028, 0.04, seq(24, t => P(azG + Math.PI + 0.13, L(-0.7, 0.5, t), 0.02)));
+  return out;
+}
+/*PURE_END*/
+
+/* ================= THREE QISMI ================= */
+const V3 = THREE.Vector3;
+const $ = id => document.getElementById(id);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: false });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.toneMapping = THREE.NeutralToneMapping || THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.0;
+$('stage').appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.03).texture;
+if ('environmentIntensity' in scene) scene.environmentIntensity = 0.9;
+
+const camera = new THREE.PerspectiveCamera(38, innerWidth / innerHeight, 0.1, 200);
+const HOME = { pos: new V3(2.5, 2.0, 16.5), target: new V3(0.3, 1.1, 0) };
+camera.position.copy(HOME.pos);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.copy(HOME.target);
+controls.enableDamping = true;
+controls.minDistance = 3.5;
+controls.maxDistance = 40;
+controls.autoRotateSpeed = 1.1;
+controls.update();
+
+const key = new THREE.DirectionalLight(0xfff2e6, 1.7); key.position.set(5, 7, 8); scene.add(key);
+const fill = new THREE.DirectionalLight(0xa9c4ff, 0.55); fill.position.set(-7, 1, 4); scene.add(fill);
+const rimL = new THREE.DirectionalLight(0xffb4a0, 0.9); rimL.position.set(-3, 3, -8); scene.add(rimL);
+const spec = new THREE.PointLight(0xffffff, 18, 0, 2); spec.position.set(3.5, 4.5, 6.5); scene.add(spec);
+
+/* ---------- Mushak tolasi / g'ijimlik teksturasi (u bo'yicha tilingli) ---------- */
+function makeFiberTexture(S) {
+  const cv = document.createElement('canvas'); cv.width = cv.height = S;
+  const ctx = cv.getContext('2d'), img = ctx.createImageData(S, S);
+  for (let y = 0; y < S; y++) {
+    const v = y / S;
+    for (let x = 0; x < S; x++) {
+      const a = (x / S) * Math.PI * 2, nx = Math.cos(a) * 1.7, nz = Math.sin(a) * 1.7;
+      const f1 = fbm(nx + 10, v * 36, nz + 10);               // tolalar: u bo'ylab cho'zilgan
+      const f2 = fbm(nx * 5, v * 95, nz * 5);
+      const pores = vnoise(nx * 14, v * 140, nz * 14);
+      const g = clamp(0.5 * f1 + 0.3 * f2 + 0.2 * pores, 0, 1);
+      const i = (y * S + x) * 4;
+      const b = Math.floor(g * 255);
+      img.data[i] = img.data[i + 1] = img.data[i + 2] = b; img.data[i + 3] = 255;
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+  const t = new THREE.CanvasTexture(cv);
+  t.wrapS = THREE.RepeatWrapping; t.wrapT = THREE.ClampToEdgeWrapping;
+  t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  return t;
+}
+const dotTex = (() => {
+  const c = document.createElement('canvas'); c.width = c.height = 64;
+  const x = c.getContext('2d'), g = x.createRadialGradient(32, 32, 2, 32, 32, 30);
+  g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(0.5, 'rgba(255,255,255,.8)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+  x.fillStyle = g; x.fillRect(0, 0, 64, 64);
+  return new THREE.CanvasTexture(c);
+})();
+
+/* ---------- Materiallar ---------- */
+let sssId = 0;
+const patchedMats = [];
+function sssPatch(mat, tint, strength, power) {
+  const id = 'sss' + (sssId++);
+  patchedMats.push(mat);
+  mat.onBeforeCompile = sh => {
+    sh.fragmentShader = sh.fragmentShader.replace('#include <opaque_fragment>', `
+      { float ndv = abs(dot(normalize(normal), normalize(vViewPosition)));
+        float rim = pow(1.0 - ndv, ${power.toFixed(1)});
+        outgoingLight += vec3(${tint}) * rim * ${strength.toFixed(2)}; }
+      #include <opaque_fragment>`);
+  };
+  mat.customProgramCacheKey = () => id;
+}
+let fiberTex, vesselTex, myoMat, atriaMat, vesselMats = {}, coroMats = {}, capMat;
+const COLORS = {
+  natural: { artery: 0xc99483, pulmA: 0xb98f89, vein: 0x8b5660, pulmV: 0xc07c73, art: 0xa82a2c, cvein: 0x5d4a86 },
+  atlas:   { artery: 0xd6392f, pulmA: 0x4c66c8, vein: 0x4a50a6, pulmV: 0xd8463d, art: 0xe0201f, cvein: 0x4a4aa0 }
+};
+function makeMaterials() {
+  fiberTex = makeFiberTexture(1024);
+  vesselTex = fiberTex.clone(); vesselTex.wrapT = THREE.MirroredRepeatWrapping; vesselTex.repeat.set(5, 3); vesselTex.needsUpdate = true;
+
+  myoMat = new THREE.MeshPhysicalMaterial({
+    vertexColors: true, roughness: 0.48, metalness: 0,
+    clearcoat: 1.0, clearcoatRoughness: 0.14,
+    sheen: 0.5, sheenRoughness: 0.5, sheenColor: new THREE.Color(0xff9a8a),
+    bumpMap: fiberTex, bumpScale: 1.1
+  });
+  sssPatch(myoMat, '0.55,0.06,0.04', 0.55, 2.2);
+  atriaMat = new THREE.MeshPhysicalMaterial({
+    vertexColors: true, roughness: 0.5, clearcoat: 0.8, clearcoatRoughness: 0.2,
+    sheen: 0.5, sheenRoughness: 0.5, sheenColor: new THREE.Color(0xe08c96),
+    bumpMap: fiberTex, bumpScale: 0.8
+  });
+  sssPatch(atriaMat, '0.5,0.05,0.07', 0.45, 2.2);
+  for (const k of ['artery', 'pulmA', 'vein', 'pulmV'])
+    vesselMats[k] = new THREE.MeshPhysicalMaterial({ color: COLORS.natural[k], roughness: 0.55, clearcoat: 0.45, clearcoatRoughness: 0.3,
+      bumpMap: vesselTex, bumpScale: 0.5, side: THREE.DoubleSide });
+  for (const k of ['art', 'cvein'])
+    coroMats[k] = new THREE.MeshPhysicalMaterial({ color: COLORS.natural[k], roughness: 0.4, clearcoat: 0.8, clearcoatRoughness: 0.15 });
+  capMat = new THREE.MeshStandardMaterial({ color: 0x3a0c0e, roughness: 0.7, side: THREE.DoubleSide });
+}
+function setPalette(name) {
+  const c = COLORS[name];
+  for (const k in vesselMats) vesselMats[k].color.setHex(c[k]);
+  for (const k in coroMats) coroMats[k].color.setHex(c[k]);
+}
+
+/* ---------- Geometriya qurish yordamchilari ---------- */
+function smoothSeams(g) {
+  const p = g.attributes.position, n = g.attributes.normal, map = new Map();
+  for (let i = 0; i < p.count; i++) {
+    const k = Math.round(p.getX(i) * 1e4) + '_' + Math.round(p.getY(i) * 1e4) + '_' + Math.round(p.getZ(i) * 1e4);
+    let e = map.get(k); if (!e) { e = [0, 0, 0, []]; map.set(k, e); }
+    e[0] += n.getX(i); e[1] += n.getY(i); e[2] += n.getZ(i); e[3].push(i);
+  }
+  for (const e of map.values()) {
+    const l = Math.hypot(e[0], e[1], e[2]) || 1;
+    for (const i of e[3]) n.setXYZ(i, e[0] / l, e[1] / l, e[2] / l);
+  }
+}
+function buildSphereGeo(ws, hs, fn) {
+  const g = new THREE.SphereGeometry(1, ws, hs);
+  g.rotateZ(Math.PI / 2);                         // qutblar ±x da — UV tikuvi ko'rinmaydi
+  const pos = g.attributes.position, col = new Float32Array(pos.count * 3), c = new THREE.Color();
+  for (let i = 0; i < pos.count; i++) {
+    const r = fn(pos.getX(i), pos.getY(i), pos.getZ(i));
+    pos.setXYZ(i, r.p[0], r.p[1], r.p[2]);
+    c.setRGB(r.col[0], r.col[1], r.col[2], THREE.SRGBColorSpace);
+    col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b;
+  }
+  g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  g.computeVertexNormals(); smoothSeams(g);
+  g.computeBoundingSphere();
+  return g;
+}
+function taperTube(points, rfn, radial) {
+  radial = radial || 20;
+  const curve = new THREE.CatmullRomCurve3(points, false, 'centripetal');
+  const seg = Math.max(24, points.length * 8);
+  const fr = curve.computeFrenetFrames(seg, false);
+  const pos = [], nor = [], uv = [], idx = [];
+  for (let i = 0; i <= seg; i++) {
+    const t = i / seg, P = curve.getPointAt(t), N = fr.normals[i], B = fr.binormals[i], r = rfn(t);
+    for (let j = 0; j <= radial; j++) {
+      const a = (j / radial) * Math.PI * 2, ca = Math.cos(a), sa = Math.sin(a);
+      const dx = N.x * ca + B.x * sa, dy = N.y * ca + B.y * sa, dz = N.z * ca + B.z * sa;
+      pos.push(P.x + dx * r, P.y + dy * r, P.z + dz * r); nor.push(dx, dy, dz); uv.push(j / radial, t);
+    }
+  }
+  for (let i = 0; i < seg; i++) for (let j = 0; j < radial; j++) {
+    const a = i * (radial + 1) + j, b = a + radial + 1;
+    idx.push(a, b, a + 1, b, b + 1, a + 1);
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+  g.setIndex(idx);
+  return { geom: g, curve };
+}
+
+/* ---------- Yurak sahnasi ---------- */
+const heart = new THREE.Group(); scene.add(heart);
+const VENT_PIVOT = new V3(0.1, 0.9, 0), ATRIA_PIVOT = new V3(0, 1.2, 0);
+const ventGroup = new THREE.Group(); ventGroup.position.copy(VENT_PIVOT); heart.add(ventGroup);
+const atriaGroup = new THREE.Group(); atriaGroup.position.copy(ATRIA_PIVOT); heart.add(atriaGroup);
+
+const ventMeshes = [], atriaMeshes = [], vesselGroups = [], coroMeshes = [], pulsers = [], flows = [], allMeshes = [];
+const labelAnchors = {};
+let labels = [];
+
+function buildHeart() {
+  makeMaterials();
+
+  // qorinchalar
+  const vg = buildSphereGeo(176, 128, (x, y, z) => ventSurface(x, y, z));
+  vg.translate(-VENT_PIVOT.x, -VENT_PIVOT.y, -VENT_PIVOT.z);
+  const vm = new THREE.Mesh(vg, myoMat); ventGroup.add(vm); ventMeshes.push(vm); allMeshes.push(vm);
+
+  // bo'lmachalar va quloqchalar
+  for (const cfg of ATRIA) {
+    const g = buildSphereGeo(96, 64, (x, y, z) => blobSurface(x, y, z, cfg));
+    const m = new THREE.Mesh(g, atriaMat);
+    m.position.set(cfg.c[0] - ATRIA_PIVOT.x, cfg.c[1] - ATRIA_PIVOT.y, cfg.c[2] - ATRIA_PIVOT.z);
+    if (cfg.dir) m.quaternion.setFromUnitVectors(new V3(1, 0, 0), new V3(...cfg.dir).normalize());
+    atriaGroup.add(m); atriaMeshes.push(m); allMeshes.push(m);
+  }
+
+  // yirik tomirlar (+ kesilgan uchlari + oqim zarrachalari)
+  for (const v of VESSELS) {
+    const pivot = new V3(...v.pts[0]);
+    const g = new THREE.Group(); g.position.copy(pivot); heart.add(g);
+    const local = v.pts.map(p => new V3(p[0] - pivot.x, p[1] - pivot.y, p[2] - pivot.z));
+    const rfn = t => lerp(v.r0, v.r1, t) + (v.bulb ? 0.1 * Math.exp(-Math.pow(t / 0.09, 2)) : 0);
+    const { geom, curve } = taperTube(local, rfn, 22);
+    const mesh = new THREE.Mesh(geom, vesselMats[v.kind]); g.add(mesh); allMeshes.push(mesh);
+    // kesilgan uchi: devor halqasi + qorong'i lumen
+    const P = curve.getPointAt(1), T = curve.getTangentAt(1), q = new THREE.Quaternion().setFromUnitVectors(new V3(0, 0, 1), T);
+    const ring = new THREE.Mesh(new THREE.RingGeometry(v.r1 * 0.78, v.r1, 28), vesselMats[v.kind]);
+    ring.position.copy(P); ring.quaternion.copy(q);
+    const disc = new THREE.Mesh(new THREE.CircleGeometry(v.r1 * 0.78, 28), capMat);
+    disc.position.copy(P).addScaledVector(T, -0.02); disc.quaternion.copy(q);
+    g.add(ring, disc);
+    vesselGroups.push(g);
+    if (v.pulse) pulsers.push(g);
+    // oqim zarrachalari
+    const rec = { curve, group: g, v, n: v.id === 'aorta' || v.id === 'svc' || v.id === 'ivc' || v.id === 'pt' ? 26 : 10, t0: [], off: [] };
+    for (let i = 0; i < rec.n; i++) { rec.t0.push(Math.random()); rec.off.push(new V3(Math.random() - .5, Math.random() - .5, Math.random() - .5)); }
+    const red = (v.kind === 'artery' || v.kind === 'pulmV');
+    const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(rec.n * 3), 3));
+    rec.pts = new THREE.Points(geo, new THREE.PointsMaterial({ size: 0.11, map: dotTex, transparent: true, depthWrite: false,
+      color: red ? 0xff3b2f : 0x5b7bff, sizeAttenuation: true }));
+    rec.pts.frustumCulled = false; rec.pts.visible = false; heart.add(rec.pts);
+    rec.travel = 0;
+    flows.push(rec);
+  }
+
+  // koronar arteriyalar va venalar (qorincha bilan birga qisqaradi)
+  for (const c of coronaryCurves()) {
+    const local = c.pts.map(p => new V3(p[0] - VENT_PIVOT.x, p[1] - VENT_PIVOT.y, p[2] - VENT_PIVOT.z));
+    const { geom } = taperTube(local, t => lerp(c.r0, c.r1, t), 10);
+    const m = new THREE.Mesh(geom, coroMats[c.kind]); ventGroup.add(m); coroMeshes.push(m);
+    labelAnchors[c.id] = c.pts[Math.floor(c.pts.length / 2)];
+  }
+
+  // nomlar
+  const S = (az, yq) => surfPt(az, yq, 0.05);
+  const defs = [
+    ["Chap qorincha", S(0.45, -0.25)], ["O'ng qorincha", S(2.3, -0.1)],
+    ["O'ng bo'lmacha", [-1.7, 1.4, 0.5]], ["Chap bo'lmacha", [1.5, 1.2, -1.0]],
+    ["O'ng quloqcha", [-0.5, 2.15, 1.0]], ["Chap quloqcha", [1.0, 1.85, 0.5]],
+    ["Aorta", [0.9, 3.55, -0.5]], ["O'pka stvoli", [0.4, 2.05, 0.95]],
+    ["Yuqori kovak vena", [-1.02, 3.5, -0.25]], ["Pastki kovak vena", [-0.9, -0.5, -1.1]],
+    ["O'pka venalari", [2.3, 1.5, -0.95]], ["Cho'qqi (apex)", surfPt(HC.azG - 0.2, -0.97, 0.05)]
+  ];
+  if (labelAnchors.lad) defs.push(["Old tushuvchi arteriya (LAD)", labelAnchors.lad]);
+  if (labelAnchors.rca) defs.push(["O'ng koronar arteriya (RCA)", labelAnchors.rca]);
+  if (labelAnchors.cx) defs.push(["Sirkumfleks arteriya", labelAnchors.cx]);
+  labels = defs.map(d => {
+    const el = document.createElement('div'); el.className = 'lbl'; el.textContent = d[0]; document.body.appendChild(el);
+    return { el, pos: new V3(...d[1]), hidden: false };
+  });
+}
+
+/* ---------- Haqiqiy model: GLB / OBJ / STL / PLY ---------- */
+const modelRoot = new THREE.Group(); scene.add(modelRoot);          // joy + foydalanuvchi hajmi
+const modelPivot = new THREE.Group(); modelRoot.add(modelPivot);    // yo'nalish (X/Y/Z aylantirish, ko'zgu)
+const modelPulse = new THREE.Group(); modelPivot.add(modelPulse);   // butun modelni urish
+let mixer = null, modelLoaded = false, modelHasAnim = false, modelHolder = null, modelPulseWhole = true;
+const modelParts = [], modelMeshes = [], procUniforms = [];
+const loaders = { gltf: new GLTFLoader(), obj: new OBJLoader(), stl: new STLLoader(), ply: new PLYLoader() };
+const SKIN = { vent: 0x8a2822, atria: 0x8d3a3c, aorta: 0xc99483, pulm: 0xb98f89, vein: 0x8b5660, vessel: 0xc08c80, whole: 0x8f2f28 };
+
+/* Nom bo'yicha tasniflash: qorincha / bo'lmacha / tomir -> o'z harakati va rangi */
+function classify(name) {
+  const n = (name || '').toLowerCase();
+  if (/atri|auric|bo.?lma|quloq/.test(n)) return { type: 'atria', color: 'atria' };
+  if (/pulmon|o.?pka|\bpa\b|trunk/.test(n)) return { type: 'vessel', color: 'pulm' };
+  if (/aort/.test(n)) return { type: 'vessel', color: 'aorta' };
+  if (/vena|vein|cava/.test(n)) return { type: 'vessel', color: 'vein' };
+  if (/vessel|arter|tomir/.test(n)) return { type: 'vessel', color: 'vessel' };
+  if (/ventric|myocard|miokard|qorin|\blv\b|\brv\b/.test(n)) return { type: 'vent', color: 'vent' };
+  return { type: 'whole', color: 'whole' };
+}
+
+/* Istalgan meshga (UV siz ham) ishlaydigan realistik material: ob'ekt fazosidagi protsedurali
+   g'ijim (bump) + rang o'zgaruvchanligi + yorug'lik o'tgandek qizil chekka.                 */
+function procSkin(color, uScale, hasVC) {
+  const m = new THREE.MeshPhysicalMaterial({ color, roughness: 0.46, clearcoat: 1.0, clearcoatRoughness: 0.14,
+    sheen: 0.5, sheenRoughness: 0.5, sheenColor: new THREE.Color(0xff9a8a), side: THREE.DoubleSide, vertexColors: !!hasVC });
+  const uBump = { value: 0.027 * (+$('bump').value) }, uSc = { value: uScale };
+  procUniforms.push(uBump);
+  m.onBeforeCompile = sh => {
+    sh.uniforms.uBump = uBump; sh.uniforms.uSc = uSc;
+    sh.vertexShader = sh.vertexShader
+      .replace('#include <common>', '#include <common>\nvarying vec3 vObj;')
+      .replace('#include <begin_vertex>', '#include <begin_vertex>\nvObj = position;');
+    sh.fragmentShader = sh.fragmentShader
+      .replace('#include <common>', `#include <common>
+        varying vec3 vObj; uniform float uBump; uniform float uSc;
+        float h3(vec3 p){ p = fract(p*0.3183099+.1); p *= 17.0; return fract(p.x*p.y*p.z*(p.x+p.y+p.z)); }
+        float n3(vec3 x){ vec3 i=floor(x), f=fract(x); f=f*f*(3.0-2.0*f);
+          return mix(mix(mix(h3(i),h3(i+vec3(1,0,0)),f.x), mix(h3(i+vec3(0,1,0)),h3(i+vec3(1,1,0)),f.x),f.y),
+                     mix(mix(h3(i+vec3(0,0,1)),h3(i+vec3(1,0,1)),f.x), mix(h3(i+vec3(0,1,1)),h3(i+vec3(1,1,1)),f.x),f.y),f.z); }
+        float hgt(vec3 p){ return n3(p*14.0)*0.5 + n3(p*40.0)*0.3 + n3(p*90.0)*0.2; }`)
+      .replace('#include <color_fragment>', `#include <color_fragment>
+        diffuseColor.rgb *= 0.82 + 0.36 * n3(vObj * uSc * 6.0);`)
+      .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
+        { vec3 sX = dFdx(-vViewPosition), sY = dFdy(-vViewPosition);
+          vec3 R1 = cross(sY, normal), R2 = cross(normal, sX);
+          float fDet = dot(sX, R1) * faceDirection;
+          float hh = hgt(vObj * uSc);
+          vec2 dd = vec2(dFdx(hh), dFdy(hh));
+          vec3 gr = sign(fDet) * (dd.x * R1 + dd.y * R2);
+          normal = normalize(abs(fDet) * normal - uBump * gr); }`)
+      .replace('#include <opaque_fragment>', `{ float ndv = abs(dot(normalize(normal), normalize(vViewPosition)));
+          outgoingLight += vec3(0.5, 0.05, 0.04) * pow(1.0 - ndv, 2.2) * 0.5; }
+        #include <opaque_fragment>`);
+  };
+  m.customProgramCacheKey = () => 'procskin';
+  patchedMats.push(m);
+  return m;
+}
+
+/* Maxsus shader kompilyatsiyasi xato bersa — oddiy materialga qaytish (sahifa buzilmasin) */
+let shaderFailed = false;
+renderer.debug.onShaderError = () => {
+  if (shaderFailed) return; shaderFailed = true;
+  console.warn('Maxsus shader kompilyatsiya bo\'lmadi — oddiy material ishlatiladi.');
+  patchedMats.forEach(m => { m.onBeforeCompile = () => {}; m.customProgramCacheKey = () => 'plain' + m.uuid; m.needsUpdate = true; });
+};
+
+function smoothGeometry(g) {
+  g.computeBoundingBox();
+  const sz = g.boundingBox.getSize(new V3()), tol = Math.max(sz.x, sz.y, sz.z) * 1e-5;
+  if (g.attributes.normal) g.deleteAttribute('normal');
+  g = mergeVertices(g, tol);
+  g.computeVertexNormals();
+  return g;
+}
+
+function upgradeGltfMaterial(mat) {
+  if (!mat || Array.isArray(mat) || !mat.isMeshStandardMaterial || mat.isMeshPhysicalMaterial) return mat;
+  const p = new THREE.MeshPhysicalMaterial();
+  THREE.MeshStandardMaterial.prototype.copy.call(p, mat);
+  p.metalness = 0; p.metalnessMap = null;                    // to'qima metall emas
+  p.clearcoat = 0.55; p.clearcoatRoughness = 0.22;           // ho'l yaltiroq qatlam
+  p.side = THREE.DoubleSide;                                 // tomirlarning kesilgan uchlari uchun
+  return p;
+}
+function setSkin(on) {
+  for (const m of modelMeshes) m.material = on ? m.userData.skin : m.userData.orig;
+}
+
+function prepareModel(root, anims, ownMaterials) {
+  modelPivot.rotation.set(0, 0, 0); modelPivot.scale.set(1, 1, 1); modelRoot.scale.setScalar(1);
+  $('msz').value = 1;
+  modelPulse.clear(); modelParts.length = 0; modelMeshes.length = 0; procUniforms.length = 0;
+  const meshes = []; root.traverse(o => { if (o.isMesh) meshes.push(o); });
+  if (!meshes.length) throw new Error('Faylda mesh topilmadi');
+  const holder = new THREE.Group(); holder.add(root); modelPulse.add(holder); modelHolder = holder;
+  holder.updateMatrixWorld(true);
+  const box0 = new THREE.Box3().setFromObject(holder);
+  const size0 = box0.getSize(new V3()), R = Math.max(size0.x, size0.y, size0.z, 1e-9) / 2;
+
+  for (const m of meshes) {
+    if (!m.geometry.attributes.normal) m.geometry.computeVertexNormals();
+    const cls = classify((m.name || '') + ' ' + (m.parent && m.parent.name || ''));
+    const ws = new V3(); m.getWorldScale(ws);
+    m.userData.orig = ownMaterials ? upgradeGltfMaterial(m.material) : m.material;
+    m.userData.skin = procSkin(SKIN[cls.color] || SKIN.whole, Math.max(ws.x, 1e-9) / R, !!m.geometry.attributes.color);
+    modelMeshes.push(m);
+    if (cls.type !== 'whole') {                                   // qism o'z markazi atrofida harakatlanadi
+      const c = new THREE.Box3().setFromObject(m).getCenter(new V3());
+      const g = new THREE.Group(); g.position.copy(c); holder.add(g); g.updateMatrixWorld(true); g.attach(m);
+      modelParts.push({ g, type: cls.type });
+    }
+  }
+  modelPulseWhole = modelParts.length === 0;
+  holder.updateMatrixWorld(true);
+  const s = CONFIG.MODEL_TARGET_HEIGHT / (2 * R);
+  holder.scale.setScalar(s); holder.position.copy(box0.getCenter(new V3())).multiplyScalar(-s);
+  modelRoot.position.set(0.3, 1.1, 0);
+
+  mixer = null; modelHasAnim = false;
+  if (anims && anims.length) {
+    modelHasAnim = true; mixer = new THREE.AnimationMixer(root);
+    anims.forEach(a => mixer.clipAction(a).play());
+  }
+  $('m-skin').checked = !ownMaterials; setSkin(!ownMaterials);
+  heart.visible = false; modelLoaded = true;
+  labels.forEach(l => l.el.style.display = 'none');
+  $('backProc').style.display = ''; $('modelTools').style.display = ''; $('noModel').style.display = 'none';
+  const st = new Set(modelParts.map(p => p.type));
+  $('status').textContent = 'Model yuklandi: ' + meshes.length + ' qism' + (st.size ? ' (' + [...st].join(', ') + ')' : '');
+}
+
+function applyModelCycle(vent, atrial, ao) {
+  if (!modelLoaded || modelHasAnim) return;
+  if (modelPulseWhole) { modelPulse.scale.set(1 - 0.05 * vent, 1 - 0.03 * vent, 1 - 0.05 * vent); return; }
+  modelPulse.scale.set(1, 1, 1);
+  for (const p of modelParts) {
+    if (p.type === 'vent') p.g.scale.set(1 - 0.085 * vent, 1 - 0.05 * vent, 1 - 0.085 * vent);
+    else if (p.type === 'atria') p.g.scale.setScalar(1 - 0.07 * atrial + 0.03 * vent);
+    else p.g.scale.setScalar(1 + 0.02 * ao);
+  }
+}
+
+async function loadFiles(list) {
+  const files = [...list]; if (!files.length) return;
+  const ld = $('loading'); ld.style.display = 'flex'; ld.style.opacity = 1; ld.textContent = 'Model yuklanmoqda…';
+  try {
+    const root = new THREE.Group(); let anims = [], own = false;
+    for (const f of files) {
+      const ext = f.name.split('.').pop().toLowerCase(), base = f.name.replace(/\.[^.]+$/, '');
+      if (ext === 'glb' || ext === 'gltf') {
+        const buf = await f.arrayBuffer();
+        const gltf = await new Promise((res, rej) => loaders.gltf.parse(buf, '', res, rej));
+        root.add(gltf.scene); anims = anims.concat(gltf.animations || []); own = true;
+      } else if (ext === 'obj') {
+        const o = loaders.obj.parse(await f.text()), ms = []; o.traverse(m => { if (m.isMesh) ms.push(m); });
+        ms.forEach(m => { if (!m.name || ms.length === 1) m.name = base; });
+        root.add(o);
+      } else if (ext === 'stl' || ext === 'ply') {
+        const buf = await f.arrayBuffer();
+        const g = smoothGeometry(ext === 'stl' ? loaders.stl.parse(buf) : loaders.ply.parse(buf));
+        const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: 0xb0b0b0, vertexColors: !!g.attributes.color, side: THREE.DoubleSide }));
+        m.name = base; root.add(m);
+      } else throw new Error("Qo'llab-quvvatlanmaydigan format: ." + ext);
+    }
+    prepareModel(root, anims, own);
+    ld.style.opacity = 0; setTimeout(() => ld.style.display = 'none', 450);
+  } catch (e) { showError(e); }
+}
+async function loadUrl(url) {
+  const r = await fetch(url); if (!r.ok) throw new Error('Model yuklanmadi: ' + url + ' (' + r.status + ')');
+  if ((r.headers.get('content-type') || '').includes('text/html')) throw new Error('Model topilmadi: ' + url);
+  const name = url.split('?')[0].split('/').pop();
+  await loadFiles([new File([await r.blob()], name)]);
+}
+
+$('loadModel').onclick = () => $('modelFile').click();
+$('modelFile').onchange = e => { loadFiles(e.target.files); e.target.value = ''; };
+addEventListener('dragover', e => { e.preventDefault(); $('drop').style.display = 'flex'; });
+addEventListener('dragleave', e => { if (!e.relatedTarget) $('drop').style.display = 'none'; });
+addEventListener('drop', e => { e.preventDefault(); $('drop').style.display = 'none'; if (e.dataTransfer && e.dataTransfer.files.length) loadFiles(e.dataTransfer.files); });
+$('murlGo').onclick = () => { const u = $('murl').value.trim(); if (u) loadUrl(u).catch(showError); };
+$('murl').onkeydown = e => { if (e.key === 'Enter') $('murlGo').click(); };
+$('m-skin').onchange = e => setSkin(e.target.checked);
+$('rx').onclick = () => modelPivot.rotateX(Math.PI / 2);
+$('ry').onclick = () => modelPivot.rotateY(Math.PI / 2);
+$('rz').onclick = () => modelPivot.rotateZ(Math.PI / 2);
+$('rm').onclick = () => { modelPivot.scale.x *= -1; };
+$('msz').oninput = e => modelRoot.scale.setScalar(+e.target.value);
+$('backProc').onclick = () => {
+  modelPulse.clear(); modelParts.length = 0; modelMeshes.length = 0;
+  heart.visible = true; modelLoaded = false; mixer = null;
+  $('backProc').style.display = 'none'; $('modelTools').style.display = 'none'; $('noModel').style.display = '';
+};
+const creditParam = new URLSearchParams(location.search).get('credit');
+if (creditParam) { $('credit').value = creditParam; $('creditView').textContent = creditParam; }
+$('credit').oninput = e => { $('creditView').textContent = e.target.value; };
+
+/* ---------- Yurak sikli (4-o'lchov: vaqt) ---------- */
+const bump = (t, a, b, skew) => {
+  if (t < a || t > b) return 0;
+  const x = Math.pow((t - a) / (b - a), skew || 1);
+  return Math.sin(Math.PI * x) ** 2;
+};
+let phase = 0, prevPhase = 0, playing = true, bpm = 72;
+function applyCycle(ph) {
+  const atrial = bump(ph, 0.02, 0.14);          // bo'lmachalar sistolasi
+  const vent = bump(ph, 0.15, 0.50, 0.75);      // qorinchalar sistolasi
+  const ao = bump(ph, 0.18, 0.55, 0.8);         // arterial pulsatsiya
+  ventGroup.scale.set(1 - 0.085 * vent, 1 - 0.05 * vent, 1 - 0.085 * vent);
+  ventGroup.rotation.y = 0.07 * vent;           // miokardning spiral buralishi
+  atriaGroup.scale.setScalar(1 - 0.07 * atrial + 0.03 * vent);
+  for (const g of pulsers) g.scale.setScalar(1 + 0.022 * ao);
+  applyModelCycle(vent, atrial, ao);
+  return { vent, ao };
+}
+
+/* ---------- Qon oqimi ---------- */
+let flowOn = false;
+const tmpV = new V3();
+function updateFlow(dt, ao) {
+  if (!flowOn) return;
+  for (const f of flows) {
+    const isArt = f.v.flow > 0;
+    const speed = isArt ? (0.05 + 0.9 * ao) : 0.22;
+    f.travel += dt * speed * (playing ? 1 : 0);
+    const arr = f.pts.geometry.attributes.position.array;
+    for (let i = 0; i < f.n; i++) {
+      let t = (f.t0[i] + f.travel * f.v.flow) % 1; if (t < 0) t += 1;
+      f.curve.getPointAt(t, tmpV);
+      const r = lerp(f.v.r0, f.v.r1, t) * 0.55;
+      arr[i * 3] = f.group.position.x + tmpV.x + f.off[i].x * r;
+      arr[i * 3 + 1] = f.group.position.y + tmpV.y + f.off[i].y * r;
+      arr[i * 3 + 2] = f.group.position.z + tmpV.z + f.off[i].z * r;
+    }
+    f.pts.geometry.attributes.position.needsUpdate = true;
+  }
+}
+function setFlow(on) {
+  flowOn = on;
+  for (const f of flows) f.pts.visible = on;
+  for (const k in vesselMats) { const m = vesselMats[k]; m.transparent = on; m.opacity = on ? 0.3 : 1; m.depthWrite = !on; m.needsUpdate = true; }
+}
+
+/* ---------- Yurak tovushi ---------- */
+let actx = null;
+function thump(freq, dur, gain) {
+  if (!actx) return;
+  const t = actx.currentTime, g = actx.createGain();
+  for (const [mul, gm] of [[1, 1], [2.1, 0.35]]) {
+    const o = actx.createOscillator(); o.type = 'sine';
+    o.frequency.setValueAtTime(freq * mul, t); o.frequency.exponentialRampToValueAtTime(freq * mul * 0.6, t + dur);
+    const og = actx.createGain(); og.gain.value = gm; o.connect(og).connect(g); o.start(t); o.stop(t + dur + 0.05);
+  }
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(gain, t + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  g.connect(actx.destination);
+}
+let soundOn = false;
+const crossed = (a, b, th) => (a < b) ? (a < th && b >= th) : (a < th || b >= th);
+
+/* ---------- EKG ---------- */
+const ecgCv = $('ecg'), ecgCtx = ecgCv.getContext('2d'), hist = new Float32Array(ecgCv.width);
+const gauss = (x, m, w, a) => a * Math.exp(-((x - m) ** 2) / (2 * w * w));
+const ecgVal = ph => gauss(ph, 0.06, 0.02, 0.12) + gauss(ph, 0.145, 0.007, -0.12) + gauss(ph, 0.16, 0.009, 1)
+                   + gauss(ph, 0.178, 0.009, -0.25) + gauss(ph, 0.38, 0.04, 0.28);
+function drawEcg() {
+  ecgCtx.fillStyle = '#050810'; ecgCtx.fillRect(0, 0, ecgCv.width, ecgCv.height);
+  ecgCtx.strokeStyle = '#3ddc84'; ecgCtx.lineWidth = 1.5; ecgCtx.beginPath();
+  for (let i = 0; i < hist.length; i++) {
+    const y = ecgCv.height * 0.75 - hist[i] * ecgCv.height * 0.6;
+    i ? ecgCtx.lineTo(i, y) : ecgCtx.moveTo(i, y);
+  }
+  ecgCtx.stroke();
+}
+
+/* ---------- Boshqaruv paneli ---------- */
+$('min').onclick = () => { $('panel').classList.toggle('min'); $('min').textContent = $('panel').classList.contains('min') ? '+' : '–'; };
+$('play').onclick = () => { playing = !playing; $('play').textContent = playing ? "⏸ To'xtatish" : '▶ Davom ettirish'; };
+$('reset').onclick = () => { camera.position.copy(HOME.pos); controls.target.copy(HOME.target); controls.update(); };
+$('bpm').oninput = e => { bpm = +e.target.value; $('bpmv').textContent = bpm; };
+$('bump').oninput = e => { const v = +e.target.value; myoMat.bumpScale = v; atriaMat.bumpScale = v * 0.75; for (const k in vesselMats) vesselMats[k].bumpScale = v * 0.45; for (const u of procUniforms) u.value = 0.027 * v; };
+const setVis = (arr, v) => arr.forEach(o => o.visible = v);
+$('l-myo').onchange = e => setVis(ventMeshes, e.target.checked);
+$('l-atria').onchange = e => setVis(atriaMeshes, e.target.checked);
+$('l-ves').onchange = e => setVis(vesselGroups, e.target.checked);
+$('l-cor').onchange = e => setVis(coroMeshes, e.target.checked);
+$('l-atlas').onchange = e => setPalette(e.target.checked ? 'atlas' : 'natural');
+$('l-flow').onchange = e => setFlow(e.target.checked);
+$('l-rot').onchange = e => { controls.autoRotate = e.target.checked; };
+let showLabels = false;
+$('l-lbl').onchange = e => { showLabels = e.target.checked; if (!showLabels) labels.forEach(l => l.el.style.display = 'none'); };
+$('l-snd').onchange = e => {
+  soundOn = e.target.checked;
+  if (soundOn && !actx) { try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (_) { soundOn = false; } }
+  if (actx && actx.state === 'suspended') actx.resume();
+};
+$('shot').onclick = () => {
+  renderer.render(scene, camera);
+  const a = document.createElement('a'); a.download = 'yurak.png'; a.href = renderer.domElement.toDataURL('image/png'); a.click();
+};
+
+/* ---------- Asosiy sikl ---------- */
+const clock = new THREE.Clock(), ray = new THREE.Raycaster(), proj = new V3(), dir = new V3();
+let frameNo = 0;
+function frame() {
+  const dt = Math.min(clock.getDelta(), 0.1);
+  prevPhase = phase;
+  if (playing) {
+    phase = (phase + dt * bpm / 60) % 1;
+    if (mixer) mixer.update(dt * bpm / 60);
+    if (soundOn) { if (crossed(prevPhase, phase, 0.15)) thump(58, 0.16, 0.55); if (crossed(prevPhase, phase, 0.50)) thump(84, 0.11, 0.35); }
+  }
+  const { vent, ao } = applyCycle(phase);
+  updateFlow(dt, ao);
+  hist.copyWithin(0, 1); hist[hist.length - 1] = ecgVal(phase); drawEcg();
+  $('status').textContent = vent > 0.05 ? 'Faza: sistola (qisqarish)' : "Faza: diastola (bo'shashish)";
+
+  controls.update();
+  renderer.render(scene, camera);
+
+  if (showLabels && !modelLoaded) {
+    frameNo++;
+    if (frameNo % 8 === 0) {                                  // yopilib qolgan nomlarni yashirish
+      for (const l of labels) {
+        dir.copy(l.pos).sub(camera.position); const dist = dir.length(); dir.normalize();
+        ray.set(camera.position, dir); ray.far = dist;
+        const h = ray.intersectObjects(allMeshes, false)[0];
+        l.hidden = !!(h && h.distance < dist - 0.2);
+      }
+    }
+    for (const l of labels) {
+      proj.copy(l.pos).project(camera);
+      if (proj.z > 1 || l.hidden) { l.el.style.display = 'none'; continue; }
+      l.el.style.display = 'block';
+      l.el.style.left = ((proj.x * 0.5 + 0.5) * innerWidth) + 'px';
+      l.el.style.top = ((-proj.y * 0.5 + 0.5) * innerHeight) + 'px';
+    }
+  }
+  requestAnimationFrame(frame);
+}
+
+addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight);
+});
+
+/* ---------- Ishga tushirish ---------- */
+setTimeout(() => {
+  try {
+    buildHeart();
+    if (CONFIG.MODEL_URL) loadUrl(CONFIG.MODEL_URL).catch(showError);
+    else loadUrl(DEFAULT_MODEL).then(() => {                       // models/heart.glb mavjud bo'lsa
+      if (!creditParam) { const t = DEFAULT_CREDIT; $('credit').value = t; $('creditView').textContent = t; }
+    }).catch(() => {});                                            // yo'q bo'lsa — jimgina protsedurali yurak
+    frame();
+    window.__heartReady = true;
+    const ld = $('loading'); ld.style.opacity = 0; setTimeout(() => ld.style.display = 'none', 450);
+  } catch (e) { showError(e); }
+}, 40);
+</script>
+</body>
+</html>
